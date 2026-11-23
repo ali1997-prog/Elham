@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>موقع تجريبي — تسجيل الدخول والخروج (بيانات وهمية)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f6f7f8;color:#1f2a37;font-family:-apple-system,"SF Arabic","Geeza Pro","Segoe UI",Tahoma,sans-serif;font-size:14px}
+.sim-banner{background:#7a1c1c;color:#fff;text-align:center;padding:8px;font-weight:700;position:sticky;top:0;z-index:100}
+.sim-banner small{font-weight:400;opacity:.85;margin-inline-start:8px}
+.wrap{max-width:1250px;margin:0 auto;padding:18px}
+h4{margin:0 0 12px;font-size:20px}
+.p-tabview-nav{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px;border-bottom:1px solid #e3e6ea}
+.p-tabview-nav li a{display:block;padding:10px 18px;color:#555;text-decoration:none;cursor:pointer}
+.p-tabview-nav li.p-highlight a{color:#1b7a4b;border-bottom:3px solid #1b7a4b;font-weight:700}
+.stats{display:flex;gap:14px;margin-bottom:14px}
+.stats>div{flex:1;background:#fff;border-radius:12px;padding:14px;text-align:center}
+.stats h5{margin:0;color:#666;font-weight:500}
+.stats .n{font-size:34px;font-weight:700}
+.stats>div.g{background:#2f8a5c;color:#fff}.stats>div.g h5{color:#e6f4ec}
+label.cal{display:block;margin-bottom:4px;color:#555}
+p-calendar{display:inline-block}
+.p-calendar input{border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;width:220px;direction:ltr;text-align:left;font:inherit}
+.p-datatable{background:#fff;border-radius:12px;margin-top:14px;position:relative}
+table{width:100%;border-collapse:collapse}
+th{font-weight:500;color:#555;padding:12px 8px;border-bottom:1px solid #eee;text-align:start;white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #f2f2f2}
+tbody tr:nth-child(even) td{background:#fafafa}
+.rows-actions-container{display:flex;gap:8px;align-items:center}
+.flat-row-action{width:34px;height:34px;border-radius:50%;background:#1b7a4b;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pi-eye::before{content:"👁"}.pi-cog::before{content:"⚙"}.pi-arrow-left::before{content:"→"}
+.dropdown{position:relative}
+.dropdown-toggle{border:1px solid #1b7a4b;background:#fff;color:#1b7a4b;border-radius:50%;width:34px;height:34px;cursor:pointer}
+.dropdown-menu{display:none;position:absolute;inset-inline-end:0;top:38px;background:#fff;border:1px solid #ddd;border-radius:8px;z-index:20;min-width:170px}
+.dropdown-menu.show{display:block}
+.dropdown-item{display:block;width:100%;border:0;background:none;padding:9px 12px;text-align:start;cursor:pointer;font:inherit}
+.p-paginator{display:flex;align-items:center;gap:6px;justify-content:center;padding:12px;flex-wrap:wrap}
+.p-paginator button{min-width:34px;height:34px;border-radius:50%;border:1px solid #cfe3d6;background:#fff;cursor:pointer}
+.p-paginator button.p-highlight{background:#1b7a4b;color:#fff}
+.p-paginator button[disabled]{opacity:.4;cursor:default}
+.p-paginator-current{margin-inline-end:auto;color:#666}
+.p-dropdown{border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;cursor:pointer;display:inline-flex;gap:8px;margin-inline-start:auto}
+.p-dropdown-panel{position:absolute;background:#fff;border:1px solid #ddd;border-radius:6px;z-index:200}
+.p-dropdown-items{list-style:none;margin:0;padding:4px 0}
+.p-dropdown-item{padding:6px 18px;cursor:pointer}.p-dropdown-item:hover{background:#eef6f1}
+.p-datatable-loading-overlay{position:absolute;inset:0;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-weight:700;z-index:10}
+.empty{padding:28px;text-align:center;color:#777}
+.details-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+app-back-header a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#1b7a4b;font-size:18px}
+.note{background:#fff7e0;border-radius:8px;padding:8px 12px;margin:0}
+.p-button{background:#1b7a4b;color:#fff;border:0;border-radius:22px;padding:10px 20px;cursor:pointer;font:inherit}
+.p-button[disabled]{opacity:.5;cursor:not-allowed}
+.p-button.p-button-secondary{background:#e5e7eb;color:#111}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kv span{display:block;color:#777;font-size:12px}
+.p-checkbox-box{width:22px;height:22px;border:2px solid #9ca3af;border-radius:5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.p-checkbox-box.p-highlight{background:#1b7a4b;border-color:#1b7a4b}
+.p-checkbox-box.p-highlight::after{content:"✓";color:#fff;font-weight:700}
+.p-checkbox.p-disabled .p-checkbox-box{opacity:.35;cursor:not-allowed}
+.badge{padding:4px 12px;border-radius:14px;font-size:12px}
+.badge-warning{background:#fdf1dc;color:#9a6200}
+.badge-success{background:#e0f3e8;color:#16683f}
+.p-dialog-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:300}
+.p-dialog{background:#fff;border-radius:12px;width:460px;max-width:94vw}
+.p-dialog-header{padding:14px 18px;border-bottom:1px solid #eee;font-weight:700;display:flex;justify-content:space-between}
+.p-dialog-content{padding:18px;display:grid;gap:12px}
+.p-dialog-footer{padding:12px 18px;border-top:1px solid #eee;display:flex;gap:8px;justify-content:flex-start}
+.p-dialog .p-calendar input{width:100%}
+.field-error{color:#b42318;font-size:12px}
+.p-toast{position:fixed;top:60px;left:20px;z-index:400;display:grid;gap:8px}
+.p-toast-message{padding:12px 16px;border-radius:8px;min-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.p-toast-message-success{background:#e0f3e8;color:#16683f}
+.p-toast-message-error{background:#fde8e8;color:#9b1c1c}
+#chaos{position:fixed;bottom:12px;left:12px;background:#fff;border:1px solid #ddd;border-radius:10px;padding:10px;font-size:12px;z-index:500;box-shadow:0 4px 14px rgba(0,0,0,.1);max-width:260px}
+#chaos summary{cursor:pointer;font-weight:700}
+#chaos label{display:block;margin:4px 0}
+#expired{padding:60px;text-align:center}
+.p-hidden-accessible{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+.p-datatable{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="sim-banner">⚠️ موقع تجريبي ببيانات وهمية — ليس منصة نسك <small>للتدريب واختبار أداة إلهام فقط</small></div>
+<div class="wrap" id="app"></div>
+<p-toast><div class="p-toast" id="toasts"></div></p-toast>
+<details id="chaos"><summary>⚙️ إعدادات الاختبار</summary>
+  <label><input type="checkbox" id="cxSlow"> تحميل بطيء (حتى 3 ثوانٍ)</label>
+  <label><input type="checkbox" id="cxErr"> أخطاء عشوائية من الخادم (15%)</label>
+  <label><input type="checkbox" id="cxExpire"> انتهاء الجلسة بعد 3 مجموعات</label>
+  <button id="cxReset" class="p-button p-button-secondary" style="margin-top:6px;padding:6px 12px">إعادة البيانات الوهمية</button>
+</details>
+
+<script>
+"use strict";
+/* ============ بيانات وهمية بالكامل ============ */
+const KEY = "nusuk-sim-data-v1";
+const FIRST = ["محمد","أحمد","عبدالله","يوسف","إبراهيم","عمر","علي","حسن","خالد","سعيد","فاطمة","عائشة","مريم","زينب","خديجة","نور","سارة","آمنة"];
+const LAST = ["الهاشمي","بن سالم","رحمن","الأنصاري","قريشي","الحسيني","بن عيسى","الشامي","المصري","البكري","الخطيب","العمري"];
+const NAT = ["سنغافورة","ماليزيا","إندونيسيا","باكستان","مصر","الأردن"];
+const HOTELS = ["فندق النخبة التجريبي","فندق الضيافة الوهمي","فندق المثال للضيافة","فندق التجربة السياحي"];
+function rng(seed){ let s = seed>>>0; return () => (s = (s*1664525 + 1013904223)>>>0) / 4294967296; }
+function ymd(d){ return d.toISOString().slice(0,10); }
+function dmy(s){ const [y,m,d] = s.split("-"); return `${d}-${m}-${y}`; }
+function makeData(){
+  const r = rng(20261123), groups = [], today = new Date(); today.setUTCHours(12,0,0,0);
+  let gseq = 480900100000, mseq = 48090100000000;
+  for(let off = -3; off <= 2; off++){
+    const day = new Date(today.getTime() + off*86400000), date = ymd(day);
+    const n = 12 + Math.floor(r()*30);
+    for(let i=0;i<n;i++){
+      const total = 1 + Math.floor(r()* (r()<0.15 ? 35 : 9));
+      const kind = r();   // 0-0.2 كلها مسجلة، 0.2-0.3 جزئي، الباقي لم تُسجّل
+      const pilgrims = [];
+      for(let k=0;k<total;k++){
+        const done = kind < 0.2 || (kind < 0.3 && k < total/2);
+        pilgrims.push({ id: String(mseq++), name: FIRST[Math.floor(r()*FIRST.length)] + " " + LAST[Math.floor(r()*LAST.length)],
+          age: 18 + Math.floor(r()*60), nat: NAT[Math.floor(r()*NAT.length)], sex: r()<0.6?"ذكر":"أنثى",
+          passport: "T" + Math.floor(1e7 + r()*9e7), date: done ? date : null, time: done ? "14:30" : null });
+      }
+      groups.push({ id: "g" + gseq, agreement: String(9007200000000000 + Math.floor(r()*1e9)), program: String(6900000 + Math.floor(r()*400000)),
+        group: String(gseq++), hotel: HOTELS[Math.floor(r()*HOTELS.length)], city: "مكة المكرمة", progDate: date, pilgrims });
+    }
+  }
+  return { groups, saves: 0 };
+}
+let DB; try{ DB = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+if(!DB || !DB.groups) DB = makeData();
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} };
+save();
+const registered = g => g.pilgrims.filter(p => p.date).length;
+
+/* ============ إعدادات الاختبار ============ */
+const CX = { slow:false, err:false, expire:false };
+try{ Object.assign(CX, JSON.parse(localStorage.getItem("nusuk-sim-chaos")||"{}")); }catch(e){}
+const p = new URLSearchParams(location.search);
+if(p.get("chaos")==="1"){ CX.slow = CX.err = true; }
+["slow","err","expire"].forEach(k => { const el = document.getElementById("cx" + k[0].toUpperCase() + k.slice(1)); el.checked = CX[k];
+  el.onchange = () => { CX[k] = el.checked; localStorage.setItem("nusuk-sim-chaos", JSON.stringify(CX)); }; });
+document.getElementById("cxReset").onclick = () => { DB = makeData(); save(); toast("success","تمت إعادة البيانات الوهمية"); route(); };
+const delay = (a=150,b=500) => new Promise(r => setTimeout(r, (CX.slow ? a*3 + Math.random()*2500 : a + Math.random()*(b-a))));
+
+/* ============ أدوات ============ */
+const $ = (s, el=document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(kind, text){
+  const t = document.createElement("div"); t.className = "p-toast-message p-toast-message-" + kind; t.setAttribute("role","alert");
+  t.innerHTML = `<div class="p-toast-detail">${esc(text)}</div>`; $("#toasts").appendChild(t); setTimeout(() => t.remove(), 4000);
+}
+function paginator(state, total){
+  const pages = Math.max(1, Math.ceil(total / state.rpp)), start = total ? state.page*state.rpp + 1 : 0, end = Math.min(total, (state.page+1)*state.rpp);
+  let btns = ""; for(let i=0;i<pages;i++) btns += `<button type="button" class="p-paginator-page p-paginator-element p-link ${i===state.page?"p-highlight":""}" aria-label="${i+1}" data-pg="${i}">${i+1}</button>`;
+  return `<p-paginator><div class="p-paginator-bottom p-paginator p-component"><span class="p-paginator-current">${start} - ${end} : ${total}</span>
+    <button type="button" class="p-paginator-first p-paginator-element p-link" aria-label="First Page" data-pg="0" ${state.page===0?"disabled":""}>«</button>
+    <button type="button" class="p-paginator-prev p-paginator-element p-link" aria-label="Previous Page" data-pg="${state.page-1}" ${state.page===0?"disabled":""}>‹</button>
+    <span class="p-paginator-pages">${btns}</span>
+    <button type="button" class="p-paginator-next p-paginator-element p-link" aria-label="Next Page" data-pg="${state.page+1}" ${state.page>=pages-1?"disabled":""}>›</button>
+    <button type="button" class="p-paginator-last p-paginator-element p-link" aria-label="Last Page" data-pg="${pages-1}" ${state.page>=pages-1?"disabled":""}>»</button>
+    <p-dropdown styleclass="p-paginator-rpp-options"><div class="p-paginator-rpp-options p-dropdown p-component"><span role="combobox" class="p-dropdown-label p-inputtext" aria-label="Rows per page">${state.rpp}</span><div role="button" aria-label="dropdown trigger" class="p-dropdown-trigger">▾</div></div></p-dropdown>
+  </div></p-paginator>`;
+}
+function bindPaginator(root, state, rerender){
+  root.querySelectorAll(".p-paginator [data-pg]").forEach(b => b.onclick = async () => { if(b.disabled) return; state.page = +b.dataset.pg; await rerender(true); });
+  const dd = root.querySelector(".p-paginator-rpp-options");
+  dd.onclick = ev => {
+    ev.stopPropagation(); document.querySelectorAll(".p-dropdown-panel").forEach(x=>x.remove());
+    const panel = document.createElement("div"); panel.className = "p-dropdown-panel p-component";
+    panel.innerHTML = `<ul class="p-dropdown-items" role="listbox">${[10,25,50,100].map(n=>`<li class="p-dropdown-item" role="option" aria-label="${n}">${n}</li>`).join("")}</ul>`;
+    const r = dd.getBoundingClientRect(); panel.style.top = (r.bottom + scrollY) + "px"; panel.style.left = (r.left + scrollX) + "px";
+    document.body.appendChild(panel);
+    panel.querySelectorAll("li").forEach(li => li.onclick = async e => { e.stopPropagation(); panel.remove(); state.rpp = +li.getAttribute("aria-label"); state.page = 0; await rerender(true); });
+  };
+}
+document.addEventListener("click", () => { document.querySelectorAll(".p-dropdown-panel").forEach(x=>x.remove()); document.querySelectorAll(".dropdown-menu.show").forEach(x=>x.classList.remove("show")); });
+
+/* ============ الجلسة ============ */
+let opened = 0;
+function expired(){ return CX.expire && opened > 3; }
+function renderExpired(){ $("#app").innerHTML = `<div id="expired" class="card"><h4>انتهت الجلسة</h4><p>تم تسجيل خروجك تلقائياً. سجّل الدخول للمتابعة.</p><button class="p-button" id="relogin">تسجيل الدخول</button></div>`;
+  $("#relogin").onclick = () => { opened = 0; location.hash = "#/check-in-out"; route(); }; }
+
+/* ============ صفحة القائمة ============ */
+const LIST = { date: "", page: 0, rpp: 10, tab: "in" };
+async function renderList(){
+  $("#app").innerHTML = `<app-check-in-out-list><h4>تسجيل الدخول والخروج</h4>
+  <p-tabview><ul class="p-tabview-nav" role="tablist">
+    <li role="presentation" class="${LIST.tab==="in"?"p-highlight":""}"><a data-tab="in">تسجيل الدخول</a></li>
+    <li role="presentation" class="${LIST.tab==="out"?"p-highlight":""}"><a data-tab="out">تسجيل الخروج</a></li></ul></p-tabview>
+  <app-check-in-tab>
+  <app-mutamer-check-in-out-statistics><div class="stats" id="stats"></div></app-mutamer-check-in-out-statistics>
+  <div><label class="cal">التاريخ</label><p-calendar dateformat="yy-mm-dd"><span class="p-calendar p-calendar-w-btn"><input type="text" role="combobox" class="p-inputtext p-component" id="listDate" value="${esc(LIST.date)}" placeholder=""></span></p-calendar></div>
+  <p-table id="checkInTableId"><div class="p-datatable p-component" id="tbl"></div></p-table>
+  </app-check-in-tab></app-check-in-out-list>`;
+  document.querySelectorAll("[data-tab]").forEach(a => a.onclick = () => { LIST.tab = a.dataset.tab; renderList(); });
+  const inp = $("#listDate");
+  const apply = async () => { const v = inp.value.trim(); if(v === LIST.date) return; if(v && !/^\d{4}-\d{2}-\d{2}$/.test(v)) return; LIST.date = v; LIST.page = 0; await renderTable(true); };
+  inp.addEventListener("input", apply); inp.addEventListener("change", apply); inp.addEventListener("blur", apply);
+  inp.addEventListener("keydown", e => { if(e.key==="Enter") apply(); });
+  await renderTable(false);
+}
+async function renderTable(loading){
+  const box = $("#tbl"); if(!box) return;
+  if(loading){ box.insertAdjacentHTML("beforeend", `<div class="p-datatable-loading-overlay">جارٍ التحميل…</div>`); await delay(); if(!$("#tbl")) return; }
+  if(LIST.tab === "out"){ box.innerHTML = `<div class="empty">تسجيل الخروج غير متاح في الموقع التجريبي حالياً.</div>`; return; }
+  const rows = LIST.date ? DB.groups.filter(g => g.progDate === LIST.date) : [];
+  const tot = rows.reduce((a,g)=>a+g.pilgrims.length,0), reg = rows.reduce((a,g)=>a+registered(g),0);
+  $("#stats").innerHTML = `<div class="g"><h5>إجمالي الدخول باليوم</h5><div class="n">${reg}</div></div><div><h5>اجمالي المعتمرين المتوقع دخولهم</h5><div class="n">${tot}</div></div>`;
+  const pageRows = rows.slice(LIST.page*LIST.rpp, (LIST.page+1)*LIST.rpp);
+  box.innerHTML = `<table role="table"><thead class="p-datatable-thead"><tr>
+    <th><div>رقم الاتفاقية</div></th><th><div>رقم البرنامج</div></th><th><div>رقم المجموعة</div></th><th><div>السكن</div></th><th><div>المدينة</div></th>
+    <th><div>تاريخ دخول الفندق (البرنامج)</div></th><th><div>تاريخ أول تسجيل فندقي (المجموعة)</div></th><th><div>عدد المعتمرين المسجل دخولهم</div></th><th><div>إجمالي المعتمرين (البرنامج)</div></th><th class="frozen-column-header">الإجراءات</th>
+  </tr></thead><tbody class="p-datatable-tbody">
+  ${pageRows.length ? pageRows.map(g => { const first = g.pilgrims.find(x=>x.date); return `<tr>
+    <td>${g.agreement}</td><td>${g.program}</td><td>${g.group}</td><td>${esc(g.hotel)}</td><td>${g.city}</td><td>${dmy(g.progDate)}</td>
+    <td>${first ? dmy(first.date) : "-"}</td><td>${registered(g)}</td><td>${g.pilgrims.length}</td>
+    <td><div class="rows-actions-container"><div><div class="p-element flat-row-action" data-open="${g.id}"><i class="pi pi-eye"></i></div></div>
+      <div class="d-inline-block dropdown"><button type="button" class="dropdown-toggle btn btn-outline-primary"><i class="pi pi-cog"></i></button>
+      <div class="dropdown-menu"><button class="dropdown-item" data-cancel="${g.id}">إلغاء تسجيل الدخول</button></div></div></div></td></tr>`; }).join("")
+    : `<tr><td colspan="10" class="empty">${LIST.date ? "لا توجد بيانات" : "اختر التاريخ"}</td></tr>`}
+  </tbody></table>${paginator(LIST, rows.length)}`;
+  bindPaginator(box, LIST, renderTable);
+  box.querySelectorAll("[data-open]").forEach(el => el.onclick = () => { location.hash = "#/check-in-details?groupId=" + el.dataset.open; });
+  box.querySelectorAll(".dropdown-toggle").forEach(b => b.onclick = ev => { ev.stopPropagation(); b.nextElementSibling.classList.toggle("show"); });
+  box.querySelectorAll("[data-cancel]").forEach(b => b.onclick = () => {
+    const g = DB.groups.find(x=>x.id===b.dataset.cancel); g.pilgrims.forEach(x=>{x.date=null;x.time=null;}); save();
+    toast("success","تم إلغاء تسجيل الدخول للمجموعة " + g.group); renderTable(false);
+  });
+}
+
+/* ============ صفحة التفاصيل ============ */
+const DET = { page: 0, rpp: 10, sel: new Set(), gid: null };
+async function renderDetails(gid){
+  if(DET.gid !== gid){ DET.gid = gid; DET.page = 0; DET.rpp = 10; DET.sel = new Set(); }
+  const g = DB.groups.find(x=>x.id===gid);
+  $("#app").innerHTML = `<app-check-in-out-details><div class="p-datatable-loading-overlay" style="position:fixed">جارٍ التحميل…</div></app-check-in-out-details>`;
+  opened++; await delay(200, 800);
+  if(expired()) return renderExpired();
+  if(!g){ $("#app").innerHTML = `<div class="card">المجموعة غير موجودة</div>`; return; }
+  $("#app").innerHTML = `<app-check-in-out-details>
+    <div class="details-head"><app-back-header><a href="#/check-in-out"><i class="pi pi-arrow-left"></i><h4 style="margin:0">التفاصيل</h4></a></app-back-header></div>
+    <div class="details-head"><div><p class="note">برجاء، اختيار المعتمرين اولاً لإضافة التاريخ لاحقا</p></div>
+      <div><button pbutton type="button" class="p-element p-button p-component" id="submitBtn" disabled><span class="p-button-label">تسجيل دخول الفندق الفعلي</span></button></div></div>
+    <app-haj-main-card><div class="card"><h4>بيانات الاتفاقية</h4><div class="kv">
+      <div><span>رقم الاتفاقية</span>${g.agreement}</div><div><span>رقم البرنامج</span>${g.program}</div>
+      <div><span>رقم المجموعة</span>${g.group}</div><div><span>إجمالي المعتمرين (البرنامج)</span>${g.pilgrims.length}</div>
+      <div><span>تاريخ الدخول من الفندق (البرنامج)</span>${g.progDate}</div><div><span>عدد المعتمرين المسجلين</span><b id="regCount">${registered(g)}</b></div></div></div></app-haj-main-card>
+    <app-haj-main-card><div class="card"><h4>بيانات المعتمرين</h4><app-data-table-ex><p-table><div class="p-datatable" id="mt"></div></p-table></app-data-table-ex></div></app-haj-main-card>
+  </app-check-in-out-details>`;
+  renderMut(g);
+}
+function renderMut(g){
+  const box = $("#mt"); if(!box) return;
+  const rows = g.pilgrims.slice(DET.page*DET.rpp, (DET.page+1)*DET.rpp);
+  const selectable = rows.filter(x=>!x.date);
+  const allSel = selectable.length && selectable.every(x=>DET.sel.has(x.id));
+  box.innerHTML = `<table><thead class="p-datatable-thead"><tr>
+    <th class="checkBoxTh"><p-tableheadercheckbox><div class="p-checkbox p-component ${selectable.length?"":"p-disabled"}"><div class="p-hidden-accessible"><input type="checkbox" aria-label="${allSel?"All items selected":"All items unselected"}"></div><div class="p-checkbox-box ${allSel?"p-highlight":""}" id="hdrCb"></div></div></p-tableheadercheckbox></th>
+    <th><div>رقم المعتمر</div></th><th><div>اسم المعتمر</div></th><th><div>العمر</div></th><th><div>الجنسية</div></th><th><div>الجنس</div></th><th><div>جواز السفر</div></th>
+    <th><div>تاريخ الدخول من الفندق(الفعلي)</div></th><th><div>وقت الدخول من الفندق (الفعلي)</div></th><th><div>الحالة</div></th></tr></thead>
+    <tbody class="p-datatable-tbody">${rows.map(x => `<tr>
+      <td><p-tablecheckbox><div class="p-checkbox p-component ${x.date?"p-disabled":""}"><div class="p-checkbox-box p-component ${DET.sel.has(x.id)?"p-highlight":""}" data-cb="${x.id}"></div></div></p-tablecheckbox></td>
+      <td id="mutamerCode"><span class="number_font">${x.id}</span></td><td id="mutamerName">${esc(x.name)}</td><td>${x.age}</td><td>${x.nat}</td><td>${x.sex}</td><td>${x.passport}</td>
+      <td><span class="number_font">${x.date || "-"}</span></td><td><span class="number_font">${x.time || "-"}</span></td>
+      <td><span class="badge ${x.date?"badge-success":"badge-warning"}">${x.date?"تم تسجيل الدخول":"لم يتم تسجيل الدخول"}</span></td></tr>`).join("")}</tbody></table>${paginator(DET, g.pilgrims.length)}`;
+  bindPaginator(box, DET, async () => { DET.sel = new Set(); await delay(100,400); renderMut(g); });
+  $("#hdrCb").onclick = () => { if(!selectable.length) return; if(allSel) selectable.forEach(x=>DET.sel.delete(x.id)); else selectable.forEach(x=>DET.sel.add(x.id)); renderMut(g); };
+  box.querySelectorAll("[data-cb]").forEach(cb => cb.onclick = () => { const x = g.pilgrims.find(y=>y.id===cb.dataset.cb); if(x.date) return;
+    DET.sel.has(x.id) ? DET.sel.delete(x.id) : DET.sel.add(x.id); renderMut(g); });
+  const btn = $("#submitBtn"); btn.disabled = DET.sel.size === 0; btn.onclick = () => openDialog(g);
+  $("#regCount").textContent = registered(g);
+}
+
+/* ============ النافذة (تقديرية — تُعدّل بعد استلام النافذة الحقيقية) ============ */
+function openDialog(g){
+  const host = document.createElement("p-dialog");
+  host.innerHTML = `<div class="p-dialog-mask"><div class="p-dialog p-component" role="dialog" aria-modal="true">
+    <div class="p-dialog-header"><span class="p-dialog-title">تسجيل دخول الفندق الفعلي</span><button type="button" class="p-dialog-header-close" id="dlgX">✕</button></div>
+    <div class="p-dialog-content">
+      <div>عدد المعتمرين المختارين: <b>${DET.sel.size}</b></div>
+      <div><label>تاريخ الدخول الفعلي</label><p-calendar dateformat="yy-mm-dd" data-field="date"><span class="p-calendar"><input type="text" class="p-inputtext p-component" id="dlgDate" placeholder="yyyy-mm-dd"></span></p-calendar></div>
+      <div><label>وقت الدخول الفعلي</label><p-calendar timeonly="true" data-field="time"><span class="p-calendar"><input type="text" class="p-inputtext p-component" id="dlgTime" placeholder="HH:mm"></span></p-calendar></div>
+      <div class="field-error" id="dlgErr"></div>
+    </div>
+    <div class="p-dialog-footer"><button type="button" class="p-button p-component" id="dlgSave"><span class="p-button-label">حفظ</span></button>
+      <button type="button" class="p-button p-button-secondary p-component" id="dlgCancel"><span class="p-button-label">إلغاء</span></button></div>
+  </div></div>`;
+  document.body.appendChild(host);
+  const close = () => host.remove();
+  $("#dlgX").onclick = close; $("#dlgCancel").onclick = close;
+  $("#dlgSave").onclick = async () => {
+    const d = $("#dlgDate").value.trim(), t = $("#dlgTime").value.trim(), err = $("#dlgErr");
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return err.textContent = "تاريخ الدخول الفعلي مطلوب";
+    if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(t)) return err.textContent = "وقت الدخول الفعلي مطلوب";
+    if(d < g.progDate) return err.textContent = "لا يمكن أن يكون تاريخ الدخول الفعلي قبل تاريخ البرنامج";
+    if(new Date(d + "T" + t + ":00+03:00") > new Date()) return err.textContent = "لا يمكن إدخال تاريخ أو وقت في المستقبل";
+    $("#dlgSave").disabled = true;
+    await delay(300, 1200);
+    if(CX.err && Math.random() < 0.15){ close(); toast("error", "حدث خطأ، يرجى المحاولة مرة أخرى"); return; }
+    g.pilgrims.forEach(x => { if(DET.sel.has(x.id)){ x.date = d; x.time = t; } });
+    DB.saves++; save(); DET.sel = new Set(); close();
+    toast("success", "تم تسجيل الدخول بنجاح");
+    await delay(100, 400); renderMut(g);
+  };
+}
+
+/* ============ التوجيه ============ */
+let wasDetails = false;
+async function route(){
+  const h = location.hash || "#/check-in-out";
+  if(expired()) return renderExpired();
+  if(h.startsWith("#/check-in-details")){ wasDetails = true; const gid = new URLSearchParams(h.split("?")[1]).get("groupId"); await renderDetails(gid); }
+  else {
+    if(wasDetails){ LIST.page = 0; LIST.rpp = 10; if(CX.slow) LIST.date = ""; }   // أسوأ حالة: الصفحة ترجع للبداية
+    wasDetails = false; await renderList();
+  }
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
