@@ -107,6 +107,10 @@ td.nowrap{white-space:nowrap}
  aside .me{grid-template-columns:1fr auto;align-items:center;margin-top:0;padding:8px 12px}
  main{padding:16px}
 }
+.pw-wrap{position:relative;display:block}
+.pw-wrap input{width:100%;padding-right:42px!important;box-sizing:border-box}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;padding:4px 6px;font-size:18px;line-height:1;color:#7D7F83;border-radius:6px}
+.pw-eye:hover{background:#eef0f3}.pw-eye:focus-visible{outline:2px solid #8B1A1E}
 </style>
 </head>
 <body>
@@ -116,6 +120,7 @@ td.nowrap{white-space:nowrap}
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="12" rx="5"/><path d="M12 8V5M9 5l1.5 2M15 5l-1.5 2M3 13h4M17 13h4M4 19l3.5-2M20 19l-3.5-2M4 7l3.5 2M20 7l-3.5 2"/></symbol>
   <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 011 1v14a1 1 0 01-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
@@ -148,6 +153,7 @@ td.nowrap{white-space:nowrap}
       <a href="#/home" data-r="home"><svg class="i"><use href="#i-home"/></svg><span data-t="navHome"></span></a>
       <a href="#/employees" data-r="employees"><svg class="i"><use href="#i-users"/></svg><span data-t="navEmployees"></span></a>
       <a href="#/logs" data-r="logs"><svg class="i"><use href="#i-list"/></svg><span data-t="navLogs"></span></a>
+      <a href="#/reports" data-r="reports"><svg class="i"><use href="#i-bug"/></svg><span data-t="navReports"></span></a>
       <a href="#/audit" data-r="audit"><svg class="i"><use href="#i-shield"/></svg><span data-t="navAudit"></span></a>
       <a href="#/settings" data-r="settings"><svg class="i"><use href="#i-gear"/></svg><span data-t="navSettings"></span></a>
     </nav>
@@ -180,7 +186,12 @@ const STR = {
 ar: {
   otherLang:"English", company:"إلهام ناصر أبوسرهد لخدمات المعتمرين", loginTitle:"لوحة تحكم المدير", panelName:"لوحة تحكم المدير",
   email:"البريد الإلكتروني", password:"كلمة المرور", signIn:"تسجيل الدخول", signOut:"خروج", signedInAs:"مسجل الدخول:",
-  navHome:"الرئيسية", navEmployees:"الموظفون", navLogs:"السجل العام", navAudit:"سجل المدير", navSettings:"الإعدادات",
+  navHome:"الرئيسية", navEmployees:"الموظفون", navLogs:"السجل العام", navAudit:"سجل المدير", navReports:"تقارير الأخطاء",
+  repTitle:"تقارير الأخطاء", repSub:"ترسلها الأداة تلقائياً عند فشل أي مجموعة، أو يرسلها الموظف يدوياً. فيها كل تفاصيل المهمة بدون بيانات المعتمرين الشخصية.",
+  noReports:"لا توجد تقارير. ممتاز!", thKind:"النوع", kindAuto:"تلقائي", kindManual:"من الموظف", thSummary:"الملخص", repView:"عرض", repDl:"تحميل الملف",
+  repReport:"تقرير رقم {n}", repFailed:"المجموعات اللي فشلت", repNoFailed:"ما فيه مجموعات فاشلة.", repApi:"أخطاء طلبات نسك", repSteps:"آخر أخطاء الخطوات", repLogs:"آخر سجل الأداة",
+  repPage:"حالة صفحة نسك وقت التقرير", repParams:"إعدادات المهمة", repNoEngine:"الأداة ما قدرت تقرأ حالة الصفحة (ممكن تبويب نسك كان مقفول).", repMissing:"عناصر ما لقتها الأداة في الصفحة",
+  modeSilent:"صامتة", modeVisible:"ظاهرة", repEmp:"الموظف", repVer:"إصدار الأداة", repNote:"ملاحظة الموظف", navSettings:"الإعدادات",
   loading:"جارٍ التحميل…", retry:"إعادة المحاولة", cancel:"إلغاء", done:"تم", save:"حفظ",
   needEmailPass:"اكتب البريد وكلمة المرور.", notAdmin:"هذا الحساب ليس حساب مدير. تواصل مع المسؤول عن النظام.", sessionEnded:"انتهت الجلسة، سجّل الدخول مرة ثانية.",
   homeTitle:"الرئيسية", homeSub:"إنجاز اليوم بتوقيت الرياض · {d}", stSuccess:"تم بنجاح اليوم", stFailed:"فشل اليوم", stSkipped:"تخطي (مسجّل مسبقاً)", stOnline:"متصلون الآن", of:"من",
@@ -212,26 +223,31 @@ ar: {
   errDates:"اختر تاريخ البداية والنهاية.", errOrder:"تاريخ البداية بعد تاريخ النهاية.",
   sOps:"عدد العمليات", sSucc:"معتمرون تم بنجاح", sFail:"فشل", sSkip:"تخطي", sErr:"أخطاء", pageN:"صفحة {p} · يعرض {n} عملية", prev:"السابق", next:"التالي",
   noExport:"لا توجد عمليات في هذه الفترة للتصدير", exported:"تم تصدير {n} عملية",
-  csvHead:["الوقت (الرياض)","الموظف","العملية","النتيجة","رقم المجموعة","الإجمالي","نجح","فشل","تخطي","المدة (ثانية)","ملاحظة","إصدار الأداة"],
+  csvHead:["الوقت (الرياض)","الموظف","العملية","النتيجة","رقم الاتفاقية","رقم البرنامج","رقم المجموعة","السكن","المدينة","تاريخ دخول الفندق (البرنامج)","تاريخ الدخول الفعلي","وقت الدخول الفعلي","الإجمالي","نجح","فشل","تخطي","المدة (ثانية)","ملاحظة","معاينة","الطريقة","إصدار الأداة"],
   logsTitle:"السجل العام", logsSub:"كل عمليات كل الموظفين",
   auditTitle:"سجل المدير", auditSub:"كل إجراء قام به أي مدير (آخر 200)", noAudit:"لا توجد إجراءات بعد.", thAdmin:"المدير", thDetails:"تفاصيل",
   expires:"ينتهي {d}", reactivation:"إعادة تفعيل", suspension:"إيقاف", purgedDet:"حذف {n} سجل أقدم من {m} شهر",
   setTitle:"الإعدادات", yourAcc:"حسابك", signedEmail:"مسجل الدخول بالبريد:",
-  pwTitle:"تغيير كلمة المرور", pwCurrent:"كلمة المرور الحالية", pwNew:"كلمة المرور الجديدة", pwNewHint:"8 أحرف على الأقل، فيها حروف وأرقام", pwConfirm:"تأكيد كلمة المرور الجديدة", pwBtn:"تغيير كلمة المرور",
+  pwTitle:"تغيير كلمة المرور", pwCurrent:"كلمة المرور الحالية", pwNew:"كلمة المرور الجديدة", pwNewHint:"8 أحرف على الأقل، فيها حروف وأرقام", pwConfirm:"تأكيد كلمة المرور الجديدة", pwShow:"إظهار كلمة المرور", pwHide:"إخفاء كلمة المرور", pwBtn:"تغيير كلمة المرور",
   pwErrEmpty:"عبّئ الخانات الثلاث.", pwErrShort:"كلمة المرور الجديدة لازم تكون 8 أحرف على الأقل.", pwErrMix:"كلمة المرور الجديدة لازم يكون فيها حروف وأرقام.", pwErrMatch:"كلمة المرور الجديدة وتأكيدها غير متطابقين.", pwErrSame:"كلمة المرور الجديدة نفس الحالية.", pwErrCurrent:"كلمة المرور الحالية غير صحيحة.", pwDone:"تم تغيير كلمة المرور. استخدمها في الدخول القادم.", pwForgot:"نسيت كلمة المرور؟ تواصل مع مدير النظام لإعادة تعيينها.",
   purgeTitle:"حذف السجلات القديمة", purgeText:"يحذف كل السجلات الأقدم من المدة المختارة نهائياً. سياسة الشركة الافتراضية: <b>12 شهراً</b>.",
   olderThan:"أقدم من", m6:"6 أشهر", m12:"12 شهراً", m24:"24 شهراً", purgeBtn:"حذف السجلات القديمة", purgeConfirm:"سيتم حذف كل السجلات الأقدم من <b>{m} شهراً</b> نهائياً، ولا يمكن استرجاعها.", purgeOk:"نعم، احذف", purged:"تم حذف {n} سجل",
   about:"عن النظام", aboutText:"لوحة تحكم أداة إلهام لخدمات المعتمرين · الإصدار 1.0<br>أداة داخلية لشركة إلهام ناصر أبوسرهد لخدمات المعتمرين، وليست منتجاً رسمياً من منصة نسك ولا مرتبطة بها.",
   footer:"أداة داخلية — ليست منتجاً رسمياً من منصة نسك",
   eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.", eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.", eLogin:"البريد أو كلمة المرور غير صحيحة.", eDup:"الرقم الوظيفي مستخدم لموظف آخر.", eData:"البيانات المدخلة غير صحيحة.", ePerm:"ليست لديك صلاحية لهذه العملية. هذا الحساب ليس حساب مدير.", eUnknown:"حدث خطأ غير متوقع",
-  act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",checkin:"تسجيل دخول معتمرين",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة"},
+  act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ للمطور"},
   res:{success:"نجاح",failed:"فشل",skipped:"تخطي"},
-  aud:{view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة"}
+  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة"}
 },
 en: {
   otherLang:"العربية", company:"Elham Nasser Abu Sarhad for Umrah Services", loginTitle:"Admin dashboard", panelName:"Admin dashboard",
   email:"Email", password:"Password", signIn:"Sign in", signOut:"Sign out", signedInAs:"Signed in as:",
-  navHome:"Home", navEmployees:"Employees", navLogs:"Activity log", navAudit:"Admin log", navSettings:"Settings",
+  navHome:"Home", navEmployees:"Employees", navLogs:"Activity log", navAudit:"Admin log", navReports:"Error reports",
+  repTitle:"Error reports", repSub:"Sent automatically by the tool when a group fails, or manually by the employee. Full task details without pilgrims' personal data.",
+  noReports:"No reports. Great!", thKind:"Type", kindAuto:"Automatic", kindManual:"From employee", thSummary:"Summary", repView:"View", repDl:"Download file",
+  repReport:"Report #{n}", repFailed:"Failed groups", repNoFailed:"No failed groups.", repApi:"Nusuk request errors", repSteps:"Latest step errors", repLogs:"Latest tool log",
+  repPage:"Nusuk page state at report time", repParams:"Task settings", repNoEngine:"The tool could not read the page state (the Nusuk tab may have been closed).", repMissing:"Elements not found on the page",
+  modeSilent:"Silent", modeVisible:"Visible", repEmp:"Employee", repVer:"Tool version", repNote:"Employee note", navSettings:"Settings",
   loading:"Loading…", retry:"Try again", cancel:"Cancel", done:"Done", save:"Save",
   needEmailPass:"Enter your email and password.", notAdmin:"This account isn't an admin account. Contact the system owner.", sessionEnded:"Your session ended. Sign in again.",
   homeTitle:"Home", homeSub:"Today's work, Riyadh time · {d}", stSuccess:"Completed today", stFailed:"Failed today", stSkipped:"Skipped (already done)", stOnline:"Online now", of:"of",
@@ -263,21 +279,21 @@ en: {
   errDates:"Choose a start and end date.", errOrder:"The start date is after the end date.",
   sOps:"Actions", sSucc:"Pilgrims done", sFail:"Failed", sSkip:"Skipped", sErr:"Errors", pageN:"Page {p} · showing {n}", prev:"Previous", next:"Next",
   noExport:"No activity in this period to export", exported:"Exported {n} records",
-  csvHead:["Time (Riyadh)","Employee","Action","Result","Group no.","Total","Done","Failed","Skipped","Duration (s)","Note","Tool version"],
+  csvHead:["Time (Riyadh)","Employee","Action","Result","Agreement no.","Program no.","Group no.","Accommodation","City","Hotel entry date (program)","Actual entry date","Actual entry time","Total","Done","Failed","Skipped","Duration (s)","Note","Preview","Method","Tool version"],
   logsTitle:"Activity log", logsSub:"Every action by every employee",
   auditTitle:"Admin log", auditSub:"Every action taken by an admin (latest 200)", noAudit:"No admin actions yet.", thAdmin:"Admin", thDetails:"Details",
   expires:"Expires {d}", reactivation:"Reactivated", suspension:"Suspended", purgedDet:"Deleted {n} records older than {m} months",
   setTitle:"Settings", yourAcc:"Your account", signedEmail:"Signed in with:",
-  pwTitle:"Change password", pwCurrent:"Current password", pwNew:"New password", pwNewHint:"At least 8 characters, with letters and numbers", pwConfirm:"Confirm new password", pwBtn:"Change password",
+  pwTitle:"Change password", pwCurrent:"Current password", pwNew:"New password", pwNewHint:"At least 8 characters, with letters and numbers", pwConfirm:"Confirm new password", pwShow:"Show password", pwHide:"Hide password", pwBtn:"Change password",
   pwErrEmpty:"Fill in all three fields.", pwErrShort:"The new password must be at least 8 characters.", pwErrMix:"The new password must contain letters and numbers.", pwErrMatch:"The new password and its confirmation don't match.", pwErrSame:"The new password is the same as the current one.", pwErrCurrent:"The current password is wrong.", pwDone:"Password changed. Use it next time you sign in.", pwForgot:"Forgot your password? Contact the system administrator to reset it.",
   purgeTitle:"Delete old logs", purgeText:"Permanently deletes all logs older than the chosen period. Company default: <b>12 months</b>.",
   olderThan:"Older than", m6:"6 months", m12:"12 months", m24:"24 months", purgeBtn:"Delete old logs", purgeConfirm:"All logs older than <b>{m} months</b> will be deleted permanently and can't be restored.", purgeOk:"Yes, delete", purged:"Deleted {n} records",
   about:"About", aboutText:"Elham Umrah Services tool — admin dashboard · version 1.0<br>An internal tool of Elham Nasser Abu Sarhad for Umrah Services. It is not an official Nusuk product and is not affiliated with Nusuk.",
   footer:"Internal tool — not an official Nusuk product",
   eNet:"Couldn't reach the server. Check your internet connection and try again.", eWeak:"That password is too weak. Choose a longer one with letters, numbers and symbols.", eLogin:"Wrong email or password.", eDup:"That employee number is already used by another employee.", eData:"The data entered isn't valid.", ePerm:"You don't have permission for this. This account isn't an admin.", eUnknown:"Something went wrong",
-  act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",checkin:"Pilgrim check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info"},
+  act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report to developer"},
   res:{success:"Success",failed:"Failed",skipped:"Skipped"},
-  aud:{view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted"}
+  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted"}
 }};
 /* Arabic messages raised by the database, translated for English mode */
 const DB_MSG_EN = {"الموظف غير موجود":"Employee not found.","تاريخ الانتهاء يجب أن يكون في المستقبل":"The expiry date must be in the future.",
@@ -443,6 +459,7 @@ async function routeOnce(){
     else if(r==="employee") await pageEmployee(decodeURIComponent(parts[1]||""));
     else if(r==="logs") await pageLogs();
     else if(r==="audit") await pageAudit();
+    else if(r==="reports") await pageReports();
     else if(r==="settings") await pageSettings();
     else { location.hash = "#/home"; return; }
     view().insertAdjacentHTML("beforeend", footer());
@@ -709,7 +726,7 @@ async function exportCsv(base){
     }
     if(all.length===0){ toast(t("noExport"), true); return; }
     const cell = v => { let s = String(v ?? ""); if(/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g,'""') + '"'; };
-    const lines = [STR[LANG].csvHead.map(cell).join(",")].concat(all.map(l => [dt(l.occurred_at), empName(l.employee_id), actName(l.action), l.result?(STR[LANG].res[l.result]||l.result):"", l.group_no, l.count_total, l.count_success, l.count_failed, l.count_skipped, l.duration_ms!=null?Math.round(l.duration_ms/1000):"", l.message, l.ext_version].map(cell).join(",")));
+    const lines = [STR[LANG].csvHead.map(cell).join(",")].concat(all.map(l => { const d = l.details || {}; return [dt(l.occurred_at), empName(l.employee_id), actName(l.action), l.result?(STR[LANG].res[l.result]||l.result):"", d.agreement, d.program, l.group_no, d.hotel, d.city, d.program_date, d.actual_date, d.actual_time, l.count_total, l.count_success, l.count_failed, l.count_skipped, l.duration_ms!=null?Math.round(l.duration_ms/1000):"", l.message, d.preview ? "✓" : "", d.mode === "silent" ? t("modeSilent") : d.mode === "visible" ? t("modeVisible") : "", l.ext_version].map(cell).join(","); }));
     const blob = new Blob(["﻿" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
     a.download = `${base.fileName||"elham-activity-log"}_${f.from}_${f.to}.csv`; document.body.appendChild(a); a.click(); a.remove();
@@ -740,6 +757,47 @@ async function pageAudit(){
   ${rows.length===0?`<div class="card empty">${t("noAudit")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>${t("thTime")}</th><th>${t("thAdmin")}</th><th>${t("thAction")}</th><th>${t("thEmp")}</th><th>${t("thDetails")}</th></tr></thead><tbody>
   ${rows.map(r=>`<tr><td class="nowrap">${esc(dt(r.created_at))}</td><td>${esc(an(r.admin_id))}</td><td>${esc(STR[LANG].aud[r.action]||r.action)}</td>
   <td>${r.employee_id?`<a href="#/employee/${esc(r.employee_id)}">${esc(empName(r.employee_id))}</a>`:"—"}</td><td class="muted">${esc(det(r))}</td></tr>`).join("")}</tbody></table></div>`}`;
+}
+
+
+/* ===== Error reports (for the developer) ===== */
+async function pageReports(){
+  const [rows] = await Promise.all([ q("diag_reports", [["select","id,employee_id,kind,note,summary,ext_version,created_at"],["order","created_at.desc"],["limit","200"]]), getEmployees(true) ]);
+  view().innerHTML = `<div class="head"><h1>${t("repTitle")}</h1><span class="sub">${t("repSub")}</span></div>
+  ${rows.length===0?`<div class="card empty">${t("noReports")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>#</th><th>${t("thTime")}</th><th>${t("thEmp")}</th><th>${t("thKind")}</th><th>${t("thSummary")}</th><th>${t("thActions")}</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr><td class="mono">${r.id}</td><td class="nowrap">${esc(dt(r.created_at))}</td><td class="nowrap"><a href="#/employee/${esc(r.employee_id)}">${esc(empName(r.employee_id))}</a></td>
+  <td class="nowrap"><span class="badge ${r.kind==="auto"?"b-bad":"b-gray"}">${r.kind==="auto"?t("kindAuto"):t("kindManual")}</span></td>
+  <td>${esc(r.summary||"")}${r.note?`<div class="muted" style="font-size:13px">“${esc(r.note)}”</div>`:""}</td>
+  <td><div class="actions"><button class="btn sm" data-rep="${r.id}">${icon("list")}${t("repView")}</button><button class="btn sm" data-repdl="${r.id}">${icon("dl")}${t("repDl")}</button></div></td></tr>`).join("")}</tbody></table></div>`}`;
+  const load = async id => (await q("diag_reports", [["select","*"],["id","eq."+id]]))[0];
+  view().querySelectorAll("[data-repdl]").forEach(b => b.onclick = async () => {
+    const r = await load(b.dataset.repdl); if(!r) return;
+    const blob = new Blob([JSON.stringify(r, null, 2)], {type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `elham-report-${r.id}.json`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  });
+  view().querySelectorAll("[data-rep]").forEach(b => b.onclick = async () => { const r = await load(b.dataset.rep); if(r) showReport(r); });
+}
+function showReport(r){
+  const p = r.payload || {}, run = p.run || {}, prm = run.params || {}, plan = run.plan || [], eng = p.engine;
+  const failed = plan.filter(x => x.status === "failed" || x.status === "not_found");
+  const apiErr = eng && eng.diag ? eng.diag.filter(d => d.kind === "api" && !d.ok).slice(-15) : [];
+  const steps = eng && eng.diag ? eng.diag.filter(d => d.kind === "step").slice(-15) : [];
+  const missing = eng && eng.selectors ? Object.entries(eng.selectors).filter(([k,v]) => v === 0 || v === "bad").map(([k]) => k) : [];
+  const sec = (title, body) => `<h4 style="margin:16px 0 6px">${esc(title)}</h4>${body}`;
+  const mini = (head, rows) => `<div class="tbl-wrap"><table><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(c=>`<tr>${c.map(v=>`<td>${esc(v==null?"":String(v))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  openModal(`<h3>${esc(t("repReport",{n:r.id}))} — ${r.kind==="auto"?t("kindAuto"):t("kindManual")}</h3>
+    <p><b>${esc(r.summary||"")}</b></p>
+    <p class="muted" style="font-size:13px">${t("repEmp")}: ${esc(empName(r.employee_id))} · ${esc(dt(r.created_at))} · ${t("repVer")}: ${esc(r.ext_version||p.ext_version||"—")}</p>
+    ${r.note?`<div class="note">${t("repNote")}: ${esc(r.note)}</div>`:""}
+    ${sec(t("repParams"), `<p class="mono" style="font-size:13px;direction:ltr;text-align:left">${esc(JSON.stringify({ mode: prm.mode||"visible", dates: prm.dates, time: prm.timeMode, fixed: prm.timeFixed, groups: prm.groupsMode, preview: prm.preview, status: run.status, reason: run.reason }))}</p>`)}
+    ${sec(t("repFailed"), failed.length ? mini([t("thGroup"),"status",t("thNote")], failed.map(x=>[x.group, x.status, x.note])) : `<p class="muted">${t("repNoFailed")}</p>`)}
+    ${apiErr.length ? sec(t("repApi"), mini(["name","HTTP","desc"], apiErr.map(d=>[d.name, d.status, d.desc||d.errors||""]))) : ""}
+    ${steps.length ? sec(t("repSteps"), mini(["code","msg"], steps.map(d=>[d.code, d.msg]))) : ""}
+    ${sec(t("repPage"), eng ? `<p class="mono" style="font-size:13px;direction:ltr;text-align:left">${esc(eng.page||"")} · list:${eng.isList} · details:${eng.isDetails} · dialog:${eng.dialog}</p>${missing.length?`<p class="muted" style="font-size:13px">${t("repMissing")}: <span class="mono">${esc(missing.join(", "))}</span></p>`:""}` : `<p class="muted">${t("repNoEngine")}</p>`)}
+    ${sec(t("repLogs"), `<div class="mono" style="font-size:12px;max-height:220px;overflow:auto;background:#fafbfc;border:1px solid var(--line);border-radius:8px;padding:8px">${(p.logs||[]).slice(0,60).map(l=>`<div>[${esc(dt(l.t))}] ${esc(l.text)}</div>`).join("")}</div>`)}
+    <div class="row" style="margin-top:14px"><button class="btn" id="repClose">${t("cancel")}</button></div>`);
+  const m = document.querySelector("#modalRoot .modal"); if(m) m.style.maxWidth = "900px";
+  $("#repClose").onclick = closeModal;
 }
 
 /* ===== Settings ===== */
@@ -790,6 +848,21 @@ async function pageSettings(){
 applyLang();
 loadSession();
 if(session) showApp(); else showLogin();
+
+/* زر إظهار/إخفاء كلمة المرور لكل خانة كلمة مرور */
+function addEyes(){
+  document.querySelectorAll('input[type=password]:not([data-eye]), input[data-eye-shown]:not([data-eye])').forEach(inp => {
+    inp.setAttribute("data-eye","1");
+    const wrap = document.createElement("span"); wrap.className = "pw-wrap";
+    inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+    const b = document.createElement("button"); b.type = "button"; b.className = "pw-eye"; b.textContent = "👁";
+    b.title = t("pwShow"); b.setAttribute("aria-label", t("pwShow")); b.setAttribute("aria-pressed","false");
+    b.onclick = () => { const show = inp.type === "password"; inp.type = show ? "text" : "password";
+      b.textContent = show ? "🙈" : "👁"; const l = t(show ? "pwHide" : "pwShow"); b.title = l; b.setAttribute("aria-label", l); b.setAttribute("aria-pressed", String(show)); inp.focus(); };
+    wrap.appendChild(b);
+  });
+}
+new MutationObserver(addEyes).observe(document.body, {childList:true, subtree:true}); addEyes();
 </script>
 </body>
 </html>
