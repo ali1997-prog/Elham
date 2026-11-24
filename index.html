@@ -30,6 +30,9 @@ input:focus,select:focus{outline:2px solid #e2b3b5;border-color:var(--brand)}
 label.f{display:grid;gap:4px;font-weight:600;font-size:14px}
 label.f small{font-weight:400;color:var(--muted)}
 .err{color:var(--bad);font-size:14px;min-height:1.2em}
+.ok-msg{color:var(--ok);font-size:14px}.ok-msg:empty{display:none}
+.perm-list{display:grid;gap:8px}.perm-list label{display:flex;gap:10px;align-items:center;font-size:15px;cursor:pointer}.perm-list input{width:18px;height:18px;accent-color:var(--brand,#8B1A1E)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
 .langbtn{font-weight:600}
 /* login */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:14px}
@@ -121,6 +124,7 @@ td.nowrap{white-space:nowrap}
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></symbol>
   <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="12" rx="5"/><path d="M12 8V5M9 5l1.5 2M15 5l-1.5 2M3 13h4M17 13h4M4 19l3.5-2M20 19l-3.5-2M4 7l3.5 2M20 7l-3.5 2"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.8 3.1-6.5 7-6.5s7 2.7 7 6.5"/><path d="M18.5 4.5l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2-1.5-1.4 2-.3z"/></symbol>
   <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 011 1v14a1 1 0 01-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
@@ -142,6 +146,15 @@ td.nowrap{white-space:nowrap}
       <div class="err" id="lgErr"></div>
       <button class="btn primary" id="lgBtn" type="submit" data-t="signIn"></button>
     </form>
+    <form id="setPwForm" class="hidden" novalidate>
+      <h2 style="margin:0;font-size:17px" data-t="spTitle"></h2>
+      <p class="muted" style="margin:0;font-size:14px" data-t="spText"></p>
+      <label class="f"><span data-t="spNew"></span><input type="password" id="spPass" class="ltr" autocomplete="new-password"></label>
+      <label class="f"><span data-t="invPass2"></span><input type="password" id="spPass2" class="ltr" autocomplete="new-password"></label>
+      <div class="err" id="spErr"></div>
+      <button class="btn primary" id="spBtn" type="submit" data-t="spBtn"></button>
+      <button class="btn ghost" id="spOut" type="button" data-t="signOut"></button>
+    </form>
   </div>
   <button class="btn ghost langbtn" data-lang-toggle><svg class="i"><use href="#i-globe"/></svg><span data-t="otherLang"></span></button>
 </section>
@@ -154,6 +167,7 @@ td.nowrap{white-space:nowrap}
       <a href="#/employees" data-r="employees"><svg class="i"><use href="#i-users"/></svg><span data-t="navEmployees"></span></a>
       <a href="#/logs" data-r="logs"><svg class="i"><use href="#i-list"/></svg><span data-t="navLogs"></span></a>
       <a href="#/reports" data-r="reports"><svg class="i"><use href="#i-bug"/></svg><span data-t="navReports"></span></a>
+      <a href="#/admins" data-r="admins"><svg class="i"><use href="#i-team"/></svg><span data-t="admNav"></span></a>
       <a href="#/audit" data-r="audit"><svg class="i"><use href="#i-shield"/></svg><span data-t="navAudit"></span></a>
       <a href="#/settings" data-r="settings"><svg class="i"><use href="#i-gear"/></svg><span data-t="navSettings"></span></a>
     </nav>
@@ -187,6 +201,25 @@ ar: {
   otherLang:"English", company:"إلهام ناصر أبوسرهد لخدمات المعتمرين", loginTitle:"لوحة تحكم المدير", panelName:"لوحة تحكم المدير",
   email:"البريد الإلكتروني", password:"كلمة المرور", signIn:"تسجيل الدخول", signOut:"خروج", signedInAs:"مسجل الدخول:",
   navHome:"الرئيسية", navEmployees:"الموظفون", navLogs:"السجل العام", navAudit:"سجل المدير", navReports:"تقارير الأخطاء",
+  admNav:"المسؤولون", admTitle:"المسؤولون والصلاحيات", admSub:"أضف أشخاص يديرون الموظفين معك، وحدد بالضبط وش يقدرون يسوون.",
+  admAdd:"إضافة مسؤول", admOwner:"المدير الرئيسي", admManager:"مسؤول", admAllPerms:"كل الصلاحيات", admNone:"ما فيه مسؤولين غيرك للحين.",
+  admInvites:"دعوات بانتظار إنشاء الحساب", admNoInv:"لا توجد دعوات معلّقة.", admPerms:"الصلاحيات", admEditT:"تعديل صلاحيات {n}", admNewT:"إضافة مسؤول جديد",
+  admName:"الاسم", admEmail:"البريد الإلكتروني", admStatus:"الحالة", admActive:"فعّال", admSusp:"موقوف", admSave:"حفظ",
+  admRemove:"حذف", admRemoveT:"حذف المسؤول", admRemoveX:"سيتم حذف {n} من المسؤولين، ولن يقدر يدخل لوحة التحكم. متابعة؟", admRemoved:"تم حذف المسؤول",
+  admSaved:"تم حفظ الصلاحيات", admInvCreated:"تم إنشاء الدعوة", admInvCode:"رمز الدعوة", admExpires:"ينتهي", admRevokeInv:"إلغاء الدعوة", admInvRevoked:"تم إلغاء الدعوة",
+  admCopyMsg:"نسخ رسالة الدعوة", admMsgCopied:"تم نسخ الرسالة. أرسلها للمسؤول بالواتساب أو الإيميل.",
+  admInvMsg:"السلام عليكم {n}،\nتمت إضافتك مسؤولاً في لوحة تحكم أداة إلهام.\n\n1) افتح: {u}\n2) اضغط «عندي دعوة — إنشاء حساب»\n3) اكتب بريدك: {e}\n4) رمز الدعوة: {c}\n5) اختر كلمة مرور قوية\n\nالرمز صالح لمدة 7 أيام ولمرة واحدة.",
+  admInvNote:"أرسل الرسالة للمسؤول. الرمز يُستخدم مرة وحدة، لنفس البريد فقط، وينتهي بعد 7 أيام.", admNeedPerm:"اختر صلاحية واحدة على الأقل.", admBadEmail:"اكتب بريد صحيح.",
+  admYou:"(أنت)", perm_employees:"إضافة الموظفين وتعديل بياناتهم", perm_codes:"رموز التفعيل: إصدار ونسخ وإلغاء", perm_suspend:"إيقاف الموظفين وإعادة تفعيلهم",
+  perm_logs:"عرض السجلات والإحصائيات", perm_export:"تصدير السجلات Excel", perm_reports:"تقارير الأخطاء", perm_audit:"سجل المدير", perm_purge:"حذف السجلات القديمة",
+  invPass2:"تأكيد كلمة المرور", invShort:"كلمة المرور 8 أحرف على الأقل، فيها حروف وأرقام.", invMatch:"كلمتا المرور غير متطابقتين.",
+  spTitle:"اختر كلمة مرور جديدة", spText:"هذا أول دخول لك (أو المدير أعطاك رمز دخول جديد). اختر كلمة مرور خاصة فيك عشان تكمل. ما تحتاج تكتب الرمز القديم.",
+  spNew:"كلمة المرور الجديدة", spBtn:"حفظ ومتابعة", spSame:"اختر كلمة مرور مختلفة عن رمز الدخول.", spDone:"تم حفظ كلمة المرور. أهلاً بك!",
+  admFirstCode:"رمز الدخول الأول", admCreated:"تم إنشاء الحساب", admReset:"رمز دخول جديد", admResetT:"رمز دخول جديد لـ {n}",
+  admResetX:"بيطلع رمز دخول جديد، ويخرج {n} من كل الأجهزة، وأول ما يدخل بالرمز بيختار كلمة مرور جديدة. متابعة؟", admShowCode:"إظهار رمز الدخول", admPending:"بانتظار أول دخول",
+  admMsg:"السلام عليكم {n}،\nتم إنشاء حسابك في لوحة تحكم أداة إلهام.\n\n1) افتح: {u}\n2) البريد: {e}\n3) كلمة المرور (رمز الدخول الأول): {c}\n4) بعد الدخول بيطلب منك تختار كلمة مرور جديدة خاصة فيك.\n\nلا ترسل هذا الرمز لأحد.",
+  admCodeNote:"أرسل الرسالة للمسؤول. الرمز يشتغل لين يغيّر كلمة المرور، وبعدها ما يعود يشتغل.",
+  roleOwner:"المدير الرئيسي", roleManager:"مسؤول",
   repTitle:"تقارير الأخطاء", repSub:"ترسلها الأداة تلقائياً عند فشل أي مجموعة، أو يرسلها الموظف يدوياً. فيها كل تفاصيل المهمة بدون بيانات المعتمرين الشخصية.",
   noReports:"لا توجد تقارير. ممتاز!", thKind:"النوع", kindAuto:"تلقائي", kindManual:"من الموظف", thSummary:"الملخص", repView:"عرض", repDl:"تحميل الملف",
   repReport:"تقرير رقم {n}", repFailed:"المجموعات اللي فشلت", repNoFailed:"ما فيه مجموعات فاشلة.", repApi:"أخطاء طلبات نسك", repSteps:"آخر أخطاء الخطوات", repLogs:"آخر سجل الأداة",
@@ -234,15 +267,34 @@ ar: {
   olderThan:"أقدم من", m6:"6 أشهر", m12:"12 شهراً", m24:"24 شهراً", purgeBtn:"حذف السجلات القديمة", purgeConfirm:"سيتم حذف كل السجلات الأقدم من <b>{m} شهراً</b> نهائياً، ولا يمكن استرجاعها.", purgeOk:"نعم، احذف", purged:"تم حذف {n} سجل",
   about:"عن النظام", aboutText:"لوحة تحكم أداة إلهام لخدمات المعتمرين · الإصدار 1.0<br>أداة داخلية لشركة إلهام ناصر أبوسرهد لخدمات المعتمرين، وليست منتجاً رسمياً من منصة نسك ولا مرتبطة بها.",
   footer:"أداة داخلية — ليست منتجاً رسمياً من منصة نسك",
-  eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.", eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.", eLogin:"البريد أو كلمة المرور غير صحيحة.", eDup:"الرقم الوظيفي مستخدم لموظف آخر.", eData:"البيانات المدخلة غير صحيحة.", ePerm:"ليست لديك صلاحية لهذه العملية. هذا الحساب ليس حساب مدير.", eUnknown:"حدث خطأ غير متوقع",
-  act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ للمطور"},
+  eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.", eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.", eLogin:"البريد أو كلمة المرور غير صحيحة.", eDup:"الرقم الوظيفي مستخدم لموظف آخر.", eData:"البيانات المدخلة غير صحيحة.", ePerm:"ليست لديك صلاحية لهذه العملية.", eUnknown:"حدث خطأ غير متوقع",
+  act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ للمطور",audit_scan:"فحص التسجيل (بدون تسجيل)"},
   res:{success:"نجاح",failed:"فشل",skipped:"تخطي"},
-  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة"}
+  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة",add_admin:"إضافة مسؤول",update_admin:"تعديل صلاحيات مسؤول",remove_admin:"حذف مسؤول",reset_admin_password:"رمز دخول جديد لمسؤول",password_set:"المسؤول اختار كلمة مرور جديدة"}
 },
 en: {
   otherLang:"العربية", company:"Elham Nasser Abu Sarhad for Umrah Services", loginTitle:"Admin dashboard", panelName:"Admin dashboard",
   email:"Email", password:"Password", signIn:"Sign in", signOut:"Sign out", signedInAs:"Signed in as:",
   navHome:"Home", navEmployees:"Employees", navLogs:"Activity log", navAudit:"Admin log", navReports:"Error reports",
+  admNav:"Admins", admTitle:"Admins & permissions", admSub:"Add people who manage employees with you, and choose exactly what they can do.",
+  admAdd:"Add admin", admOwner:"Owner", admManager:"Admin", admAllPerms:"All permissions", admNone:"No other admins yet.",
+  admInvites:"Invites waiting for sign-up", admNoInv:"No pending invites.", admPerms:"Permissions", admEditT:"Edit permissions of {n}", admNewT:"Add a new admin",
+  admName:"Name", admEmail:"Email", admStatus:"Status", admActive:"Active", admSusp:"Suspended", admSave:"Save",
+  admRemove:"Remove", admRemoveT:"Remove admin", admRemoveX:"{n} will be removed and can no longer open the dashboard. Continue?", admRemoved:"Admin removed",
+  admSaved:"Permissions saved", admInvCreated:"Invite created", admInvCode:"Invite code", admExpires:"Expires", admRevokeInv:"Cancel invite", admInvRevoked:"Invite cancelled",
+  admCopyMsg:"Copy invite message", admMsgCopied:"Message copied. Send it to the admin by WhatsApp or email.",
+  admInvMsg:"Hello {n},\nYou've been added as an admin on the Elham tool dashboard.\n\n1) Open: {u}\n2) Click “I have an invite — create account”\n3) Your email: {e}\n4) Invite code: {c}\n5) Choose a strong password\n\nThe code is valid for 7 days, one time only.",
+  admInvNote:"Send the message to the admin. The code works once, only for this email, and expires in 7 days.", admNeedPerm:"Choose at least one permission.", admBadEmail:"Enter a valid email.",
+  admYou:"(you)", perm_employees:"Add employees and edit their details", perm_codes:"Activation codes: issue, copy, revoke", perm_suspend:"Suspend and reactivate employees",
+  perm_logs:"View logs and statistics", perm_export:"Export logs to Excel", perm_reports:"Error reports", perm_audit:"Admin log", perm_purge:"Delete old logs",
+  invPass2:"Confirm password", invShort:"Password must be at least 8 characters with letters and numbers.", invMatch:"Passwords don't match.",
+  spTitle:"Choose a new password", spText:"This is your first sign-in (or the owner gave you a new sign-in code). Choose your own password to continue. You don't need the old code.",
+  spNew:"New password", spBtn:"Save and continue", spSame:"Choose a password different from the sign-in code.", spDone:"Password saved. Welcome!",
+  admFirstCode:"First sign-in code", admCreated:"Account created", admReset:"New sign-in code", admResetT:"New sign-in code for {n}",
+  admResetX:"A new sign-in code will be created, {n} will be signed out everywhere, and must choose a new password at next sign-in. Continue?", admShowCode:"Show sign-in code", admPending:"Waiting for first sign-in",
+  admMsg:"Hello {n},\nYour Elham tool dashboard account is ready.\n\n1) Open: {u}\n2) Email: {e}\n3) Password (first sign-in code): {c}\n4) After signing in you'll be asked to choose your own password.\n\nDon't share this code.",
+  admCodeNote:"Send the message to the admin. The code works until they set their own password.",
+  roleOwner:"Owner", roleManager:"Admin",
   repTitle:"Error reports", repSub:"Sent automatically by the tool when a group fails, or manually by the employee. Full task details without pilgrims' personal data.",
   noReports:"No reports. Great!", thKind:"Type", kindAuto:"Automatic", kindManual:"From employee", thSummary:"Summary", repView:"View", repDl:"Download file",
   repReport:"Report #{n}", repFailed:"Failed groups", repNoFailed:"No failed groups.", repApi:"Nusuk request errors", repSteps:"Latest step errors", repLogs:"Latest tool log",
@@ -291,14 +343,17 @@ en: {
   about:"About", aboutText:"Elham Umrah Services tool — admin dashboard · version 1.0<br>An internal tool of Elham Nasser Abu Sarhad for Umrah Services. It is not an official Nusuk product and is not affiliated with Nusuk.",
   footer:"Internal tool — not an official Nusuk product",
   eNet:"Couldn't reach the server. Check your internet connection and try again.", eWeak:"That password is too weak. Choose a longer one with letters, numbers and symbols.", eLogin:"Wrong email or password.", eDup:"That employee number is already used by another employee.", eData:"The data entered isn't valid.", ePerm:"You don't have permission for this. This account isn't an admin.", eUnknown:"Something went wrong",
-  act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report to developer"},
+  act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report to developer",audit_scan:"Registration check (read-only)"},
   res:{success:"Success",failed:"Failed",skipped:"Skipped"},
-  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted"}
+  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted",add_admin:"Admin added",update_admin:"Admin permissions changed",remove_admin:"Admin removed",reset_admin_password:"New sign-in code for admin",password_set:"Admin set a new password"}
 }};
 /* Arabic messages raised by the database, translated for English mode */
 const DB_MSG_EN = {"الموظف غير موجود":"Employee not found.","تاريخ الانتهاء يجب أن يكون في المستقبل":"The expiry date must be in the future.",
   "حالة غير صحيحة":"Invalid status.","أقل مدة شهر واحد":"The minimum is one month.","تعذر توليد رمز، حاول مرة أخرى":"Couldn't generate a code. Try again.",
-  "غير مصرح: هذه العملية للمدير فقط":"Not allowed: admins only."};
+  "غير مصرح: هذه العملية للمدير فقط":"Not allowed: admins only.","غير مصرح: ليست لديك صلاحية لهذه العملية":"Not allowed: you don't have permission for this.",
+  "غير مصرح: هذه العملية للمدير الرئيسي فقط":"Not allowed: owner only.","البريد غير صحيح":"Invalid email.","اكتب الاسم":"Enter the name.","هذا البريد مضاف مسبقاً كمسؤول":"This email is already an admin.",
+  "لا يمكنك تعديل حسابك من هنا":"You can't edit your own account here.","يمكن تعديل المسؤولين فقط":"Only admins (not the owner) can be edited.",
+  "لا يمكنك حذف حسابك":"You can't remove your own account.","يمكن حذف المسؤولين فقط":"Only admins (not the owner) can be removed."};
 
 let LANG = "ar";
 try{ LANG = localStorage.getItem("elham-admin-lang") || "ar"; }catch(e){}
@@ -356,6 +411,7 @@ function friendlyError(body, status){
   const raw = String(body && (body.message || body.msg || body.error_description) || "");
   if(status===0) return t("eNet");
   if(code==="invalid_grant" || code==="invalid_credentials" || /invalid login/i.test(raw)) return t("eLogin");
+  if(body && (body.error_code==="same_password" || /different from the old/i.test(raw))) return t("spSame");
   if(code==="weak_password" || /weak|should be at least|password should/i.test(raw)) return t("eWeak");
   if(code==="23505") return t("eDup");
   if(code==="23514" || code==="22001" || code==="22P02") return t("eData");
@@ -405,10 +461,12 @@ function empName(id){ const e = (employeesCache||[]).find(x=>x.id===id); return 
 function showLogin(msg){ $("#app").classList.add("hidden"); $("#login").classList.remove("hidden"); $("#lgErr").textContent = msg || ""; closeModal(); }
 async function showApp(){
   try{
-    const admins = await api("/rest/v1/admins?select=user_id");
-    if(!Array.isArray(admins) || admins.length===0){ saveSession(null); showLogin(t("notAdmin")); return; }
+    ME = await rpc("admin_me");
+    if(!ME || !ME.role){ ME = null; saveSession(null); showLogin(t("notAdmin")); return; }
+    if(ME.must_change_password){ showSetPassword(); return; }
   }catch(e){ if(e.status!==401) showLogin(e.message); return; }
   $("#meEmail").textContent = session.email;
+  applyPerms();
   $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
   if(!location.hash || location.hash==="#" || location.hash==="#/") location.hash = "#/home"; else route();
 }
@@ -422,6 +480,40 @@ $("#loginForm").addEventListener("submit", async ev => {
   finally{ $("#lgBtn").disabled = false; }
 });
 $("#logoutBtn").addEventListener("click", signOut);
+
+/* ===== Permissions (the server enforces them too; here we only hide what the admin can't use) ===== */
+let ME = null;
+const PERMS = ["employees","codes","suspend","logs","export","reports","audit","purge"];
+const can = p => !!ME && (ME.role === "owner" || (ME.permissions||[]).includes(p));
+const isOwner = () => !!ME && ME.role === "owner";
+function applyPerms(){
+  const show = (r, on) => { const a = document.querySelector(`#nav a[data-r="${r}"]`); if(a) a.classList.toggle("hidden", !on); };
+  show("logs", can("logs")); show("reports", can("reports")); show("audit", can("audit")); show("admins", isOwner());
+}
+
+/* ===== First sign-in: must choose a new password (no old password needed) ===== */
+function showSetPassword(){
+  $("#login").classList.remove("hidden"); $("#app").classList.add("hidden");
+  $("#loginForm").classList.add("hidden"); $("#setPwForm").classList.remove("hidden"); $("#spErr").textContent = "";
+  setTimeout(() => $("#spPass").focus(), 50);
+}
+$("#spOut").onclick = () => { $("#setPwForm").classList.add("hidden"); $("#loginForm").classList.remove("hidden"); signOut(); };
+$("#setPwForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const p1 = $("#spPass").value, p2 = $("#spPass2").value, err = $("#spErr"); err.textContent = "";
+  if(p1.length < 8 || !/[A-Za-z؀-ۿ]/.test(p1) || !/[0-9٠-٩]/.test(p1)) return err.textContent = t("invShort");
+  if(p1 !== p2) return err.textContent = t("invMatch");
+  $("#spBtn").disabled = true;
+  try{
+    await api("/auth/v1/user", {method:"PUT", body:{password:p1}});
+    const r = await rpc("admin_password_changed");
+    if(!r || !r.ok) return err.textContent = t("spSame");
+    $("#spPass").value = $("#spPass2").value = "";
+    $("#setPwForm").classList.add("hidden"); $("#loginForm").classList.remove("hidden");
+    toast(t("spDone")); await showApp();
+  }catch(e){ err.textContent = e.message || t("eNet"); }
+  finally{ $("#spBtn").disabled = false; }
+});
 
 /* ===== Modals ===== */
 function openModal(html){ $("#modalRoot").innerHTML = `<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
@@ -454,12 +546,15 @@ async function routeOnce(){
   document.querySelectorAll("#nav a").forEach(a => a.classList.toggle("active", a.dataset.r === (r==="employee"?"employees":r)));
   view().innerHTML = `<div class="empty">${t("loading")}</div>`;
   try{
+    const need = {logs:()=>can("logs"), reports:()=>can("reports"), audit:()=>can("audit"), admins:isOwner}[r];
+    if(need && !need()){ location.hash = "#/home"; return; }
     if(r==="home") await pageHome();
     else if(r==="employees") await pageEmployees();
     else if(r==="employee") await pageEmployee(decodeURIComponent(parts[1]||""));
     else if(r==="logs") await pageLogs();
     else if(r==="audit") await pageAudit();
     else if(r==="reports") await pageReports();
+    else if(r==="admins") await pageAdmins();
     else if(r==="settings") await pageSettings();
     else { location.hash = "#/home"; return; }
     view().insertAdjacentHTML("beforeend", footer());
@@ -469,21 +564,21 @@ window.addEventListener("hashchange", route);
 
 /* ===== Home ===== */
 async function pageHome(){
-  const [emps, recent] = await Promise.all([ getEmployees(true), q("activity_logs", [["select","*"],["order","occurred_at.desc"],["limit","10"]]) ]);
+  const [emps, recent] = await Promise.all([ getEmployees(true), can("logs") ? q("activity_logs", [["select","*"],["order","occurred_at.desc"],["limit","10"]]) : Promise.resolve(null) ]);
   const sum = k => emps.reduce((a,e)=>a+(Number(e[k])||0),0);
   const online = emps.filter(e=>isOnline(e.last_seen) && e.status==="active");
   const activeCount = emps.filter(e=>e.status==="active").length;
   view().innerHTML = `
   <div class="head"><h1>${t("homeTitle")}</h1><span class="sub">${esc(t("homeSub",{d:fmtDay.format(new Date())}))}</span></div>
   <div class="stats">
-    <div class="stat ok"><div class="l">${t("stSuccess")}</div><div class="v">${sum("today_success")}</div></div>
+    ${can("logs")?`<div class="stat ok"><div class="l">${t("stSuccess")}</div><div class="v">${sum("today_success")}</div></div>
     <div class="stat bad"><div class="l">${t("stFailed")}</div><div class="v">${sum("today_failed")}</div></div>
-    <div class="stat"><div class="l">${t("stSkipped")}</div><div class="v">${sum("today_skipped")}</div></div>
+    <div class="stat"><div class="l">${t("stSkipped")}</div><div class="v">${sum("today_skipped")}</div></div>`:""}
     <div class="stat brand"><div class="l">${t("stOnline")}</div><div class="v">${online.length} <small class="muted" style="font-size:14px;font-weight:500">${t("of")} ${activeCount}</small></div></div>
   </div>
   ${emps.length===0 ? `<div class="card"><h2>${t("startHere")}</h2><p>${t("startHereText")}</p><a class="btn primary" href="#/employees">${icon("users")}${t("goEmployees")}</a></div>` : ""}
   <div class="card"><h2>${t("onlineNow")}</h2>${online.length ? online.map(e=>`<a href="#/employee/${esc(e.id)}" class="badge b-ok" style="margin:2px;text-decoration:none">${esc(e.name)}</a>`).join("") : `<span class="muted">${t("noOnline")}</span>`}</div>
-  <div class="card"><h2>${t("recentOps")}</h2>${logsTable(recent, true)}</div>`;
+  ${recent ? `<div class="card"><h2>${t("recentOps")}</h2>${logsTable(recent, true)}</div>` : ""}`;
 }
 
 /* ===== Log table ===== */
@@ -500,7 +595,7 @@ function logsTable(rows, showEmp){
 async function pageEmployees(){
   const emps = await getEmployees(true);
   view().innerHTML = `
-  <div class="head"><h1>${t("empTitle")} <span class="muted" style="font-size:15px;font-weight:500">(${emps.length})</span></h1><button class="btn primary" id="addEmp">${icon("plus")}${t("addEmp")}</button></div>
+  <div class="head"><h1>${t("empTitle")} <span class="muted" style="font-size:15px;font-weight:500">(${emps.length})</span></h1>${can("employees")?`<button class="btn primary" id="addEmp">${icon("plus")}${t("addEmp")}</button>`:""}</div>
   ${emps.length===0 ? `<div class="card empty">${t("noEmps")}</div>` : `
   <div class="tbl-wrap"><table><thead><tr><th>${t("thEmp")}</th><th>${t("thEmpNo")}</th><th>${t("thStatus")}</th><th>${t("thCode")}</th><th>${t("thLastSeen")}</th><th>${t("thToday")}</th><th>${t("thActions")}</th></tr></thead><tbody>
   ${emps.map(e=>`<tr class="click" data-id="${esc(e.id)}">
@@ -509,10 +604,10 @@ async function pageEmployees(){
     <td class="nowrap">${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}</td>
     <td class="nowrap">${esc(ago(e.last_seen))}</td>
     <td class="nowrap"><span style="color:var(--ok)">${e.today_success||0}</span> / <span style="color:var(--bad)">${e.today_failed||0}</span></td>
-    <td><div class="actions">${e.code_status==="unused" ? `<button class="btn sm" data-act="show">${icon("copy")}${t("copyCode")}</button>` : ""}<button class="btn sm" data-act="code">${icon("key")}${t("issueCode")}</button><button class="btn sm" data-act="open">${icon("list")}${t("openLog")}</button>${e.status==="active" ? `<button class="btn sm danger" data-act="suspend">${icon("stop")}${t("suspendShort")}</button>` : `<button class="btn sm" data-act="activate">${t("activateShort")}</button>`}</div></td>
+    <td><div class="actions">${can("codes") && e.code_status==="unused" ? `<button class="btn sm" data-act="show">${icon("copy")}${t("copyCode")}</button>` : ""}${can("codes")?`<button class="btn sm" data-act="code">${icon("key")}${t("issueCode")}</button>`:""}<button class="btn sm" data-act="open">${icon("list")}${t("openLog")}</button>${!can("suspend") ? "" : e.status==="active" ? `<button class="btn sm danger" data-act="suspend">${icon("stop")}${t("suspendShort")}</button>` : `<button class="btn sm" data-act="activate">${t("activateShort")}</button>`}</div></td>
   </tr>`).join("")}</tbody></table></div>
   <p class="muted" style="font-size:13px">${esc(t("empLegend",{m:CONFIG.ONLINE_MINUTES}))}</p>`}`;
-  $("#addEmp").onclick = () => employeeForm();
+  if($("#addEmp")) $("#addEmp").onclick = () => employeeForm();
   view().querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", ev => {
     const b = ev.target.closest("button"); const id = tr.dataset.id;
     if(b && b.dataset.act==="code"){ ev.stopPropagation(); issueCode(id); return; }
@@ -621,15 +716,15 @@ async function pageEmployee(id){
   view().innerHTML = `
   <div class="head"><h1><a class="crumb" href="#/employees">${t("empTitle")}</a> / ${esc(e.name)}</h1>
     <div class="actions">
-      <button class="btn" id="eEdit">${icon("edit")}${t("edit")}</button>
-      <button class="btn primary" id="eCode">${icon("key")}${t("newCode")}</button>
-      ${e.code_status && e.code_status!=="revoked" ? `<button class="btn danger" id="eRevoke">${icon("stop")}${t("revokeCode")}</button>` : ""}
-      ${e.status==="active" ? `<button class="btn danger" id="eSuspend">${t("suspendEmp")}</button>` : `<button class="btn" id="eActivate">${t("activateEmp")}</button>`}
+      ${can("employees")?`<button class="btn" id="eEdit">${icon("edit")}${t("edit")}</button>`:""}
+      ${can("codes")?`<button class="btn primary" id="eCode">${icon("key")}${t("newCode")}</button>`:""}
+      ${can("codes") && e.code_status && e.code_status!=="revoked" ? `<button class="btn danger" id="eRevoke">${icon("stop")}${t("revokeCode")}</button>` : ""}
+      ${!can("suspend") ? "" : e.status==="active" ? `<button class="btn danger" id="eSuspend">${t("suspendEmp")}</button>` : `<button class="btn" id="eActivate">${t("activateEmp")}</button>`}
     </div></div>
   <div class="card"><div class="kv">
     <div><span class="k">${t("kStatus")}</span>${empBadge(e.status)}</div>
     <div><span class="k">${t("kCode")}</span>${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}
-      ${e.code_status==="unused" ? `<div style="margin-top:6px"><button class="btn sm" id="eShow">${icon("copy")}${t("showCode")}</button></div>` : ""}</div>
+      ${can("codes") && e.code_status==="unused" ? `<div style="margin-top:6px"><button class="btn sm" id="eShow">${icon("copy")}${t("showCode")}</button></div>` : ""}</div>
     <div><span class="k">${t("kIssued")}</span>${esc(dt(e.code_issued_at))}</div>
     <div><span class="k">${t("kExpiry")}</span>${e.code_expires_at?esc(dt(e.code_expires_at)):t("noExpiry")}</div>
     <div><span class="k">${t("kLastSeen")}</span><span class="dot ${isOnline(e.last_seen)?"on":""}"></span>${esc(ago(e.last_seen))}</div>
@@ -637,16 +732,16 @@ async function pageEmployee(id){
     <div><span class="k">${t("kEmpNo")}</span><span class="mono">${esc(e.employee_no||"—")}</span></div>
     <div><span class="k">${t("kPhone")}</span><span class="mono">${esc(e.phone||"—")}</span></div>
   </div></div>
-  <div class="card"><h2>${esc(t("fullLog",{n:e.name}))}</h2>${filtersHtml(false)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`;
-  $("#eEdit").onclick = () => employeeForm(e);
-  $("#eCode").onclick = () => issueCode(e.id);
+  ${can("logs")?`<div class="card"><h2>${esc(t("fullLog",{n:e.name}))}</h2>${filtersHtml(false)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`:""}`;
+  if($("#eEdit")) $("#eEdit").onclick = () => employeeForm(e);
+  if($("#eCode")) $("#eCode").onclick = () => issueCode(e.id);
   if($("#eShow")) $("#eShow").onclick = () => showCode(e.id, e.name);
   const act = async (title, text, label, fn, ok) => { if(await confirmBox(title, text, label)){ try{ await fn(); toast(ok); employeesCache=null; route(); }catch(err){ toast(err.message, true); } } };
   const n = esc(e.name);
   if($("#eRevoke")) $("#eRevoke").onclick = () => act(t("revokeTitle"), t("revokeText",{n}), t("revokeOk"), () => rpc("admin_revoke_code",{p_employee_id:e.id}), t("revoked"));
   if($("#eSuspend")) $("#eSuspend").onclick = () => act(t("suspendTitle"), t("suspendText",{n}), t("suspendOk"), () => rpc("admin_set_employee_status",{p_employee_id:e.id,p_status:"suspended"}), t("suspended"));
   if($("#eActivate")) $("#eActivate").onclick = () => act(t("activateTitle"), t("activateText",{n}), t("activateOk"), () => rpc("admin_set_employee_status",{p_employee_id:e.id,p_status:"active"}), t("activated"));
-  bindFilters({employeeId: e.id, fileName: "elham-employee-" + ((e.employee_no && /^[A-Za-z0-9_-]+$/.test(e.employee_no)) ? e.employee_no : e.id.slice(0,8))});
+  if(can("logs")) bindFilters({employeeId: e.id, fileName: "elham-employee-" + ((e.employee_no && /^[A-Za-z0-9_-]+$/.test(e.employee_no)) ? e.employee_no : e.id.slice(0,8))});
 }
 
 /* ===== Filters + log (shared) ===== */
@@ -662,7 +757,7 @@ function filtersHtml(withEmp){
     <button class="btn primary" id="fGo">${t("show")}</button>
     <button class="btn" id="fToday">${t("today")}</button>
     <button class="btn" id="fWeek">${t("last7")}</button>
-    <button class="btn" id="fCsv">${icon("dl")}${t("exportX")}</button>
+    ${can("export")?`<button class="btn" id="fCsv">${icon("dl")}${t("exportX")}</button>`:""}
   </div><div class="err" id="fErr"></div>`;
 }
 function readFilters(base){
@@ -712,7 +807,7 @@ function bindFilters(base){
   $("#fGo").onclick = () => { st.page = 0; load(); };
   $("#fToday").onclick = () => { const d = riyadhDate(); $("#fFrom").value = d; $("#fTo").value = d; st.page = 0; load(); };
   $("#fWeek").onclick = () => { $("#fFrom").value = riyadhDate(new Date(Date.now()-6*86400000)); $("#fTo").value = riyadhDate(); st.page = 0; load(); };
-  $("#fCsv").onclick = () => exportCsv(base);
+  if($("#fCsv")) $("#fCsv").onclick = () => exportCsv(base);
   load();
 }
 async function exportCsv(base){
@@ -800,6 +895,78 @@ function showReport(r){
   $("#repClose").onclick = closeModal;
 }
 
+
+/* ===== Admins & permissions (owner only) ===== */
+const permChips = a => a.role==="owner" ? `<span class="badge b-ok">${t("admAllPerms")}</span>` : `<div class="chips">${(a.permissions||[]).map(p=>`<span class="badge b-gray">${esc(t("perm_"+p))}</span>`).join("") || "—"}</div>`;
+const permBoxes = sel => `<div class="perm-list">${PERMS.map(p=>`<label><input type="checkbox" value="${p}" ${sel.includes(p)?"checked":""}> ${esc(t("perm_"+p))}</label>`).join("")}</div>`;
+const pickedPerms = () => [...document.querySelectorAll("#modalRoot .perm-list input:checked")].map(i=>i.value);
+async function pageAdmins(){
+  if(!isOwner()){ location.hash = "#/home"; return; }
+  const admins = await q("admins", [["select","user_id,name,email,role,permissions,status,created_at,must_change_password"],["order","created_at.asc"]]);
+  const me = session && session.email;
+  view().innerHTML = `<div class="head"><h1>${t("admTitle")}</h1><button class="btn primary" id="admAdd">${icon("plus")}${t("admAdd")}</button></div>
+  <p class="muted" style="margin-top:-6px">${t("admSub")}</p>
+  <div class="tbl-wrap"><table><thead><tr><th>${t("admName")}</th><th>${t("admEmail")}</th><th>${t("admPerms")}</th><th>${t("admStatus")}</th><th>${t("thActions")}</th></tr></thead><tbody>
+  ${admins.map(a=>`<tr><td class="nowrap"><b>${esc(a.name)}</b> ${a.role==="owner"?`<span class="badge b-ok">${t("roleOwner")}</span>`:""} ${a.email && a.email===me?`<span class="muted">${t("admYou")}</span>`:""}</td>
+    <td class="mono">${esc(a.email||"—")}</td><td>${permChips(a)}</td>
+    <td>${a.status!=="active"?`<span class="badge b-bad">${t("admSusp")}</span>`:a.must_change_password?`<span class="badge b-warn">${t("admPending")}</span>`:`<span class="badge b-ok">${t("admActive")}</span>`}</td>
+    <td>${a.role==="manager"?`<div class="actions">${a.must_change_password?`<button class="btn sm" data-ashow="${esc(a.user_id)}">${icon("copy")}${t("admShowCode")}</button>`:""}<button class="btn sm" data-aedit="${esc(a.user_id)}">${icon("edit")}${t("edit")}</button><button class="btn sm" data-areset="${esc(a.user_id)}">${icon("key")}${t("admReset")}</button><button class="btn sm danger" data-adel="${esc(a.user_id)}">${t("admRemove")}</button></div>`:""}</td></tr>`).join("")}
+  </tbody></table></div>
+  ${admins.length<=1?`<p class="muted">${t("admNone")}</p>`:""}`;
+  const find = id => admins.find(a=>a.user_id===id);
+  $("#admAdd").onclick = () => adminForm();
+  view().querySelectorAll("[data-aedit]").forEach(b => b.onclick = () => adminForm(find(b.dataset.aedit)));
+  view().querySelectorAll("[data-adel]").forEach(b => b.onclick = async () => {
+    const a = find(b.dataset.adel);
+    if(await confirmBox(t("admRemoveT"), t("admRemoveX",{n:esc(a.name)}), t("admRemove"))){ try{ await rpc("admin_remove_admin",{p_user_id:a.user_id}); toast(t("admRemoved")); route(); }catch(e){ toast(e.message,true); } }
+  });
+  view().querySelectorAll("[data-areset]").forEach(b => b.onclick = async () => {
+    const a = find(b.dataset.areset);
+    if(!(await confirmBox(t("admResetT",{n:a.name}), t("admResetX",{n:esc(a.name)}), t("admReset")))) return;
+    try{ const r = await rpc("admin_reset_admin_password",{p_user_id:a.user_id}); showFirstCode(a.name, a.email, r.code, t("admReset")); }catch(e){ toast(e.message,true); }
+  });
+  view().querySelectorAll("[data-ashow]").forEach(b => b.onclick = async () => {
+    const a = find(b.dataset.ashow);
+    try{ const r = await rpc("admin_get_temp_code",{p_user_id:a.user_id}); if(r && r.code) showFirstCode(a.name, a.email, r.code, t("admFirstCode")); else route(); }catch(e){ toast(e.message,true); }
+  });
+}
+function firstCodeMessage(name, email, code){ return t("admMsg",{n:name, e:email, c:code, u: location.origin + location.pathname}); }
+function showFirstCode(name, email, code, title){
+  openModal(`<h3>${esc(title)}</h3><div class="note">${t("admCodeNote")}</div>
+    <label class="f">${t("admFirstCode")}<input class="mono ltr" id="invCodeOut" readonly value="${esc(code)}"></label>
+    <textarea id="invMsg" readonly style="width:100%;height:190px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px;box-sizing:border-box">${esc(firstCodeMessage(name, email, code))}</textarea>
+    <div class="row"><button class="btn primary" id="invCopy">${icon("copy")}${t("admCopyMsg")}</button><button class="btn" id="invDone">${t("cancel")}</button></div>`);
+  $("#invCopy").onclick = async () => { try{ await navigator.clipboard.writeText($("#invMsg").value); toast(t("admMsgCopied")); }catch(e){ $("#invMsg").select(); document.execCommand("copy"); toast(t("admMsgCopied")); } };
+  $("#invDone").onclick = () => { closeModal(); route(); };
+}
+function adminForm(a){
+  const edit = !!a;
+  openModal(`<h3>${edit?esc(t("admEditT",{n:a.name})):t("admNewT")}</h3><form id="admForm" novalidate>
+    <label class="f">${t("admName")}<input id="aName" value="${edit?esc(a.name):""}" maxlength="100"></label>
+    ${edit?"":`<label class="f">${t("admEmail")}<input type="email" id="aEmail" class="ltr" maxlength="200"></label>`}
+    <div><div style="font-weight:600;margin-bottom:6px">${t("admPerms")}</div>${permBoxes(edit?(a.permissions||[]):["employees","codes"])}</div>
+    ${edit?`<label class="f">${t("admStatus")}<select id="aStatus"><option value="active" ${a.status==="active"?"selected":""}>${t("admActive")}</option><option value="suspended" ${a.status==="suspended"?"selected":""}>${t("admSusp")}</option></select></label>`:""}
+    <div class="err" id="aErr"></div>
+    <div class="row"><button class="btn primary" type="submit" id="aSave">${edit?t("admSave"):t("admAdd")}</button><button class="btn" type="button" id="aCancel">${t("cancel")}</button></div></form>`);
+  $("#aCancel").onclick = closeModal;
+  $("#admForm").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const name = $("#aName").value.trim(), perms = pickedPerms(), err = $("#aErr"); err.textContent = "";
+    if(name.length < 2) return err.textContent = t("eData");
+    if(!perms.length) return err.textContent = t("admNeedPerm");
+    $("#aSave").disabled = true;
+    try{
+      if(edit){ await rpc("admin_update_admin",{p_user_id:a.user_id, p_name:name, p_permissions:perms, p_status:$("#aStatus").value}); closeModal(); toast(t("admSaved")); route(); }
+      else{
+        const email = $("#aEmail").value.trim().toLowerCase();
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("#aSave").disabled = false; return err.textContent = t("admBadEmail"); }
+        const r = await rpc("admin_add_admin",{p_email:email, p_name:name, p_permissions:perms});
+        showFirstCode(name, email, r.code, t("admCreated"));
+      }
+    }catch(e){ err.textContent = e.message; $("#aSave").disabled = false; }
+  });
+}
+
 /* ===== Settings ===== */
 async function pageSettings(){
   view().innerHTML = `<div class="head"><h1>${t("setTitle")}</h1></div>
@@ -814,9 +981,9 @@ async function pageSettings(){
     </form>
     <p class="muted" style="font-size:13px;margin:12px 0 0">${esc(t("pwForgot"))}</p>
   </div>
-  <div class="card"><h2>${t("purgeTitle")}</h2><p>${t("purgeText")}</p>
+  ${can("purge")?`<div class="card"><h2>${t("purgeTitle")}</h2><p>${t("purgeText")}</p>
     <div class="filters"><label>${t("olderThan")}<select id="pgM"><option value="12">${t("m12")}</option><option value="6">${t("m6")}</option><option value="24">${t("m24")}</option></select></label>
-    <button class="btn danger" id="pgBtn">${t("purgeBtn")}</button></div></div>
+    <button class="btn danger" id="pgBtn">${t("purgeBtn")}</button></div></div>`:""}
   <div class="card"><h2>${t("about")}</h2><p class="muted" style="font-size:14px">${t("aboutText")}</p></div>`;
   $("#pwForm").addEventListener("submit", async ev => {
     ev.preventDefault();
@@ -837,7 +1004,7 @@ async function pageSettings(){
     }catch(e){ err.textContent = e.message; }
     finally{ const b=$("#pwBtn"); if(b) b.disabled = false; }
   });
-  $("#pgBtn").onclick = async () => {
+  if($("#pgBtn")) $("#pgBtn").onclick = async () => {
     const m = $("#pgM").value;
     if(!await confirmBox(t("purgeTitle"), t("purgeConfirm",{m}), t("purgeOk"))) return;
     try{ const n = await rpc("admin_purge_old_logs", {p_months: Number(m)}); toast(t("purged",{n})); }catch(e){ toast(e.message, true); }
