@@ -202,7 +202,9 @@ ar: {
   email:"البريد الإلكتروني", password:"كلمة المرور", signIn:"تسجيل الدخول", signOut:"خروج", signedInAs:"مسجل الدخول:",
   navHome:"الرئيسية", navEmployees:"الموظفون", navLogs:"السجل العام", navAudit:"سجل المدير", navReports:"تقارير الأخطاء",
   kKeep:"إبقاء جلسة نسك نشطة", keepYes:"مسموح", keepNo:"ممنوع", keepAllow:"السماح", keepBlock:"منع",
+  tgTitle:"إشعارات البلاغات في تليجرام", tgIntro:"الجهاز المراقب يشيّك بلاغات نسك كل نص دقيقة، وأي بلاغ جديد أو تغيّر في حالة بلاغ أو توقف المراقبة يوصل لقروب تليجرام. اسم مقدم البلاغ ما ينرسل.", tgToken:"رمز البوت (من BotFather)", tgTokenHint:"يُحفظ في السيرفر فقط ولا يظهر مرة ثانية. اتركه فاضي إذا ما تبي تغيّره.", tgChat:"رقم القروب (Chat ID)", tgChatHint:"رقم سالب غالباً، مثل -1001234567890", tgSave:"حفظ", tgTest:"إرسال رسالة تجربة", tgSaved:"تم حفظ إعدادات تليجرام", tgTestSent:"انرسلت رسالة التجربة — شيّك القروب", tgBot:"البوت", tgChatS:"القروب", tgOk:"مربوط", tgNo:"غير مربوط", tgMon:"المراقبة", tgMonOn:"شغّالة على جهاز {e} · آخر تشييك {t}", tgMonDown:"متوقفة من {t}", tgMonNone:"ما بدأت بعد — فعّل «مراقبة البلاغات» للموظف، وشغّلها من تبويب البلاغات في الأداة", tgLast:"آخر رسالة", tgSent:"انرسلت", tgPending:"في الانتظار", tgExt:"إضافات السيرفر", tgExtMissing:"لازم تفعّل pg_net و pg_cron في Supabase (Database ← Extensions) وبعدها تعيد تشغيل تحديث قاعدة البيانات 9",
   thTools:"الأدوات", kTools:"الأدوات المتاحة في الإضافة", toolsAll:"تحديد الكل (كل الأدوات)", toolsHint:"لوحة التحكم والسجل موجودة عند الكل دائماً. اختر الأدوات الإضافية اللي تنفتح لهذا الموظف.", toolsNone:"بدون أدوات", toolsAllBadge:"كل الأدوات", toolsNeed:"اختر أداة وحدة على الأقل، أو اضغط «تحديد الكل»", toolsEdit:"تعديل الأدوات", toolsSaved:"تم حفظ الأدوات",
+  kSilent:"الوضع الصامت", silentYes:"مفعّل", silentNo:"غير مفعّل", silentOn:"تفعيل الوضع الصامت", silentOff:"إيقاف الوضع الصامت", silentHint:"الوضع الصامت يسجّل الدخول والخروج بإرسال الطلبات لنسك مباشرة بدون الضغط على الصفحة (أسرع بكثير). يظهر للموظف فقط إذا فعّلته له.",
   kDev:"حساب مطور (أدوات التشخيص)", devYes:"مطور", devNo:"موظف عادي", devOn:"تحويله لحساب مطور", devOff:"إرجاعه موظف عادي", devHint:"حساب المطور تظهر له أدوات التشخيص مثل الوضع البطيء. خلّه لحسابك فقط.",
   admNav:"المسؤولون", admTitle:"المسؤولون والصلاحيات", admSub:"أضف أشخاص يديرون الموظفين معك، وحدد بالضبط وش يقدرون يسوون.",
   admAdd:"إضافة مسؤول", admOwner:"المدير الرئيسي", admManager:"مسؤول", admAllPerms:"كل الصلاحيات", admNone:"ما فيه مسؤولين غيرك للحين.",
@@ -273,14 +275,16 @@ ar: {
   eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.", eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.", eLogin:"البريد أو كلمة المرور غير صحيحة.", eDup:"الرقم الوظيفي مستخدم لموظف آخر.", eData:"البيانات المدخلة غير صحيحة.", ePerm:"ليست لديك صلاحية لهذه العملية.", eUnknown:"حدث خطأ غير متوقع",
   act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ للمطور",audit_scan:"فحص التسجيل (بدون تسجيل)",keepalive:"إبقاء جلسة نسك نشطة"},
   res:{success:"نجاح",failed:"فشل",skipped:"تخطي"},
-  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة",add_admin:"إضافة مسؤول",set_keepalive:"إذن إبقاء جلسة نسك",set_developer:"حساب مطور",set_tools:"الأدوات المتاحة لموظف",update_admin:"تعديل صلاحيات مسؤول",remove_admin:"حذف مسؤول",reset_admin_password:"رمز دخول جديد لمسؤول",password_set:"المسؤول اختار كلمة مرور جديدة"}
+  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة",add_admin:"إضافة مسؤول",set_keepalive:"إذن إبقاء جلسة نسك",set_developer:"حساب مطور",set_tools:"الأدوات المتاحة لموظف",set_telegram:"إعدادات تليجرام",update_admin:"تعديل صلاحيات مسؤول",remove_admin:"حذف مسؤول",reset_admin_password:"رمز دخول جديد لمسؤول",password_set:"المسؤول اختار كلمة مرور جديدة"}
 },
 en: {
   otherLang:"العربية", company:"Elham Nasser Abu Sarhad for Umrah Services", loginTitle:"Admin dashboard", panelName:"Admin dashboard",
   email:"Email", password:"Password", signIn:"Sign in", signOut:"Sign out", signedInAs:"Signed in as:",
   navHome:"Home", navEmployees:"Employees", navLogs:"Activity log", navAudit:"Admin log", navReports:"Error reports",
   kKeep:"Keep Nusuk session active", keepYes:"Allowed", keepNo:"Blocked", keepAllow:"Allow", keepBlock:"Block",
+  tgTitle:"Complaint alerts on Telegram", tgIntro:"The monitoring device checks Nusuk complaints every 30 seconds; new complaints, status changes and monitoring stops are sent to the Telegram group. Complainant names are never sent.", tgToken:"Bot token (from BotFather)", tgTokenHint:"Stored on the server only and never shown again. Leave empty to keep it.", tgChat:"Group chat ID", tgChatHint:"Usually negative, e.g. -1001234567890", tgSave:"Save", tgTest:"Send test message", tgSaved:"Telegram settings saved", tgTestSent:"Test message sent — check the group", tgBot:"Bot", tgChatS:"Group", tgOk:"Connected", tgNo:"Not connected", tgMon:"Monitoring", tgMonOn:"Running on {e}'s device · last check {t}", tgMonDown:"Stopped since {t}", tgMonNone:"Not started — enable Complaints monitor for an employee and turn it on in the extension", tgLast:"Last message", tgSent:"Sent", tgPending:"Pending", tgExt:"Server extensions", tgExtMissing:"Enable pg_net and pg_cron in Supabase (Database → Extensions), then re-run database update 9",
   thTools:"Tools", kTools:"Tools available in the extension", toolsAll:"Select all (every tool)", toolsHint:"Dashboard and Log are always available. Choose the extra tools this employee can use.", toolsNone:"No tools", toolsAllBadge:"All tools", toolsNeed:"Pick at least one tool, or press Select all", toolsEdit:"Edit tools", toolsSaved:"Tools saved",
+  kSilent:"Silent mode", silentYes:"Enabled", silentNo:"Disabled", silentOn:"Enable silent mode", silentOff:"Disable silent mode", silentHint:"Silent mode registers check-ins and check-outs by sending requests to Nusuk directly instead of clicking the page (much faster). The employee only sees it if you enable it.",
   kDev:"Developer account (diagnostic tools)", devYes:"Developer", devNo:"Regular employee", devOn:"Make developer", devOff:"Make regular", devHint:"A developer account sees diagnostic tools such as slow mode. Keep it for your own account only.",
   admNav:"Admins", admTitle:"Admins & permissions", admSub:"Add people who manage employees with you, and choose exactly what they can do.",
   admAdd:"Add admin", admOwner:"Owner", admManager:"Admin", admAllPerms:"All permissions", admNone:"No other admins yet.",
@@ -351,7 +355,7 @@ en: {
   eNet:"Couldn't reach the server. Check your internet connection and try again.", eWeak:"That password is too weak. Choose a longer one with letters, numbers and symbols.", eLogin:"Wrong email or password.", eDup:"That employee number is already used by another employee.", eData:"The data entered isn't valid.", ePerm:"You don't have permission for this. This account isn't an admin.", eUnknown:"Something went wrong",
   act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report to developer",audit_scan:"Registration check (read-only)",keepalive:"Keep Nusuk session active"},
   res:{success:"Success",failed:"Failed",skipped:"Skipped"},
-  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted",add_admin:"Admin added",set_keepalive:"Keep-session permission",set_developer:"Developer account",set_tools:"Employee tools",update_admin:"Admin permissions changed",remove_admin:"Admin removed",reset_admin_password:"New sign-in code for admin",password_set:"Admin set a new password"}
+  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted",add_admin:"Admin added",set_keepalive:"Keep-session permission",set_developer:"Developer account",set_tools:"Employee tools",set_telegram:"Telegram settings",update_admin:"Admin permissions changed",remove_admin:"Admin removed",reset_admin_password:"New sign-in code for admin",password_set:"Admin set a new password"}
 }};
 /* Arabic messages raised by the database, translated for English mode */
 const DB_MSG_EN = {"الموظف غير موجود":"Employee not found.","تاريخ الانتهاء يجب أن يكون في المستقبل":"The expiry date must be in the future.",
@@ -626,7 +630,7 @@ async function pageEmployees(){
   <div class="tbl-wrap"><table><thead><tr><th>${t("thEmp")}</th><th>${t("thEmpNo")}</th><th>${t("thStatus")}</th><th>${t("thTools")}</th><th>${t("thCode")}</th><th>${t("thLastSeen")}</th><th>${t("thToday")}</th><th>${t("thActions")}</th></tr></thead><tbody>
   ${emps.map(e=>`<tr class="click" data-id="${esc(e.id)}">
     <td class="nowrap"><span class="dot ${isOnline(e.last_seen)&&e.status==="active"?"on":""}"></span><b>${esc(e.name)}</b></td>
-    <td class="mono">${esc(e.employee_no||"—")}</td><td>${empBadge(e.status)}</td><td>${toolsBadges(e)}</td>
+    <td class="mono">${esc(e.employee_no||"—")}</td><td>${empBadge(e.status)}</td><td>${toolsBadges(e)}${e.silent_allowed?` <span class="badge b-ok" title="${esc(t("kSilent"))}">🔇</span>`:""}</td>
     <td class="nowrap">${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}</td>
     <td class="nowrap">${esc(ago(e.last_seen))}</td>
     <td class="nowrap"><span style="color:var(--ok)">${e.today_success||0}</span> / <span style="color:var(--bad)">${e.today_failed||0}</span></td>
@@ -767,6 +771,8 @@ async function pageEmployee(id){
       ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eKeep">${e.keepalive_allowed===false?t("keepAllow"):t("keepBlock")}</button></div>`:""}</div>
     <div><span class="k">${t("kTools")}</span>${toolsBadges(e)}
       ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eTools">${t("toolsEdit")}</button></div>`:""}</div>
+    <div><span class="k">${t("kSilent")}</span>${e.silent_allowed?`<span class="badge b-ok">🔇 ${t("silentYes")}</span>`:`<span class="badge b-gray">${t("silentNo")}</span>`}
+      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eSilent">${e.silent_allowed?t("silentOff"):t("silentOn")}</button></div>`:""}<div class="muted" style="margin-top:4px;font-size:12px">${t("silentHint")}</div></div>
     ${isOwner()?`<div><span class="k">${t("kDev")}</span>${e.is_developer?`<span class="badge b-ok">🛠 ${t("devYes")}</span>`:`<span class="badge b-gray">${t("devNo")}</span>`}
       <div style="margin-top:6px"><button class="btn sm" id="eDev">${e.is_developer?t("devOff"):t("devOn")}</button></div><div class="muted" style="margin-top:4px;font-size:12px">${t("devHint")}</div></div>`:""}
   </div></div>
@@ -774,6 +780,7 @@ async function pageEmployee(id){
   if($("#eEdit")) $("#eEdit").onclick = () => employeeForm(e);
   if($("#eTools")) $("#eTools").onclick = () => employeeForm(e);
   if($("#eDev")) $("#eDev").onclick = async () => { try{ await rpc("admin_set_developer",{p_employee_id:e.id, p_on: !e.is_developer}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
+  if($("#eSilent")) $("#eSilent").onclick = async () => { try{ await rpc("admin_set_silent",{p_employee_id:e.id, p_on: !e.silent_allowed}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   if($("#eKeep")) $("#eKeep").onclick = async () => { try{ await rpc("admin_set_keepalive",{p_employee_id:e.id, p_allowed: e.keepalive_allowed===false}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   if($("#eCode")) $("#eCode").onclick = () => issueCode(e.id);
   if($("#eShow")) $("#eShow").onclick = () => showCode(e.id, e.name);
@@ -1022,10 +1029,34 @@ async function pageSettings(){
     </form>
     <p class="muted" style="font-size:13px;margin:12px 0 0">${esc(t("pwForgot"))}</p>
   </div>
+  ${isOwner()?`<div class="card" id="tgCard"><h2>${t("tgTitle")}</h2><p class="muted" style="font-size:14px">${t("tgIntro")}</p>
+    <div id="tgStatus" class="muted">…</div>
+    <form id="tgForm" novalidate style="display:grid;gap:12px;max-width:420px;margin-top:12px">
+      <label class="f"><span>${t("tgToken")} <small>${t("tgTokenHint")}</small></span><input type="password" id="tgToken" class="ltr" autocomplete="off"></label>
+      <label class="f"><span>${t("tgChat")} <small>${t("tgChatHint")}</small></span><input id="tgChat" class="ltr" autocomplete="off"></label>
+      <div class="err" id="tgErr"></div>
+      <div style="display:flex;gap:8px"><button class="btn primary" id="tgSave" type="submit">${t("tgSave")}</button><button class="btn" id="tgTest" type="button">${t("tgTest")}</button></div>
+    </form></div>`:""}
   ${can("purge")?`<div class="card"><h2>${t("purgeTitle")}</h2><p>${t("purgeText")}</p>
     <div class="filters"><label>${t("olderThan")}<select id="pgM"><option value="12">${t("m12")}</option><option value="6">${t("m6")}</option><option value="24">${t("m24")}</option></select></label>
     <button class="btn danger" id="pgBtn">${t("purgeBtn")}</button></div></div>`:""}
   <div class="card"><h2>${t("about")}</h2><p class="muted" style="font-size:14px">${t("aboutText")}</p></div>`;
+  if($("#tgCard")){
+    const showTg = async () => { try{
+      const st = await rpc("admin_complaints_status");
+      const row = (k, v) => `<div><span class="k">${k}:</span> ${v}</div>`;
+      const yes = b => b ? `<span class="badge b-ok">${t("tgOk")}</span>` : `<span class="badge b-gray">${t("tgNo")}</span>`;
+      const mon = st.down_since ? `<span class="badge b-bad">${t("tgMonDown",{t:dt(st.down_since)})}</span>` : st.last_ok ? t("tgMonOn",{e:esc(st.leader||"—"), t:dt(st.last_ok)}) : t("tgMonNone");
+      const lm = st.last_message ? `${esc(({new:"🔔 بلاغ جديد",status:"🔄 تغيّر حالة",down:"⚠️ توقف المراقبة",up:"✅ رجوع المراقبة",start:"✅ بداية المراقبة",test:"🧪 تجربة"})[st.last_message.kind]||st.last_message.kind)} · ${dt(st.last_message.at)} · ${st.last_message.error ? '<span class="badge b-bad">'+esc(st.last_message.error)+'</span>' : (st.last_message.sent ? t("tgSent") : t("tgPending"))}` : "—";
+      $("#tgStatus").innerHTML = row(t("tgBot"), yes(st.bot_set)) + row(t("tgChatS"), yes(st.chat_set)) + row(t("tgMon"), mon) + row(t("tgLast"), lm)
+        + (!(st.pg_net && st.pg_cron) ? row(t("tgExt"), `<span class="badge b-bad">${t("tgExtMissing")}</span>`) : "");
+    }catch(e){ $("#tgStatus").textContent = e.message; } };
+    showTg();
+    $("#tgForm").addEventListener("submit", async ev => { ev.preventDefault(); $("#tgErr").textContent = "";
+      try{ await rpc("admin_set_telegram", {p_token: $("#tgToken").value.trim()||null, p_chat_id: $("#tgChat").value.trim()||null}); $("#tgToken").value = ""; toast(t("tgSaved")); showTg(); }
+      catch(e){ $("#tgErr").textContent = e.message; } });
+    $("#tgTest").onclick = async () => { try{ await rpc("admin_test_telegram"); toast(t("tgTestSent")); setTimeout(showTg, 3000); }catch(e){ toast(e.message, true); } };
+  }
   $("#pwForm").addEventListener("submit", async ev => {
     ev.preventDefault();
     const cur = $("#pwCur").value, nw = $("#pwNew").value, nw2 = $("#pwNew2").value, err = $("#pwErr");
