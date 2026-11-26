@@ -204,6 +204,8 @@ ar: {
   kKeep:"إبقاء جلسة نسك نشطة", keepYes:"مسموح", keepNo:"ممنوع", keepAllow:"السماح", keepBlock:"منع",
   tgTitle:"إشعارات البلاغات في تليجرام", tgIntro:"الجهاز المراقب يشيّك بلاغات نسك كل نص دقيقة، وأي بلاغ جديد أو تغيّر في حالة بلاغ أو توقف المراقبة يوصل لقروب تليجرام. اسم مقدم البلاغ ما ينرسل.", tgToken:"رمز البوت (من BotFather)", tgTokenHint:"يُحفظ في السيرفر فقط ولا يظهر مرة ثانية. اتركه فاضي إذا ما تبي تغيّره.", tgChat:"رقم القروب (Chat ID)", tgChatHint:"رقم سالب غالباً، مثل -1001234567890", tgSave:"حفظ", tgTest:"إرسال رسالة تجربة", tgSaved:"تم حفظ إعدادات تليجرام", tgTestSent:"انرسلت رسالة التجربة — شيّك القروب", tgBot:"البوت", tgChatS:"القروب", tgOk:"مربوط", tgNo:"غير مربوط", tgMon:"المراقبة", tgMonOn:"شغّالة على جهاز {e} · آخر تشييك {t}", tgMonDown:"متوقفة من {t}", tgMonNone:"ما بدأت بعد — فعّل «مراقبة البلاغات» للموظف، وشغّلها من تبويب البلاغات في الأداة", tgLast:"آخر رسالة", tgSent:"انرسلت", tgPending:"في الانتظار", tgExt:"إضافات السيرفر", tgExtMissing:"لازم تفعّل pg_net و pg_cron في Supabase (Database ← Extensions) وبعدها تعيد تشغيل تحديث قاعدة البيانات 9",
   thTools:"الأدوات", kTools:"الأدوات المتاحة في الإضافة", toolsAll:"تحديد الكل (كل الأدوات)", toolsHint:"لوحة التحكم والسجل موجودة عند الكل دائماً. اختر الأدوات الإضافية اللي تنفتح لهذا الموظف.", toolsNone:"بدون أدوات", toolsAllBadge:"كل الأدوات", toolsNeed:"اختر أداة وحدة على الأقل، أو اضغط «تحديد الكل»", toolsEdit:"تعديل الأدوات", toolsSaved:"تم حفظ الأدوات",
+  kLearn:"تقرير تعلّم الطلبات", learnOn:"تفعيل التقرير", learnOff:"إيقاف التقرير", learnDl:"تنزيل التقرير (آخر 7 أيام)", learnNone:"ما فيه تقارير بعد", learnSum:"{n} طلب · آخر إرسال {at}",
+  learnHint:"لما يكون مفعّل، الأداة ترسل تلقائياً «شكل» طلبات نسك وهي تشتغل (بدون أي اسم أو جواز أو رقم). نزّل التقرير وأرسله للمطوّر عشان يطوّر الأداة.",
   kSilent:"الوضع الصامت", silentYes:"مفعّل", silentNo:"غير مفعّل", silentOn:"تفعيل الوضع الصامت", silentOff:"إيقاف الوضع الصامت", silentHint:"الوضع الصامت يسجّل الدخول والخروج بإرسال الطلبات لنسك مباشرة بدون الضغط على الصفحة (أسرع بكثير). يظهر للموظف فقط إذا فعّلته له.",
   kDev:"حساب مطور (أدوات التشخيص)", devYes:"مطور", devNo:"موظف عادي", devOn:"تحويله لحساب مطور", devOff:"إرجاعه موظف عادي", devHint:"حساب المطور تظهر له أدوات التشخيص مثل الوضع البطيء. خلّه لحسابك فقط.",
   admNav:"المسؤولون", admTitle:"المسؤولون والصلاحيات", admSub:"أضف أشخاص يديرون الموظفين معك، وحدد بالضبط وش يقدرون يسوون.",
@@ -284,6 +286,8 @@ en: {
   kKeep:"Keep Nusuk session active", keepYes:"Allowed", keepNo:"Blocked", keepAllow:"Allow", keepBlock:"Block",
   tgTitle:"Complaint alerts on Telegram", tgIntro:"The monitoring device checks Nusuk complaints every 30 seconds; new complaints, status changes and monitoring stops are sent to the Telegram group. Complainant names are never sent.", tgToken:"Bot token (from BotFather)", tgTokenHint:"Stored on the server only and never shown again. Leave empty to keep it.", tgChat:"Group chat ID", tgChatHint:"Usually negative, e.g. -1001234567890", tgSave:"Save", tgTest:"Send test message", tgSaved:"Telegram settings saved", tgTestSent:"Test message sent — check the group", tgBot:"Bot", tgChatS:"Group", tgOk:"Connected", tgNo:"Not connected", tgMon:"Monitoring", tgMonOn:"Running on {e}'s device · last check {t}", tgMonDown:"Stopped since {t}", tgMonNone:"Not started — enable Complaints monitor for an employee and turn it on in the extension", tgLast:"Last message", tgSent:"Sent", tgPending:"Pending", tgExt:"Server extensions", tgExtMissing:"Enable pg_net and pg_cron in Supabase (Database → Extensions), then re-run database update 9",
   thTools:"Tools", kTools:"Tools available in the extension", toolsAll:"Select all (every tool)", toolsHint:"Dashboard and Log are always available. Choose the extra tools this employee can use.", toolsNone:"No tools", toolsAllBadge:"All tools", toolsNeed:"Pick at least one tool, or press Select all", toolsEdit:"Edit tools", toolsSaved:"Tools saved",
+  kLearn:"Request learning report", learnOn:"Enable report", learnOff:"Disable report", learnDl:"Download report (last 7 days)", learnNone:"No reports yet", learnSum:"{n} requests · last upload {at}",
+  learnHint:"When enabled, the tool automatically sends the shape of Nusuk requests while it works (no names, passports or numbers). Download it and send it to the developer.",
   kSilent:"Silent mode", silentYes:"Enabled", silentNo:"Disabled", silentOn:"Enable silent mode", silentOff:"Disable silent mode", silentHint:"Silent mode registers check-ins and check-outs by sending requests to Nusuk directly instead of clicking the page (much faster). The employee only sees it if you enable it.",
   kDev:"Developer account (diagnostic tools)", devYes:"Developer", devNo:"Regular employee", devOn:"Make developer", devOff:"Make regular", devHint:"A developer account sees diagnostic tools such as slow mode. Keep it for your own account only.",
   admNav:"Admins", admTitle:"Admins & permissions", admSub:"Add people who manage employees with you, and choose exactly what they can do.",
@@ -630,7 +634,7 @@ async function pageEmployees(){
   <div class="tbl-wrap"><table><thead><tr><th>${t("thEmp")}</th><th>${t("thEmpNo")}</th><th>${t("thStatus")}</th><th>${t("thTools")}</th><th>${t("thCode")}</th><th>${t("thLastSeen")}</th><th>${t("thToday")}</th><th>${t("thActions")}</th></tr></thead><tbody>
   ${emps.map(e=>`<tr class="click" data-id="${esc(e.id)}">
     <td class="nowrap"><span class="dot ${isOnline(e.last_seen)&&e.status==="active"?"on":""}"></span><b>${esc(e.name)}</b></td>
-    <td class="mono">${esc(e.employee_no||"—")}</td><td>${empBadge(e.status)}</td><td>${toolsBadges(e)}${e.silent_allowed?` <span class="badge b-ok" title="${esc(t("kSilent"))}">🔇</span>`:""}</td>
+    <td class="mono">${esc(e.employee_no||"—")}</td><td>${empBadge(e.status)}</td><td>${toolsBadges(e)}${e.silent_allowed?` <span class="badge b-ok" title="${esc(t("kSilent"))}">🔇</span>`:""}${e.learn_enabled?` <span class="badge b-ok" title="${esc(t("kLearn"))}">📡</span>`:""}</td>
     <td class="nowrap">${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}</td>
     <td class="nowrap">${esc(ago(e.last_seen))}</td>
     <td class="nowrap"><span style="color:var(--ok)">${e.today_success||0}</span> / <span style="color:var(--bad)">${e.today_failed||0}</span></td>
@@ -773,6 +777,10 @@ async function pageEmployee(id){
       ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eTools">${t("toolsEdit")}</button></div>`:""}</div>
     <div><span class="k">${t("kSilent")}</span>${e.silent_allowed?`<span class="badge b-ok">🔇 ${t("silentYes")}</span>`:`<span class="badge b-gray">${t("silentNo")}</span>`}
       ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eSilent">${e.silent_allowed?t("silentOff"):t("silentOn")}</button></div>`:""}<div class="muted" style="margin-top:4px;font-size:12px">${t("silentHint")}</div></div>
+    <div><span class="k">${t("kLearn")}</span>${e.learn_enabled?`<span class="badge b-ok">📡 ${t("silentYes")}</span>`:`<span class="badge b-gray">${t("silentNo")}</span>`}
+      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eLearn">${e.learn_enabled?t("learnOff"):t("learnOn")}</button></div>`:""}
+      ${can("reports")?`<div style="margin-top:6px" class="muted" id="eLearnSum">…</div><div style="margin-top:6px"><button class="btn sm" id="eLearnDl">⬇ ${t("learnDl")}</button></div>`:""}
+      <div class="muted" style="margin-top:4px;font-size:12px">${t("learnHint")}</div></div>
     ${isOwner()?`<div><span class="k">${t("kDev")}</span>${e.is_developer?`<span class="badge b-ok">🛠 ${t("devYes")}</span>`:`<span class="badge b-gray">${t("devNo")}</span>`}
       <div style="margin-top:6px"><button class="btn sm" id="eDev">${e.is_developer?t("devOff"):t("devOn")}</button></div><div class="muted" style="margin-top:4px;font-size:12px">${t("devHint")}</div></div>`:""}
   </div></div>
@@ -780,6 +788,16 @@ async function pageEmployee(id){
   if($("#eEdit")) $("#eEdit").onclick = () => employeeForm(e);
   if($("#eTools")) $("#eTools").onclick = () => employeeForm(e);
   if($("#eDev")) $("#eDev").onclick = async () => { try{ await rpc("admin_set_developer",{p_employee_id:e.id, p_on: !e.is_developer}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
+  if($("#eLearn")) $("#eLearn").onclick = async () => { try{ await rpc("admin_set_learn",{p_employee_id:e.id, p_on: !e.learn_enabled}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
+  { const ls = $("#eLearnSum"); if (ls) rpc("admin_learn_summary",{p_employee_id:e.id}).then(r => { if (!ls.isConnected) return; ls.textContent = r && r.chunks ? t("learnSum").replace("{n}", r.requests).replace("{at}", fmtDT.format(new Date(r.last))) : t("learnNone"); }).catch(() => { if (ls.isConnected) ls.textContent = ""; }); }
+  if($("#eLearnDl")) $("#eLearnDl").onclick = async () => {
+    try{ const all = []; for (let off = 0; off < 2000; off += 20) { const part = await rpc("admin_learn_get",{p_employee_id:e.id, p_days:7, p_offset:off}); all.push(...(part||[])); if(!part || part.length < 20) break; }
+      if(!all.length){ toast(t("learnNone"), true); return; }
+      const rep = { kind:"elham-learn-report", employee_no: e.employee_no, exportedAt: new Date().toISOString(), parts: all.length,
+                    requests: all.flatMap(c => ((c.payload && c.payload.requests) || []).map(x => ({ ...x, v: c.version }))) };
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(rep)], {type:"application/json"}));
+      a.download = `elham-learn-${e.employee_no||"emp"}-${new Date().toISOString().slice(0,10)}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }catch(err){ toast(err.message,true); } };
   if($("#eSilent")) $("#eSilent").onclick = async () => { try{ await rpc("admin_set_silent",{p_employee_id:e.id, p_on: !e.silent_allowed}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   if($("#eKeep")) $("#eKeep").onclick = async () => { try{ await rpc("admin_set_keepalive",{p_employee_id:e.id, p_allowed: e.keepalive_allowed===false}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   if($("#eCode")) $("#eCode").onclick = () => issueCode(e.id);
