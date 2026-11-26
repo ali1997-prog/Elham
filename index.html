@@ -231,6 +231,7 @@ ar: {
   noReports:"لا توجد تقارير. ممتاز!", thKind:"النوع", kindAuto:"تلقائي", kindManual:"من الموظف", thSummary:"الملخص", repView:"عرض", repDl:"تحميل الملف",
   repReport:"تقرير رقم {n}", repFailed:"المجموعات اللي فشلت", repNoFailed:"ما فيه مجموعات فاشلة.", repApi:"أخطاء طلبات نسك", repSteps:"آخر أخطاء الخطوات", repLogs:"آخر سجل الأداة",
   repPage:"حالة صفحة نسك وقت التقرير", repParams:"إعدادات المهمة", repNoEngine:"الأداة ما قدرت تقرأ حالة الصفحة (ممكن تبويب نسك كان مقفول).", repMissing:"عناصر ما لقتها الأداة في الصفحة",
+  kAlerts:"التنبيهات اللي يشوفها", alAll:"كل التنبيهات", alHiddenN:"مخفي عنه {n}", alEdit:"اختيار التنبيهات", alHint:"تتحكم باللي يطلع له في تبويب «التنبيهات» بالأداة. ما تأثر على تلقرام ولا على قراءة البلاغات.", alPickHint:"المعلَّم يطلع له. شيل العلامة عن النوع عشان يختفي عنه، أو عن الصنف كامل.", alOffAll:"الأنواع المقفلة للكل من إعدادات التنبيهات ما تظهر هنا.",
   modeSilent:"صامتة", modeVisible:"ظاهرة", repEmp:"الموظف", repVer:"إصدار الأداة", repNote:"ملاحظة الموظف", navSettings:"الإعدادات",
   loading:"جارٍ التحميل…", retry:"إعادة المحاولة", cancel:"إلغاء", done:"تم", save:"حفظ",
   needEmailPass:"اكتب البريد وكلمة المرور.", notAdmin:"هذا الحساب ليس حساب مدير. تواصل مع المسؤول عن النظام.", sessionEnded:"انتهت الجلسة، سجّل الدخول مرة ثانية.",
@@ -313,6 +314,7 @@ en: {
   noReports:"No reports. Great!", thKind:"Type", kindAuto:"Automatic", kindManual:"From employee", thSummary:"Summary", repView:"View", repDl:"Download file",
   repReport:"Report #{n}", repFailed:"Failed groups", repNoFailed:"No failed groups.", repApi:"Nusuk request errors", repSteps:"Latest step errors", repLogs:"Latest tool log",
   repPage:"Nusuk page state at report time", repParams:"Task settings", repNoEngine:"The tool could not read the page state (the Nusuk tab may have been closed).", repMissing:"Elements not found on the page",
+  kAlerts:"Alerts this employee sees", alAll:"All alerts", alHiddenN:"{n} hidden", alEdit:"Choose alerts", alHint:"Controls what shows in the tool's Alerts tab. Does not affect Telegram or complaint reading.", alPickHint:"Checked items are shown. Uncheck a type to hide it, or a whole category.", alOffAll:"Types turned off for everyone in alert settings are not listed here.",
   modeSilent:"Silent", modeVisible:"Visible", repEmp:"Employee", repVer:"Tool version", repNote:"Employee note", navSettings:"Settings",
   loading:"Loading…", retry:"Try again", cancel:"Cancel", done:"Done", save:"Save",
   needEmailPass:"Enter your email and password.", notAdmin:"This account isn't an admin account. Contact the system owner.", sessionEnded:"Your session ended. Sign in again.",
@@ -550,6 +552,31 @@ $("#setPwForm").addEventListener("submit", async ev => {
 });
 
 /* ===== Modals ===== */
+// (التحديث 13) التنبيهات اللي يشوفها الموظف في الأداة: كل نوع لوحده، أو الصنف كامل
+async function alertsPicker(e){
+  let A; try{ A = await rpc("admin_alert_types", {}); }catch(err){ toast(err.message, true); return; }
+  const hid = new Set(e.hidden_alerts || []), types = (A.types || []).filter(x => x.in_tool);
+  const nm = x => LANG === "en" ? (x.name_en || x.name_ar) : x.name_ar;
+  const cats = (A.categories || []).filter(c => types.some(x => x.category === c.key));
+  openModal(`<h3>${esc(t("kAlerts"))} — ${esc(e.name)}</h3><p class="muted">${esc(t("alPickHint"))}</p>
+    ${cats.map(c => `<div class="al-cat" style="margin:10px 0;padding:8px;border:1px solid #e3e3e3;border-radius:8px">
+      <label style="font-weight:700"><input type="checkbox" class="alc" data-k="${esc(c.key)}" ${hid.has("cat:" + c.key) ? "" : "checked"}> ${esc(nm(c))}</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;padding-inline-start:20px">
+      ${types.filter(x => x.category === c.key).map(x => `<label><input type="checkbox" class="alt" data-c="${esc(c.key)}" data-k="${esc(x.key)}" ${hid.has(x.key) ? "" : "checked"}> ${esc(x.icon)} ${esc(nm(x))}</label>`).join("")}</div></div>`).join("")}
+    <div class="muted" style="font-size:12px">${esc(t("alOffAll"))}</div>
+    <div class="err" id="alErr"></div><div class="row"><button class="btn primary" id="alOk">${t("save")}</button><button class="btn" id="alNo">${t("cancel")}</button></div>`);
+  const sync = () => document.querySelectorAll(".alc").forEach(c => document.querySelectorAll(`.alt[data-c="${c.dataset.k}"]`).forEach(x => x.disabled = !c.checked));
+  document.querySelectorAll(".alc").forEach(c => c.onchange = sync); sync();
+  $("#alNo").onclick = closeModal;
+  $("#alOk").onclick = async () => {
+    const hidden = [...document.querySelectorAll(".alc")].filter(c => !c.checked).map(c => "cat:" + c.dataset.k)
+      .concat([...document.querySelectorAll(".alt")].filter(x => !x.checked).map(x => x.dataset.k))
+      .concat([...hid].filter(k => !types.some(x => x.key === k) && !cats.some(c => "cat:" + c.key === k)));   // نحافظ على أي نوع مخفي مو ظاهر هنا
+    $("#alOk").disabled = true;
+    try{ await rpc("admin_set_hidden_alerts", {p_employee_id: e.id, p_hidden: hidden}); employeesCache = null; closeModal(); toast(t("saved")); route(); }
+    catch(err){ $("#alErr").textContent = err.message; $("#alOk").disabled = false; }
+  };
+}
 function openModal(html){ $("#modalRoot").innerHTML = `<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
   $("#ov").addEventListener("mousedown", e => { if(e.target.id==="ov") closeModal(); });
   const f = $("#modalRoot input, #modalRoot select, #modalRoot button"); if(f) f.focus(); }
@@ -781,12 +808,16 @@ async function pageEmployee(id){
       ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eLearn">${e.learn_enabled?t("learnOff"):t("learnOn")}</button></div>`:""}
       ${can("reports")?`<div style="margin-top:6px" class="muted" id="eLearnSum">…</div><div style="margin-top:6px"><button class="btn sm" id="eLearnDl">⬇ ${t("learnDl")}</button></div>`:""}
       <div class="muted" style="margin-top:4px;font-size:12px">${t("learnHint")}</div></div>
+    <div><span class="k">${t("kAlerts")}</span><span id="eAlSum">${(e.hidden_alerts||[]).length?`<span class="badge b-gray">${t("alHiddenN").replace("{n}", (e.hidden_alerts||[]).length)}</span>`:`<span class="badge b-ok">${t("alAll")}</span>`}</span>
+      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eAlerts">${t("alEdit")}</button></div>`:""}
+      <div class="muted" style="margin-top:4px;font-size:12px">${t("alHint")}</div></div>
     ${isOwner()?`<div><span class="k">${t("kDev")}</span>${e.is_developer?`<span class="badge b-ok">🛠 ${t("devYes")}</span>`:`<span class="badge b-gray">${t("devNo")}</span>`}
       <div style="margin-top:6px"><button class="btn sm" id="eDev">${e.is_developer?t("devOff"):t("devOn")}</button></div><div class="muted" style="margin-top:4px;font-size:12px">${t("devHint")}</div></div>`:""}
   </div></div>
   ${can("logs")?`<div class="card"><h2>${esc(t("fullLog",{n:e.name}))}</h2>${filtersHtml(false)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`:""}`;
   if($("#eEdit")) $("#eEdit").onclick = () => employeeForm(e);
   if($("#eTools")) $("#eTools").onclick = () => employeeForm(e);
+  if($("#eAlerts")) $("#eAlerts").onclick = () => alertsPicker(e);
   if($("#eDev")) $("#eDev").onclick = async () => { try{ await rpc("admin_set_developer",{p_employee_id:e.id, p_on: !e.is_developer}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   if($("#eLearn")) $("#eLearn").onclick = async () => { try{ await rpc("admin_set_learn",{p_employee_id:e.id, p_on: !e.learn_enabled}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
   { const ls = $("#eLearnSum"); if (ls) rpc("admin_learn_summary",{p_employee_id:e.id}).then(r => { if (!ls.isConnected) return; ls.textContent = r && r.chunks ? t("learnSum").replace("{n}", r.requests).replace("{at}", fmtDT.format(new Date(r.last))) : t("learnNone"); }).catch(() => { if (ls.isConnected) ls.textContent = ""; }); }
