@@ -166,7 +166,6 @@ td.nowrap{white-space:nowrap}
       <a href="#/home" data-r="home"><svg class="i"><use href="#i-home"/></svg><span data-t="navHome"></span></a>
       <a href="#/employees" data-r="employees"><svg class="i"><use href="#i-users"/></svg><span data-t="navEmployees"></span></a>
       <a href="#/logs" data-r="logs"><svg class="i"><use href="#i-list"/></svg><span data-t="navLogs"></span></a>
-      <a href="#/reports" data-r="reports"><svg class="i"><use href="#i-bug"/></svg><span data-t="navReports"></span></a>
       <a href="#/admins" data-r="admins"><svg class="i"><use href="#i-team"/></svg><span data-t="admNav"></span></a>
       <a href="#/audit" data-r="audit"><svg class="i"><use href="#i-shield"/></svg><span data-t="navAudit"></span></a>
       <a href="#/settings" data-r="settings"><svg class="i"><use href="#i-gear"/></svg><span data-t="navSettings"></span></a>
@@ -184,973 +183,184 @@ td.nowrap{white-space:nowrap}
 <div id="modalRoot"></div>
 <div id="toast" class="hidden"></div>
 
-<script>
-"use strict";
-/* ===== Connection settings (the publishable key is public and safe here) ===== */
-const CONFIG = {
-  SUPABASE_URL: "https://slflwwzyiwsrndzovyty.supabase.co",
-  SUPABASE_KEY: "sb_publishable_qTfRsZ0VErKx9pXqePuJdg_wNBZPUwX",
-  TZ: "Asia/Riyadh",
-  PAGE_SIZE: 50,
-  ONLINE_MINUTES: 10
-};
+<script>(()=>{"use strict";const k={SUPABASE_URL:"https://slflwwzyiwsrndzovyty.supabase.co",SUPABASE_KEY:"sb_publishable_qTfRsZ0VErKx9pXqePuJdg_wNBZPUwX",TZ:"Asia/Riyadh",PAGE_SIZE:50,ONLINE_MINUTES:10},S={ar:{otherLang:"English",company:"إلهام ناصر أبوسرهد لخدمات المعتمرين",loginTitle:"لوحة تحكم المدير",panelName:"لوحة تحكم المدير",email:"البريد الإلكتروني",password:"كلمة المرور",signIn:"تسجيل الدخول",signOut:"خروج",signedInAs:"مسجل الدخول:",navHome:"الرئيسية",navEmployees:"الموظفون",navLogs:"السجل العام",navAudit:"سجل المدير",kKeep:"إبقاء جلسة نسك نشطة",keepYes:"مسموح",keepNo:"ممنوع",keepAllow:"السماح",keepBlock:"منع",thTools:"الأدوات",kTools:"الأدوات المتاحة في الإضافة",toolsAll:"تحديد الكل (كل الأدوات)",toolsHint:"لوحة التحكم والسجل موجودة عند الكل دائماً. اختر الأدوات الإضافية اللي تنفتح لهذا الموظف.",toolsNone:"بدون أدوات",toolsAllBadge:"كل الأدوات",toolsNeed:"اختر أداة وحدة على الأقل، أو اضغط «تحديد الكل»",toolsEdit:"تعديل الأدوات",toolsSaved:"تم حفظ الأدوات",admNav:"المسؤولون",admTitle:"المسؤولون والصلاحيات",admSub:"أضف أشخاص يديرون الموظفين معك، وحدد بالضبط وش يقدرون يسوون.",admAdd:"إضافة مسؤول",admMain:"المدير الرئيسي",admManager:"مسؤول",admAllPerms:"كل الصلاحيات",admNone:"ما فيه مسؤولين غيرك للحين.",admInvites:"دعوات بانتظار إنشاء الحساب",admNoInv:"لا توجد دعوات معلّقة.",admPerms:"الصلاحيات",admEditT:"تعديل صلاحيات {n}",admNewT:"إضافة مسؤول جديد",admName:"الاسم",admEmail:"البريد الإلكتروني",admStatus:"الحالة",admActive:"فعّال",admSusp:"موقوف",admSave:"حفظ",admRemove:"حذف",admRemoveT:"حذف المسؤول",admRemoveX:"سيتم حذف {n} من المسؤولين، ولن يقدر يدخل لوحة التحكم. متابعة؟",admRemoved:"تم حذف المسؤول",admSaved:"تم حفظ الصلاحيات",admInvCreated:"تم إنشاء الدعوة",admInvCode:"رمز الدعوة",admExpires:"ينتهي",admRevokeInv:"إلغاء الدعوة",admInvRevoked:"تم إلغاء الدعوة",admCopyMsg:"نسخ رسالة الدعوة",admMsgCopied:"تم نسخ الرسالة. أرسلها للمسؤول بالواتساب أو الإيميل.",admInvMsg:`السلام عليكم {n}،
+تمت إضافتك مسؤولاً في لوحة تحكم أداة إلهام.
 
-/* ===== Translations ===== */
-const STR = {
-ar: {
-  otherLang:"English", company:"إلهام ناصر أبوسرهد لخدمات المعتمرين", loginTitle:"لوحة تحكم المدير", panelName:"لوحة تحكم المدير",
-  email:"البريد الإلكتروني", password:"كلمة المرور", signIn:"تسجيل الدخول", signOut:"خروج", signedInAs:"مسجل الدخول:",
-  navHome:"الرئيسية", navEmployees:"الموظفون", navLogs:"السجل العام", navAudit:"سجل المدير", navReports:"تقارير الأخطاء",
-  kKeep:"إبقاء جلسة نسك نشطة", keepYes:"مسموح", keepNo:"ممنوع", keepAllow:"السماح", keepBlock:"منع",
-  tgTitle:"إشعارات البلاغات في تليجرام", tgIntro:"الجهاز المراقب يشيّك بلاغات نسك كل نص دقيقة، وأي بلاغ جديد أو تغيّر في حالة بلاغ أو توقف المراقبة يوصل لقروب تليجرام. اسم مقدم البلاغ ما ينرسل.", tgToken:"رمز البوت (من BotFather)", tgTokenHint:"يُحفظ في السيرفر فقط ولا يظهر مرة ثانية. اتركه فاضي إذا ما تبي تغيّره.", tgChat:"رقم القروب (Chat ID)", tgChatHint:"رقم سالب غالباً، مثل -1001234567890", tgSave:"حفظ", tgTest:"إرسال رسالة تجربة", tgSaved:"تم حفظ إعدادات تليجرام", tgTestSent:"انرسلت رسالة التجربة — شيّك القروب", tgBot:"البوت", tgChatS:"القروب", tgOk:"مربوط", tgNo:"غير مربوط", tgMon:"المراقبة", tgMonOn:"شغّالة على جهاز {e} · آخر تشييك {t}", tgMonDown:"متوقفة من {t}", tgMonNone:"ما بدأت بعد — فعّل «مراقبة البلاغات» للموظف، وشغّلها من تبويب البلاغات في الأداة", tgLast:"آخر رسالة", tgSent:"انرسلت", tgPending:"في الانتظار", tgExt:"إضافات السيرفر", tgExtMissing:"لازم تفعّل pg_net و pg_cron في Supabase (Database ← Extensions) وبعدها تعيد تشغيل تحديث قاعدة البيانات 9",
-  thTools:"الأدوات", kTools:"الأدوات المتاحة في الإضافة", toolsAll:"تحديد الكل (كل الأدوات)", toolsHint:"لوحة التحكم والسجل موجودة عند الكل دائماً. اختر الأدوات الإضافية اللي تنفتح لهذا الموظف.", toolsNone:"بدون أدوات", toolsAllBadge:"كل الأدوات", toolsNeed:"اختر أداة وحدة على الأقل، أو اضغط «تحديد الكل»", toolsEdit:"تعديل الأدوات", toolsSaved:"تم حفظ الأدوات",
-  kLearn:"تقرير تعلّم الطلبات", learnOn:"تفعيل التقرير", learnOff:"إيقاف التقرير", learnDl:"تنزيل التقرير (آخر 7 أيام)", learnNone:"ما فيه تقارير بعد", learnSum:"{n} طلب · آخر إرسال {at}",
-  learnHint:"لما يكون مفعّل، الأداة ترسل تلقائياً «شكل» طلبات نسك وهي تشتغل (بدون أي اسم أو جواز أو رقم). نزّل التقرير وأرسله للمطوّر عشان يطوّر الأداة.",
-  kSilent:"الوضع الصامت", silentYes:"مفعّل", silentNo:"غير مفعّل", silentOn:"تفعيل الوضع الصامت", silentOff:"إيقاف الوضع الصامت", silentHint:"الوضع الصامت يسجّل الدخول والخروج بإرسال الطلبات لنسك مباشرة بدون الضغط على الصفحة (أسرع بكثير). يظهر للموظف فقط إذا فعّلته له.",
-  kDev:"حساب مطور (أدوات التشخيص)", devYes:"مطور", devNo:"موظف عادي", devOn:"تحويله لحساب مطور", devOff:"إرجاعه موظف عادي", devHint:"حساب المطور تظهر له أدوات التشخيص مثل الوضع البطيء. خلّه لحسابك فقط.",
-  admNav:"المسؤولون", admTitle:"المسؤولون والصلاحيات", admSub:"أضف أشخاص يديرون الموظفين معك، وحدد بالضبط وش يقدرون يسوون.",
-  admAdd:"إضافة مسؤول", admOwner:"المدير الرئيسي", admManager:"مسؤول", admAllPerms:"كل الصلاحيات", admNone:"ما فيه مسؤولين غيرك للحين.",
-  admInvites:"دعوات بانتظار إنشاء الحساب", admNoInv:"لا توجد دعوات معلّقة.", admPerms:"الصلاحيات", admEditT:"تعديل صلاحيات {n}", admNewT:"إضافة مسؤول جديد",
-  admName:"الاسم", admEmail:"البريد الإلكتروني", admStatus:"الحالة", admActive:"فعّال", admSusp:"موقوف", admSave:"حفظ",
-  admRemove:"حذف", admRemoveT:"حذف المسؤول", admRemoveX:"سيتم حذف {n} من المسؤولين، ولن يقدر يدخل لوحة التحكم. متابعة؟", admRemoved:"تم حذف المسؤول",
-  admSaved:"تم حفظ الصلاحيات", admInvCreated:"تم إنشاء الدعوة", admInvCode:"رمز الدعوة", admExpires:"ينتهي", admRevokeInv:"إلغاء الدعوة", admInvRevoked:"تم إلغاء الدعوة",
-  admCopyMsg:"نسخ رسالة الدعوة", admMsgCopied:"تم نسخ الرسالة. أرسلها للمسؤول بالواتساب أو الإيميل.",
-  admInvMsg:"السلام عليكم {n}،\nتمت إضافتك مسؤولاً في لوحة تحكم أداة إلهام.\n\n1) افتح: {u}\n2) اضغط «عندي دعوة — إنشاء حساب»\n3) اكتب بريدك: {e}\n4) رمز الدعوة: {c}\n5) اختر كلمة مرور قوية\n\nالرمز صالح لمدة 7 أيام ولمرة واحدة.",
-  admInvNote:"أرسل الرسالة للمسؤول. الرمز يُستخدم مرة وحدة، لنفس البريد فقط، وينتهي بعد 7 أيام.", admNeedPerm:"اختر صلاحية واحدة على الأقل.", admBadEmail:"اكتب بريد صحيح.",
-  admYou:"(أنت)", perm_employees:"إضافة الموظفين وتعديل بياناتهم", perm_codes:"رموز التفعيل: إصدار ونسخ وإلغاء", perm_suspend:"إيقاف الموظفين وإعادة تفعيلهم",
-  perm_logs:"عرض السجلات والإحصائيات", perm_export:"تصدير السجلات Excel", perm_reports:"تقارير الأخطاء", perm_audit:"سجل المدير", perm_purge:"حذف السجلات القديمة",
-  invPass2:"تأكيد كلمة المرور", invShort:"كلمة المرور 8 أحرف على الأقل، فيها حروف وأرقام.", invMatch:"كلمتا المرور غير متطابقتين.",
-  spTitle:"اختر كلمة مرور جديدة", spText:"هذا أول دخول لك (أو المدير أعطاك رمز دخول جديد). اختر كلمة مرور خاصة فيك عشان تكمل. ما تحتاج تكتب الرمز القديم.",
-  spNew:"كلمة المرور الجديدة", spBtn:"حفظ ومتابعة", spSame:"اختر كلمة مرور مختلفة عن رمز الدخول.", spDone:"تم حفظ كلمة المرور. أهلاً بك!",
-  admFirstCode:"رمز الدخول الأول", admCreated:"تم إنشاء الحساب", admReset:"رمز دخول جديد", admResetT:"رمز دخول جديد لـ {n}",
-  admResetX:"بيطلع رمز دخول جديد، ويخرج {n} من كل الأجهزة، وأول ما يدخل بالرمز بيختار كلمة مرور جديدة. متابعة؟", admShowCode:"إظهار رمز الدخول", admPending:"بانتظار أول دخول",
-  admMsg:"السلام عليكم {n}،\nتم إنشاء حسابك في لوحة تحكم أداة إلهام.\n\n1) افتح: {u}\n2) البريد: {e}\n3) كلمة المرور (رمز الدخول الأول): {c}\n4) بعد الدخول بيطلب منك تختار كلمة مرور جديدة خاصة فيك.\n\nلا ترسل هذا الرمز لأحد.",
-  admCodeNote:"أرسل الرسالة للمسؤول. الرمز يشتغل لين يغيّر كلمة المرور، وبعدها ما يعود يشتغل.",
-  roleOwner:"المدير الرئيسي", roleManager:"مسؤول",
-  repTitle:"تقارير الأخطاء", repSub:"ترسلها الأداة تلقائياً عند فشل أي مجموعة، أو يرسلها الموظف يدوياً. فيها كل تفاصيل المهمة بدون بيانات المعتمرين الشخصية.",
-  noReports:"لا توجد تقارير. ممتاز!", thKind:"النوع", kindAuto:"تلقائي", kindManual:"من الموظف", thSummary:"الملخص", repView:"عرض", repDl:"تحميل الملف",
-  repReport:"تقرير رقم {n}", repFailed:"المجموعات اللي فشلت", repNoFailed:"ما فيه مجموعات فاشلة.", repApi:"أخطاء طلبات نسك", repSteps:"آخر أخطاء الخطوات", repLogs:"آخر سجل الأداة",
-  repPage:"حالة صفحة نسك وقت التقرير", repParams:"إعدادات المهمة", repNoEngine:"الأداة ما قدرت تقرأ حالة الصفحة (ممكن تبويب نسك كان مقفول).", repMissing:"عناصر ما لقتها الأداة في الصفحة",
-  kAlerts:"التنبيهات اللي يشوفها", alAll:"كل التنبيهات", alHiddenN:"مخفي عنه {n}", alEdit:"اختيار التنبيهات", alHint:"تتحكم باللي يطلع له في تبويب «التنبيهات» بالأداة. ما تأثر على تلقرام ولا على قراءة البلاغات.", alPickHint:"المعلَّم يطلع له. شيل العلامة عن النوع عشان يختفي عنه، أو عن الصنف كامل.", alOffAll:"الأنواع المقفلة للكل من إعدادات التنبيهات ما تظهر هنا.",
-  modeSilent:"صامتة", modeVisible:"ظاهرة", repEmp:"الموظف", repVer:"إصدار الأداة", repNote:"ملاحظة الموظف", navSettings:"الإعدادات",
-  loading:"جارٍ التحميل…", retry:"إعادة المحاولة", cancel:"إلغاء", done:"تم", save:"حفظ",
-  needEmailPass:"اكتب البريد وكلمة المرور.", notAdmin:"هذا الحساب ليس حساب مدير. تواصل مع المسؤول عن النظام.", sessionEnded:"انتهت الجلسة، سجّل الدخول مرة ثانية.",
-  homeTitle:"الرئيسية", homeSub:"إنجاز اليوم بتوقيت الرياض · {d}", stSuccess:"تم بنجاح اليوم", stFailed:"فشل اليوم", stSkipped:"تخطي (مسجّل مسبقاً)", stOnline:"متصلون الآن", of:"من",
-  onlineNow:"المتصلون الآن", noOnline:"لا يوجد موظف متصل حالياً.", recentOps:"آخر العمليات", startHere:"ابدأ من هنا", startHereText:"لا يوجد موظفون بعد. أضف أول موظف وأصدر له رمز تفعيل.", goEmployees:"الذهاب لصفحة الموظفين",
-  noLogs:"لا توجد عمليات مسجلة في هذه الفترة.", thTime:"الوقت", thEmp:"الموظف", thAction:"العملية", thResult:"النتيجة", thGroup:"المجموعة", thCount:"العدد", thDur:"المدة", thNote:"ملاحظة",
-  nSucc:"نجح", nFail:"فشل", nSkip:"تخطي", deletedEmp:"موظف محذوف",
-  empTitle:"الموظفون", addEmp:"إضافة موظف", noEmps:"لا يوجد موظفون بعد. اضغط \"إضافة موظف\" للبدء.",
-  thEmpNo:"الرقم الوظيفي", thStatus:"الحالة", thCode:"رمز التفعيل", thLastSeen:"آخر ظهور", thToday:"اليوم", thActions:"إجراءات",
-  issueCode:"إصدار رمز", openLog:"السجل", empLegend:"النقطة الخضراء = متصل الآن (آخر {m} دقائق). عمود \"اليوم\" = نجح / فشل.",
-  stActive:"فعّال", stSuspended:"موقوف", codeNone:"لا يوجد رمز", codeUnused:"لم يُستخدم بعد", codeActive:"مفعّل", codeRevoked:"موقوف",
-  never:"لم يظهر بعد", now:"الآن", minAgo:"قبل {n} دقيقة", hrAgo:"قبل {n} ساعة", sec:"ث", min:"د",
-  editEmp:"تعديل بيانات الموظف", newEmp:"إضافة موظف جديد", empName:"اسم الموظف", optional:"(اختياري)", phone:"رقم الجوال",
-  saveChanges:"حفظ التعديلات", addEmpBtn:"إضافة الموظف", errName:"اكتب اسم الموظف (حرفين على الأقل).", errPhone:"رقم الجوال غير صحيح.",
-  saved:"تم حفظ التعديلات", added:"تمت إضافة الموظف", issueNowQ:"إصدار رمز تفعيل", issueNowText:"تمت إضافة <b>{n}</b>. تبي تصدر له رمز تفعيل الآن؟", issueNowBtn:"إصدار رمز الآن",
-  empMissing:"الموظف غير موجود.", issueFor:"إصدار رمز تفعيل — {n}", replaceWarn:"⚠️ عند {n} رمز سابق. إصدار رمز جديد <b>يلغي الرمز القديم</b> ويوقف الأداة على جهازه الحالي.",
-  validity:"مدة صلاحية الرمز", noExpiry:"بدون انتهاء", d1:"يوم واحد", d7:"أسبوع", d30:"شهر", d90:"3 أشهر", d365:"سنة", issueBtn:"إصدار الرمز",
-  issuedFor:"✅ تم إصدار الرمز — {n}", onceWarn:"انسخ الرمز وأرسله للموظف. تقدر ترجع تنسخه من صفحة الموظف ما دام <b>لم يُفعّل بعد</b>. بعد التفعيل يُمسح نهائياً لحماية الحساب.",
-  showCode:"عرض ونسخ الرمز", codeOf:"رمز التفعيل — {n}", codeUnusedNote:"الرمز لم يُفعّل بعد. بعد ما يفعّله الموظف يُمسح من النظام ولا يمكن عرضه مرة ثانية.", codeOldNote:"هذا الرمز صدر قبل تحديث النظام، فلا يمكن عرضه. أصدر رمزاً جديداً للموظف.", codeNoneNote:"لا يوجد رمز غير مُفعّل لعرضه. الرمز المفعّل لا يُعرض لحماية الحساب، وتقدر تصدر رمزاً جديداً.",
-  validUntil:"الصلاحية: حتى {d}", validForever:"الصلاحية: بدون انتهاء", oneDevice:"يعمل على جهاز واحد فقط.",
-  copyCode:"نسخ الرمز", copyMsg:"نسخ رسالة جاهزة للموظف", codeCopied:"تم نسخ الرمز", msgCopied:"تم نسخ الرسالة", copyManual:"انسخ يدوياً: حدد النص ثم Cmd+C",
-  empMsg:"السلام عليكم {n}،\nرمز تفعيل أداة إلهام الخاص بك:\n{c}\nأدخله في تبويب الإعدادات داخل الأداة. الرمز يعمل على جهاز واحد فقط، لا تشاركه مع أحد.",
-  edit:"تعديل", suspendShort:"إيقاف", activateShort:"إعادة تفعيل", newCode:"إصدار رمز جديد", revokeCode:"إيقاف الرمز", suspendEmp:"إيقاف الموظف", activateEmp:"إعادة تفعيل الموظف",
-  kStatus:"الحالة", kCode:"رمز التفعيل", kIssued:"تاريخ إصدار الرمز", kExpiry:"انتهاء الرمز", kLastSeen:"آخر ظهور", kVersion:"إصدار الأداة", kEmpNo:"الرقم الوظيفي", kPhone:"الجوال",
-  fullLog:"السجل الكامل — {n}",
-  revokeTitle:"إيقاف رمز التفعيل", revokeText:"ستتوقف الأداة عند <b>{n}</b> خلال دقائق، ولن يعمل الرمز الحالي مرة ثانية. تقدر تصدر له رمزاً جديداً لاحقاً.", revokeOk:"نعم، أوقف الرمز", revoked:"تم إيقاف الرمز",
-  suspendTitle:"إيقاف الموظف", suspendText:"ستتوقف الأداة عند <b>{n}</b> فوراً حتى تعيد تفعيله. السجلات السابقة تبقى محفوظة.", suspendOk:"نعم، أوقف الموظف", suspended:"تم إيقاف الموظف",
-  activateTitle:"إعادة تفعيل الموظف", activateText:"ستعود الأداة للعمل عند <b>{n}</b> إذا كان رمزه ما زال صالحاً.", activateOk:"نعم، أعد التفعيل", activated:"تمت إعادة التفعيل",
-  fEmp:"الموظف", allEmps:"كل الموظفين", fFrom:"من تاريخ", fTo:"إلى تاريخ", fAction:"العملية", fResult:"النتيجة", all:"الكل", show:"عرض", today:"اليوم", last7:"آخر 7 أيام", exportX:"تصدير Excel",
-  errDates:"اختر تاريخ البداية والنهاية.", errOrder:"تاريخ البداية بعد تاريخ النهاية.",
-  sOps:"عدد العمليات", sSucc:"معتمرون تم بنجاح", sFail:"فشل", sSkip:"تخطي", sErr:"أخطاء", pageN:"صفحة {p} · يعرض {n} عملية", prev:"السابق", next:"التالي",
-  noExport:"لا توجد عمليات في هذه الفترة للتصدير", exported:"تم تصدير {n} عملية",
-  csvHead:["الوقت (الرياض)","الموظف","العملية","النتيجة","رقم الاتفاقية","رقم البرنامج","رقم المجموعة","السكن","المدينة","تاريخ دخول الفندق (البرنامج)","تاريخ الدخول الفعلي","وقت الدخول الفعلي","الإجمالي","نجح","فشل","تخطي","المدة (ثانية)","ملاحظة","معاينة","الطريقة","إصدار الأداة"],
-  logsTitle:"السجل العام", logsSub:"كل عمليات كل الموظفين",
-  auditTitle:"سجل المدير", auditSub:"كل إجراء قام به أي مدير (آخر 200)", noAudit:"لا توجد إجراءات بعد.", thAdmin:"المدير", thDetails:"تفاصيل",
-  expires:"ينتهي {d}", reactivation:"إعادة تفعيل", suspension:"إيقاف", purgedDet:"حذف {n} سجل أقدم من {m} شهر",
-  setTitle:"الإعدادات", yourAcc:"حسابك", signedEmail:"مسجل الدخول بالبريد:",
-  pwTitle:"تغيير كلمة المرور", pwCurrent:"كلمة المرور الحالية", pwNew:"كلمة المرور الجديدة", pwNewHint:"8 أحرف على الأقل، فيها حروف وأرقام", pwConfirm:"تأكيد كلمة المرور الجديدة", pwShow:"إظهار كلمة المرور", pwHide:"إخفاء كلمة المرور", pwBtn:"تغيير كلمة المرور",
-  pwErrEmpty:"عبّئ الخانات الثلاث.", pwErrShort:"كلمة المرور الجديدة لازم تكون 8 أحرف على الأقل.", pwErrMix:"كلمة المرور الجديدة لازم يكون فيها حروف وأرقام.", pwErrMatch:"كلمة المرور الجديدة وتأكيدها غير متطابقين.", pwErrSame:"كلمة المرور الجديدة نفس الحالية.", pwErrCurrent:"كلمة المرور الحالية غير صحيحة.", pwDone:"تم تغيير كلمة المرور. استخدمها في الدخول القادم.", pwForgot:"نسيت كلمة المرور؟ تواصل مع مدير النظام لإعادة تعيينها.",
-  purgeTitle:"حذف السجلات القديمة", purgeText:"يحذف كل السجلات الأقدم من المدة المختارة نهائياً. سياسة الشركة الافتراضية: <b>12 شهراً</b>.",
-  olderThan:"أقدم من", m6:"6 أشهر", m12:"12 شهراً", m24:"24 شهراً", purgeBtn:"حذف السجلات القديمة", purgeConfirm:"سيتم حذف كل السجلات الأقدم من <b>{m} شهراً</b> نهائياً، ولا يمكن استرجاعها.", purgeOk:"نعم، احذف", purged:"تم حذف {n} سجل",
-  about:"عن النظام", aboutText:"لوحة تحكم أداة إلهام لخدمات المعتمرين · الإصدار 1.0<br>أداة داخلية لشركة إلهام ناصر أبوسرهد لخدمات المعتمرين، وليست منتجاً رسمياً من منصة نسك ولا مرتبطة بها.",
-  footer:"أداة داخلية — ليست منتجاً رسمياً من منصة نسك",
-  eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.", eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.", eLogin:"البريد أو كلمة المرور غير صحيحة.", eDup:"الرقم الوظيفي مستخدم لموظف آخر.", eData:"البيانات المدخلة غير صحيحة.", ePerm:"ليست لديك صلاحية لهذه العملية.", eUnknown:"حدث خطأ غير متوقع",
-  act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ للمطور",audit_scan:"فحص التسجيل (بدون تسجيل)",keepalive:"إبقاء جلسة نسك نشطة"},
-  res:{success:"نجاح",failed:"فشل",skipped:"تخطي"},
-  aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة",add_admin:"إضافة مسؤول",set_keepalive:"إذن إبقاء جلسة نسك",set_developer:"حساب مطور",set_tools:"الأدوات المتاحة لموظف",set_telegram:"إعدادات تليجرام",update_admin:"تعديل صلاحيات مسؤول",remove_admin:"حذف مسؤول",reset_admin_password:"رمز دخول جديد لمسؤول",password_set:"المسؤول اختار كلمة مرور جديدة"}
-},
-en: {
-  otherLang:"العربية", company:"Elham Nasser Abu Sarhad for Umrah Services", loginTitle:"Admin dashboard", panelName:"Admin dashboard",
-  email:"Email", password:"Password", signIn:"Sign in", signOut:"Sign out", signedInAs:"Signed in as:",
-  navHome:"Home", navEmployees:"Employees", navLogs:"Activity log", navAudit:"Admin log", navReports:"Error reports",
-  kKeep:"Keep Nusuk session active", keepYes:"Allowed", keepNo:"Blocked", keepAllow:"Allow", keepBlock:"Block",
-  tgTitle:"Complaint alerts on Telegram", tgIntro:"The monitoring device checks Nusuk complaints every 30 seconds; new complaints, status changes and monitoring stops are sent to the Telegram group. Complainant names are never sent.", tgToken:"Bot token (from BotFather)", tgTokenHint:"Stored on the server only and never shown again. Leave empty to keep it.", tgChat:"Group chat ID", tgChatHint:"Usually negative, e.g. -1001234567890", tgSave:"Save", tgTest:"Send test message", tgSaved:"Telegram settings saved", tgTestSent:"Test message sent — check the group", tgBot:"Bot", tgChatS:"Group", tgOk:"Connected", tgNo:"Not connected", tgMon:"Monitoring", tgMonOn:"Running on {e}'s device · last check {t}", tgMonDown:"Stopped since {t}", tgMonNone:"Not started — enable Complaints monitor for an employee and turn it on in the extension", tgLast:"Last message", tgSent:"Sent", tgPending:"Pending", tgExt:"Server extensions", tgExtMissing:"Enable pg_net and pg_cron in Supabase (Database → Extensions), then re-run database update 9",
-  thTools:"Tools", kTools:"Tools available in the extension", toolsAll:"Select all (every tool)", toolsHint:"Dashboard and Log are always available. Choose the extra tools this employee can use.", toolsNone:"No tools", toolsAllBadge:"All tools", toolsNeed:"Pick at least one tool, or press Select all", toolsEdit:"Edit tools", toolsSaved:"Tools saved",
-  kLearn:"Request learning report", learnOn:"Enable report", learnOff:"Disable report", learnDl:"Download report (last 7 days)", learnNone:"No reports yet", learnSum:"{n} requests · last upload {at}",
-  learnHint:"When enabled, the tool automatically sends the shape of Nusuk requests while it works (no names, passports or numbers). Download it and send it to the developer.",
-  kSilent:"Silent mode", silentYes:"Enabled", silentNo:"Disabled", silentOn:"Enable silent mode", silentOff:"Disable silent mode", silentHint:"Silent mode registers check-ins and check-outs by sending requests to Nusuk directly instead of clicking the page (much faster). The employee only sees it if you enable it.",
-  kDev:"Developer account (diagnostic tools)", devYes:"Developer", devNo:"Regular employee", devOn:"Make developer", devOff:"Make regular", devHint:"A developer account sees diagnostic tools such as slow mode. Keep it for your own account only.",
-  admNav:"Admins", admTitle:"Admins & permissions", admSub:"Add people who manage employees with you, and choose exactly what they can do.",
-  admAdd:"Add admin", admOwner:"Owner", admManager:"Admin", admAllPerms:"All permissions", admNone:"No other admins yet.",
-  admInvites:"Invites waiting for sign-up", admNoInv:"No pending invites.", admPerms:"Permissions", admEditT:"Edit permissions of {n}", admNewT:"Add a new admin",
-  admName:"Name", admEmail:"Email", admStatus:"Status", admActive:"Active", admSusp:"Suspended", admSave:"Save",
-  admRemove:"Remove", admRemoveT:"Remove admin", admRemoveX:"{n} will be removed and can no longer open the dashboard. Continue?", admRemoved:"Admin removed",
-  admSaved:"Permissions saved", admInvCreated:"Invite created", admInvCode:"Invite code", admExpires:"Expires", admRevokeInv:"Cancel invite", admInvRevoked:"Invite cancelled",
-  admCopyMsg:"Copy invite message", admMsgCopied:"Message copied. Send it to the admin by WhatsApp or email.",
-  admInvMsg:"Hello {n},\nYou've been added as an admin on the Elham tool dashboard.\n\n1) Open: {u}\n2) Click “I have an invite — create account”\n3) Your email: {e}\n4) Invite code: {c}\n5) Choose a strong password\n\nThe code is valid for 7 days, one time only.",
-  admInvNote:"Send the message to the admin. The code works once, only for this email, and expires in 7 days.", admNeedPerm:"Choose at least one permission.", admBadEmail:"Enter a valid email.",
-  admYou:"(you)", perm_employees:"Add employees and edit their details", perm_codes:"Activation codes: issue, copy, revoke", perm_suspend:"Suspend and reactivate employees",
-  perm_logs:"View logs and statistics", perm_export:"Export logs to Excel", perm_reports:"Error reports", perm_audit:"Admin log", perm_purge:"Delete old logs",
-  invPass2:"Confirm password", invShort:"Password must be at least 8 characters with letters and numbers.", invMatch:"Passwords don't match.",
-  spTitle:"Choose a new password", spText:"This is your first sign-in (or the owner gave you a new sign-in code). Choose your own password to continue. You don't need the old code.",
-  spNew:"New password", spBtn:"Save and continue", spSame:"Choose a password different from the sign-in code.", spDone:"Password saved. Welcome!",
-  admFirstCode:"First sign-in code", admCreated:"Account created", admReset:"New sign-in code", admResetT:"New sign-in code for {n}",
-  admResetX:"A new sign-in code will be created, {n} will be signed out everywhere, and must choose a new password at next sign-in. Continue?", admShowCode:"Show sign-in code", admPending:"Waiting for first sign-in",
-  admMsg:"Hello {n},\nYour Elham tool dashboard account is ready.\n\n1) Open: {u}\n2) Email: {e}\n3) Password (first sign-in code): {c}\n4) After signing in you'll be asked to choose your own password.\n\nDon't share this code.",
-  admCodeNote:"Send the message to the admin. The code works until they set their own password.",
-  roleOwner:"Owner", roleManager:"Admin",
-  repTitle:"Error reports", repSub:"Sent automatically by the tool when a group fails, or manually by the employee. Full task details without pilgrims' personal data.",
-  noReports:"No reports. Great!", thKind:"Type", kindAuto:"Automatic", kindManual:"From employee", thSummary:"Summary", repView:"View", repDl:"Download file",
-  repReport:"Report #{n}", repFailed:"Failed groups", repNoFailed:"No failed groups.", repApi:"Nusuk request errors", repSteps:"Latest step errors", repLogs:"Latest tool log",
-  repPage:"Nusuk page state at report time", repParams:"Task settings", repNoEngine:"The tool could not read the page state (the Nusuk tab may have been closed).", repMissing:"Elements not found on the page",
-  kAlerts:"Alerts this employee sees", alAll:"All alerts", alHiddenN:"{n} hidden", alEdit:"Choose alerts", alHint:"Controls what shows in the tool's Alerts tab. Does not affect Telegram or complaint reading.", alPickHint:"Checked items are shown. Uncheck a type to hide it, or a whole category.", alOffAll:"Types turned off for everyone in alert settings are not listed here.",
-  modeSilent:"Silent", modeVisible:"Visible", repEmp:"Employee", repVer:"Tool version", repNote:"Employee note", navSettings:"Settings",
-  loading:"Loading…", retry:"Try again", cancel:"Cancel", done:"Done", save:"Save",
-  needEmailPass:"Enter your email and password.", notAdmin:"This account isn't an admin account. Contact the system owner.", sessionEnded:"Your session ended. Sign in again.",
-  homeTitle:"Home", homeSub:"Today's work, Riyadh time · {d}", stSuccess:"Completed today", stFailed:"Failed today", stSkipped:"Skipped (already done)", stOnline:"Online now", of:"of",
-  onlineNow:"Online now", noOnline:"No employee is online right now.", recentOps:"Recent activity", startHere:"Start here", startHereText:"No employees yet. Add your first employee and issue an activation code.", goEmployees:"Go to employees",
-  noLogs:"No activity in this period.", thTime:"Time", thEmp:"Employee", thAction:"Action", thResult:"Result", thGroup:"Group", thCount:"Count", thDur:"Duration", thNote:"Note",
-  nSucc:"done", nFail:"failed", nSkip:"skipped", deletedEmp:"Deleted employee",
-  empTitle:"Employees", addEmp:"Add employee", noEmps:"No employees yet. Click \"Add employee\" to start.",
-  thEmpNo:"Employee no.", thStatus:"Status", thCode:"Activation code", thLastSeen:"Last seen", thToday:"Today", thActions:"Actions",
-  issueCode:"Issue code", openLog:"Log", empLegend:"Green dot = online now (last {m} minutes). \"Today\" = done / failed.",
-  stActive:"Active", stSuspended:"Suspended", codeNone:"No code", codeUnused:"Not used yet", codeActive:"Active", codeRevoked:"Revoked",
-  never:"Never seen", now:"Just now", minAgo:"{n} min ago", hrAgo:"{n} h ago", sec:"s", min:"m",
-  editEmp:"Edit employee", newEmp:"Add a new employee", empName:"Employee name", optional:"(optional)", phone:"Mobile number",
-  saveChanges:"Save changes", addEmpBtn:"Add employee", errName:"Enter the employee's name (at least 2 characters).", errPhone:"The mobile number isn't valid.",
-  saved:"Changes saved", added:"Employee added", issueNowQ:"Issue an activation code", issueNowText:"<b>{n}</b> was added. Issue an activation code now?", issueNowBtn:"Issue code now",
-  empMissing:"Employee not found.", issueFor:"Issue activation code — {n}", replaceWarn:"⚠️ {n} already has a code. Issuing a new one <b>cancels the old code</b> and stops the tool on their current device.",
-  validity:"Code validity", noExpiry:"No expiry", d1:"1 day", d7:"1 week", d30:"1 month", d90:"3 months", d365:"1 year", issueBtn:"Issue code",
-  issuedFor:"✅ Code issued — {n}", onceWarn:"Copy the code and send it to the employee. You can copy it again from the employee page as long as it's <b>not activated yet</b>. Once activated, it's erased to protect the account.",
-  showCode:"Show and copy code", codeOf:"Activation code — {n}", codeUnusedNote:"This code isn't activated yet. Once the employee activates it, it's erased and can't be shown again.", codeOldNote:"This code was issued before the system update, so it can't be shown. Issue a new code for the employee.", codeNoneNote:"There's no unactivated code to show. Activated codes are hidden to protect the account; you can issue a new code.",
-  validUntil:"Valid until {d}", validForever:"Valid with no expiry", oneDevice:"Works on one device only.",
-  copyCode:"Copy code", copyMsg:"Copy message for employee", codeCopied:"Code copied", msgCopied:"Message copied", copyManual:"Copy manually: select the text, then Cmd+C",
-  empMsg:"Hello {n},\nYour Elham tool activation code:\n{c}\nEnter it in the Settings tab inside the tool. It works on one device only; don't share it.",
-  edit:"Edit", suspendShort:"Suspend", activateShort:"Reactivate", newCode:"Issue new code", revokeCode:"Revoke code", suspendEmp:"Suspend employee", activateEmp:"Reactivate employee",
-  kStatus:"Status", kCode:"Activation code", kIssued:"Code issued", kExpiry:"Code expires", kLastSeen:"Last seen", kVersion:"Tool version", kEmpNo:"Employee no.", kPhone:"Mobile",
-  fullLog:"Full activity log — {n}",
-  revokeTitle:"Revoke activation code", revokeText:"The tool will stop for <b>{n}</b> within minutes, and the current code won't work again. You can issue a new code later.", revokeOk:"Yes, revoke", revoked:"Code revoked",
-  suspendTitle:"Suspend employee", suspendText:"The tool will stop for <b>{n}</b> immediately until you reactivate them. Past logs are kept.", suspendOk:"Yes, suspend", suspended:"Employee suspended",
-  activateTitle:"Reactivate employee", activateText:"The tool will work again for <b>{n}</b> if their code is still valid.", activateOk:"Yes, reactivate", activated:"Employee reactivated",
-  fEmp:"Employee", allEmps:"All employees", fFrom:"From", fTo:"To", fAction:"Action", fResult:"Result", all:"All", show:"Show", today:"Today", last7:"Last 7 days", exportX:"Export to Excel",
-  errDates:"Choose a start and end date.", errOrder:"The start date is after the end date.",
-  sOps:"Actions", sSucc:"Pilgrims done", sFail:"Failed", sSkip:"Skipped", sErr:"Errors", pageN:"Page {p} · showing {n}", prev:"Previous", next:"Next",
-  noExport:"No activity in this period to export", exported:"Exported {n} records",
-  csvHead:["Time (Riyadh)","Employee","Action","Result","Agreement no.","Program no.","Group no.","Accommodation","City","Hotel entry date (program)","Actual entry date","Actual entry time","Total","Done","Failed","Skipped","Duration (s)","Note","Preview","Method","Tool version"],
-  logsTitle:"Activity log", logsSub:"Every action by every employee",
-  auditTitle:"Admin log", auditSub:"Every action taken by an admin (latest 200)", noAudit:"No admin actions yet.", thAdmin:"Admin", thDetails:"Details",
-  expires:"Expires {d}", reactivation:"Reactivated", suspension:"Suspended", purgedDet:"Deleted {n} records older than {m} months",
-  setTitle:"Settings", yourAcc:"Your account", signedEmail:"Signed in with:",
-  pwTitle:"Change password", pwCurrent:"Current password", pwNew:"New password", pwNewHint:"At least 8 characters, with letters and numbers", pwConfirm:"Confirm new password", pwShow:"Show password", pwHide:"Hide password", pwBtn:"Change password",
-  pwErrEmpty:"Fill in all three fields.", pwErrShort:"The new password must be at least 8 characters.", pwErrMix:"The new password must contain letters and numbers.", pwErrMatch:"The new password and its confirmation don't match.", pwErrSame:"The new password is the same as the current one.", pwErrCurrent:"The current password is wrong.", pwDone:"Password changed. Use it next time you sign in.", pwForgot:"Forgot your password? Contact the system administrator to reset it.",
-  purgeTitle:"Delete old logs", purgeText:"Permanently deletes all logs older than the chosen period. Company default: <b>12 months</b>.",
-  olderThan:"Older than", m6:"6 months", m12:"12 months", m24:"24 months", purgeBtn:"Delete old logs", purgeConfirm:"All logs older than <b>{m} months</b> will be deleted permanently and can't be restored.", purgeOk:"Yes, delete", purged:"Deleted {n} records",
-  about:"About", aboutText:"Elham Umrah Services tool — admin dashboard · version 1.0<br>An internal tool of Elham Nasser Abu Sarhad for Umrah Services. It is not an official Nusuk product and is not affiliated with Nusuk.",
-  footer:"Internal tool — not an official Nusuk product",
-  eNet:"Couldn't reach the server. Check your internet connection and try again.", eWeak:"That password is too weak. Choose a longer one with letters, numbers and symbols.", eLogin:"Wrong email or password.", eDup:"That employee number is already used by another employee.", eData:"The data entered isn't valid.", ePerm:"You don't have permission for this. This account isn't an admin.", eUnknown:"Something went wrong",
-  act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report to developer",audit_scan:"Registration check (read-only)",keepalive:"Keep Nusuk session active"},
-  res:{success:"Success",failed:"Failed",skipped:"Skipped"},
-  aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted",add_admin:"Admin added",set_keepalive:"Keep-session permission",set_developer:"Developer account",set_tools:"Employee tools",set_telegram:"Telegram settings",update_admin:"Admin permissions changed",remove_admin:"Admin removed",reset_admin_password:"New sign-in code for admin",password_set:"Admin set a new password"}
-}};
-/* Arabic messages raised by the database, translated for English mode */
-const DB_MSG_EN = {"الموظف غير موجود":"Employee not found.","تاريخ الانتهاء يجب أن يكون في المستقبل":"The expiry date must be in the future.",
-  "حالة غير صحيحة":"Invalid status.","أقل مدة شهر واحد":"The minimum is one month.","تعذر توليد رمز، حاول مرة أخرى":"Couldn't generate a code. Try again.",
-  "غير مصرح: هذه العملية للمدير فقط":"Not allowed: admins only.","غير مصرح: ليست لديك صلاحية لهذه العملية":"Not allowed: you don't have permission for this.",
-  "غير مصرح: هذه العملية للمدير الرئيسي فقط":"Not allowed: owner only.","البريد غير صحيح":"Invalid email.","اكتب الاسم":"Enter the name.","هذا البريد مضاف مسبقاً كمسؤول":"This email is already an admin.",
-  "لا يمكنك تعديل حسابك من هنا":"You can't edit your own account here.","يمكن تعديل المسؤولين فقط":"Only admins (not the owner) can be edited.",
-  "لا يمكنك حذف حسابك":"You can't remove your own account.","يمكن حذف المسؤولين فقط":"Only admins (not the owner) can be removed."};
+1) افتح: {u}
+2) اضغط «عندي دعوة — إنشاء حساب»
+3) اكتب بريدك: {e}
+4) رمز الدعوة: {c}
+5) اختر كلمة مرور قوية
 
-let LANG = "ar";
-try{ LANG = localStorage.getItem("elham-admin-lang") || "ar"; }catch(e){}
-function t(key, vars){ let s = (STR[LANG][key] ?? STR.ar[key] ?? key); if(vars) for(const k in vars) s = s.split("{"+k+"}").join(vars[k]); return s; }
-let fmtDT, fmtDay;
-function applyLang(){
-  document.documentElement.lang = LANG; document.documentElement.dir = LANG==="ar" ? "rtl" : "ltr";
-  document.title = (LANG==="ar" ? "لوحة تحكم المدير — إلهام" : "Admin dashboard — Elham");
-  document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
-  const loc = LANG==="ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en-GB";
-  fmtDT = new Intl.DateTimeFormat(loc,{timeZone:CONFIG.TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:true});
-  fmtDay = new Intl.DateTimeFormat(loc,{timeZone:CONFIG.TZ,weekday:"long",year:"numeric",month:"long",day:"numeric"});
-}
-function setLang(l){ LANG = l; try{ localStorage.setItem("elham-admin-lang", l); }catch(e){} applyLang(); closeModal(); if(session && !$("#app").classList.contains("hidden")) route(); }
-document.querySelectorAll("[data-lang-toggle]").forEach(b => b.addEventListener("click", () => setLang(LANG==="ar" ? "en" : "ar")));
+الرمز صالح لمدة 7 أيام ولمرة واحدة.`,admInvNote:"أرسل الرسالة للمسؤول. الرمز يُستخدم مرة وحدة، لنفس البريد فقط، وينتهي بعد 7 أيام.",admNeedPerm:"اختر صلاحية واحدة على الأقل.",admBadEmail:"اكتب بريد صحيح.",admYou:"(أنت)",perm_employees:"إضافة الموظفين وتعديل بياناتهم",perm_codes:"رموز التفعيل: إصدار ونسخ وإلغاء",perm_suspend:"إيقاف الموظفين وإعادة تفعيلهم",perm_logs:"عرض السجلات والإحصائيات",perm_export:"تصدير السجلات Excel",perm_reports:"تقارير الأخطاء",perm_audit:"سجل المدير",perm_purge:"حذف السجلات القديمة",invPass2:"تأكيد كلمة المرور",invShort:"كلمة المرور 8 أحرف على الأقل، فيها حروف وأرقام.",invMatch:"كلمتا المرور غير متطابقتين.",spTitle:"اختر كلمة مرور جديدة",spText:"هذا أول دخول لك (أو المدير أعطاك رمز دخول جديد). اختر كلمة مرور خاصة فيك عشان تكمل. ما تحتاج تكتب الرمز القديم.",spNew:"كلمة المرور الجديدة",spBtn:"حفظ ومتابعة",spSame:"اختر كلمة مرور مختلفة عن رمز الدخول.",spDone:"تم حفظ كلمة المرور. أهلاً بك!",admFirstCode:"رمز الدخول الأول",admCreated:"تم إنشاء الحساب",admReset:"رمز دخول جديد",admResetT:"رمز دخول جديد لـ {n}",admResetX:"بيطلع رمز دخول جديد، ويخرج {n} من كل الأجهزة، وأول ما يدخل بالرمز بيختار كلمة مرور جديدة. متابعة؟",admShowCode:"إظهار رمز الدخول",admPending:"بانتظار أول دخول",admMsg:`السلام عليكم {n}،
+تم إنشاء حسابك في لوحة تحكم أداة إلهام.
 
-/* ===== Helpers ===== */
-const $ = (s, el=document) => el.querySelector(s);
-function esc(v){ return String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-const icon = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
-function dt(v){ return v ? fmtDT.format(new Date(v)) : "—"; }
-function ago(v){
-  if(!v) return t("never");
-  const m = Math.round((Date.now() - new Date(v).getTime())/60000);
-  if(m < 1) return t("now"); if(m < 60) return t("minAgo",{n:m});
-  const h = Math.round(m/60); if(h < 24) return t("hrAgo",{n:h});
-  return dt(v);
-}
-function isOnline(v){ return !!v && (Date.now() - new Date(v).getTime()) < CONFIG.ONLINE_MINUTES*60000; }
-function dur(ms){ if(ms==null) return "—"; const s=Math.round(ms/1000); if(s<60) return s+" "+t("sec"); const m=Math.floor(s/60); return m+" "+t("min")+" "+(s%60)+" "+t("sec"); }
-function riyadhDate(d=new Date()){ return new Intl.DateTimeFormat("en-CA",{timeZone:CONFIG.TZ}).format(d); }
-function dayStart(s){ return new Date(s + "T00:00:00+03:00").toISOString(); }
-function dayEnd(s){ const d = new Date(s + "T00:00:00+03:00"); d.setUTCDate(d.getUTCDate()+1); return d.toISOString(); }
-function toast(msg, bad=false){ const el=$("#toast"); el.textContent=msg; el.className=bad?"bad":""; clearTimeout(toast._t); toast._t=setTimeout(()=>el.className="hidden", bad?6000:3000); }
-const actName = a => (STR[LANG].act[a] || a);
-function resultBadge(r){ if(!r) return '<span class="muted">—</span>'; const cls={success:"b-ok",failed:"b-bad",skipped:"b-gray"}[r]||"b-gray"; return `<span class="badge ${cls}">${esc(STR[LANG].res[r]||r)}</span>`; }
-function codeBadge(s){ const m={unused:["codeUnused","b-warn"],active:["codeActive","b-ok"],revoked:["codeRevoked","b-bad"]}[s]; return m ? `<span class="badge ${m[1]}">${esc(t(m[0]))}</span>` : `<span class="badge b-gray">${esc(t("codeNone"))}</span>`; }
-function empBadge(s){ return s==="active" ? `<span class="badge b-ok">${t("stActive")}</span>` : `<span class="badge b-bad">${t("stSuspended")}</span>`; }
-function counts(l){
-  if(l.count_total==null && l.count_success==null && l.count_failed==null && l.count_skipped==null) return '<span class="muted">—</span>';
-  const p=[]; if(l.count_success!=null) p.push(`<span style="color:var(--ok)">${l.count_success} ${t("nSucc")}</span>`);
-  if(l.count_failed) p.push(`<span style="color:var(--bad)">${l.count_failed} ${t("nFail")}</span>`);
-  if(l.count_skipped) p.push(`<span class="muted">${l.count_skipped} ${t("nSkip")}</span>`);
-  return (l.count_total!=null?`<b>${l.count_total}</b> · `:"") + p.join(" · ");
-}
+1) افتح: {u}
+2) البريد: {e}
+3) كلمة المرور (رمز الدخول الأول): {c}
+4) بعد الدخول بيطلب منك تختار كلمة مرور جديدة خاصة فيك.
 
-/* ===== Supabase connection (no external libraries) ===== */
-const SKEY = "elham-admin-session-v1";
-let session = null;
-function loadSession(){ try{ session = JSON.parse(localStorage.getItem(SKEY)||"null"); }catch(e){ session=null; } }
-function saveSession(s){ session=s; try{ s ? localStorage.setItem(SKEY, JSON.stringify(s)) : localStorage.removeItem(SKEY); }catch(e){} }
-class ApiError extends Error { constructor(msg, code, status){ super(msg); this.code=code; this.status=status; } }
-function friendlyError(body, status){
-  const code = body && (body.code || body.error_code || body.error);
-  const raw = String(body && (body.message || body.msg || body.error_description) || "");
-  if(status===0) return t("eNet");
-  if(code==="invalid_grant" || code==="invalid_credentials" || /invalid login/i.test(raw)) return t("eLogin");
-  if(body && (body.error_code==="same_password" || /different from the old/i.test(raw))) return t("spSame");
-  if(code==="weak_password" || /weak|should be at least|password should/i.test(raw)) return t("eWeak");
-  if(code==="23505") return t("eDup");
-  if(code==="23514" || code==="22001" || code==="22P02") return t("eData");
-  if(code==="42501") return t("ePerm");
-  if(code==="PGRST301" || code==="PGRST303" || status===401) return t("sessionEnded");
-  if(/[؀-ۿ]/.test(raw)) return LANG==="en" ? (DB_MSG_EN[raw.trim()] || raw) : raw;
-  return t("eUnknown") + (raw ? ": " + raw : "") + ".";
-}
-async function http(path, {method="GET", body, auth=true}={}){
-  const h = {"apikey": CONFIG.SUPABASE_KEY, "Content-Type":"application/json"};
-  if(auth && session) h["Authorization"] = "Bearer " + session.access_token;
-  let res;
-  try{ res = await fetch(CONFIG.SUPABASE_URL + path, {method, headers:h, body: body===undefined?undefined:JSON.stringify(body)}); }
-  catch(e){ throw new ApiError(t("eNet"), "network", 0); }
-  const text = await res.text();
-  let data = null; try{ data = text ? JSON.parse(text) : null; }catch(e){ data = {message:text}; }
-  if(!res.ok) throw new ApiError(friendlyError(data, res.status), data && data.code, res.status);
-  return data;
-}
-async function signIn(email, password){
-  const d = await http("/auth/v1/token?grant_type=password", {method:"POST", auth:false, body:{email, password}});
-  saveSession({access_token:d.access_token, refresh_token:d.refresh_token, expires_at: Date.now() + (d.expires_in||3600)*1000, email:(d.user && d.user.email) || email});
-}
-async function refresh(){
-  if(!session || !session.refresh_token) throw new ApiError(t("sessionEnded"), "nosession", 401);
-  const d = await http("/auth/v1/token?grant_type=refresh_token", {method:"POST", auth:false, body:{refresh_token: session.refresh_token}});
-  saveSession({...session, access_token:d.access_token, refresh_token:d.refresh_token, expires_at: Date.now() + (d.expires_in||3600)*1000});
-}
-async function signOut(){ try{ await http("/auth/v1/logout", {method:"POST"}); }catch(e){} saveSession(null); employeesCache=null; showLogin(); }
-async function api(path, opts={}){
-  const expired = () => { saveSession(null); showLogin(t("sessionEnded")); };
-  if(session && Date.now() > session.expires_at - 60000){ try{ await refresh(); }catch(e){ expired(); throw e; } }
-  try{ return await http(path, opts); }
-  catch(e){
-    if(e.status===401 && session){ try{ await refresh(); return await http(path, opts); }catch(e2){ expired(); throw e2; } }
-    throw e;
-  }
-}
-const rpc = (fn, args={}) => api("/rest/v1/rpc/" + fn, {method:"POST", body:args});
-function q(table, params){ const u = new URLSearchParams(); for(const [k,v] of params) u.append(k, v); return api("/rest/v1/" + table + "?" + u.toString()); }
+لا ترسل هذا الرمز لأحد.`,admCodeNote:"أرسل الرسالة للمسؤول. الرمز يشتغل لين يغيّر كلمة المرور، وبعدها ما يعود يشتغل.",roleManager:"مسؤول",thKind:"النوع",thSummary:"الملخص",kAlerts:"التنبيهات اللي يشوفها",alAll:"كل التنبيهات",alHiddenN:"مخفي عنه {n}",alEdit:"اختيار التنبيهات",alHint:"تتحكم باللي يطلع له في تبويب «التنبيهات» بالأداة. ما تأثر على قراءة البلاغات.",alPickHint:"المعلَّم يطلع له. شيل العلامة عن النوع عشان يختفي عنه، أو عن الصنف كامل.",alOffAll:"الأنواع المقفلة للكل من إعدادات التنبيهات ما تظهر هنا.",modeSilent:"صامتة",modeVisible:"ظاهرة",navSettings:"الإعدادات",loading:"جارٍ التحميل…",retry:"إعادة المحاولة",cancel:"إلغاء",done:"تم",save:"حفظ",needEmailPass:"اكتب البريد وكلمة المرور.",notAdmin:"هذا الحساب ليس حساب مدير. تواصل مع المسؤول عن النظام.",sessionEnded:"انتهت الجلسة، سجّل الدخول مرة ثانية.",homeTitle:"الرئيسية",homeSub:"إنجاز اليوم بتوقيت الرياض · {d}",stSuccess:"تم بنجاح اليوم",stFailed:"فشل اليوم",stSkipped:"تخطي (مسجّل مسبقاً)",stOnline:"متصلون الآن",of:"من",onlineNow:"المتصلون الآن",noOnline:"لا يوجد موظف متصل حالياً.",recentOps:"آخر العمليات",startHere:"ابدأ من هنا",startHereText:"لا يوجد موظفون بعد. أضف أول موظف وأصدر له رمز تفعيل.",goEmployees:"الذهاب لصفحة الموظفين",noLogs:"لا توجد عمليات مسجلة في هذه الفترة.",thTime:"الوقت",thEmp:"الموظف",thAction:"العملية",thResult:"النتيجة",thGroup:"المجموعة",thCount:"العدد",thDur:"المدة",thNote:"ملاحظة",nSucc:"نجح",nFail:"فشل",nSkip:"تخطي",deletedEmp:"موظف محذوف",empTitle:"الموظفون",addEmp:"إضافة موظف",noEmps:'لا يوجد موظفون بعد. اضغط "إضافة موظف" للبدء.',thEmpNo:"الرقم الوظيفي",thStatus:"الحالة",thCode:"رمز التفعيل",thLastSeen:"آخر ظهور",thToday:"اليوم",thActions:"إجراءات",issueCode:"إصدار رمز",openLog:"السجل",empLegend:'النقطة الخضراء = متصل الآن (آخر {m} دقائق). عمود "اليوم" = نجح / فشل.',stActive:"فعّال",stSuspended:"موقوف",codeNone:"لا يوجد رمز",codeUnused:"لم يُستخدم بعد",codeActive:"مفعّل",codeRevoked:"موقوف",never:"لم يظهر بعد",now:"الآن",minAgo:"قبل {n} دقيقة",hrAgo:"قبل {n} ساعة",sec:"ث",min:"د",editEmp:"تعديل بيانات الموظف",newEmp:"إضافة موظف جديد",empName:"اسم الموظف",optional:"(اختياري)",phone:"رقم الجوال",saveChanges:"حفظ التعديلات",addEmpBtn:"إضافة الموظف",errName:"اكتب اسم الموظف (حرفين على الأقل).",errPhone:"رقم الجوال غير صحيح.",saved:"تم حفظ التعديلات",added:"تمت إضافة الموظف",issueNowQ:"إصدار رمز تفعيل",issueNowText:"تمت إضافة <b>{n}</b>. تبي تصدر له رمز تفعيل الآن؟",issueNowBtn:"إصدار رمز الآن",empMissing:"الموظف غير موجود.",issueFor:"إصدار رمز تفعيل — {n}",replaceWarn:"⚠️ عند {n} رمز سابق. إصدار رمز جديد <b>يلغي الرمز القديم</b> ويوقف الأداة على جهازه الحالي.",validity:"مدة صلاحية الرمز",noExpiry:"بدون انتهاء",d1:"يوم واحد",d7:"أسبوع",d30:"شهر",d90:"3 أشهر",d365:"سنة",issueBtn:"إصدار الرمز",issuedFor:"✅ تم إصدار الرمز — {n}",onceWarn:"انسخ الرمز وأرسله للموظف. تقدر ترجع تنسخه من صفحة الموظف ما دام <b>لم يُفعّل بعد</b>. بعد التفعيل يُمسح نهائياً لحماية الحساب.",showCode:"عرض ونسخ الرمز",codeOf:"رمز التفعيل — {n}",codeUnusedNote:"الرمز لم يُفعّل بعد. بعد ما يفعّله الموظف يُمسح من النظام ولا يمكن عرضه مرة ثانية.",codeOldNote:"هذا الرمز صدر قبل تحديث النظام، فلا يمكن عرضه. أصدر رمزاً جديداً للموظف.",codeNoneNote:"لا يوجد رمز غير مُفعّل لعرضه. الرمز المفعّل لا يُعرض لحماية الحساب، وتقدر تصدر رمزاً جديداً.",validUntil:"الصلاحية: حتى {d}",validForever:"الصلاحية: بدون انتهاء",oneDevice:"يعمل على جهاز واحد فقط.",copyCode:"نسخ الرمز",copyMsg:"نسخ رسالة جاهزة للموظف",codeCopied:"تم نسخ الرمز",msgCopied:"تم نسخ الرسالة",copyManual:"انسخ يدوياً: حدد النص ثم Cmd+C",empMsg:`السلام عليكم {n}،
+رمز تفعيل أداة إلهام الخاص بك:
+{c}
+أدخله في تبويب الإعدادات داخل الأداة. الرمز يعمل على جهاز واحد فقط، لا تشاركه مع أحد.`,edit:"تعديل",suspendShort:"إيقاف",activateShort:"إعادة تفعيل",newCode:"إصدار رمز جديد",revokeCode:"إيقاف الرمز",suspendEmp:"إيقاف الموظف",activateEmp:"إعادة تفعيل الموظف",kStatus:"الحالة",kCode:"رمز التفعيل",kIssued:"تاريخ إصدار الرمز",kExpiry:"انتهاء الرمز",kLastSeen:"آخر ظهور",kVersion:"إصدار الأداة",kEmpNo:"الرقم الوظيفي",kPhone:"الجوال",fullLog:"السجل الكامل — {n}",revokeTitle:"إيقاف رمز التفعيل",revokeText:"ستتوقف الأداة عند <b>{n}</b> خلال دقائق، ولن يعمل الرمز الحالي مرة ثانية. تقدر تصدر له رمزاً جديداً لاحقاً.",revokeOk:"نعم، أوقف الرمز",revoked:"تم إيقاف الرمز",suspendTitle:"إيقاف الموظف",suspendText:"ستتوقف الأداة عند <b>{n}</b> فوراً حتى تعيد تفعيله. السجلات السابقة تبقى محفوظة.",suspendOk:"نعم، أوقف الموظف",suspended:"تم إيقاف الموظف",activateTitle:"إعادة تفعيل الموظف",activateText:"ستعود الأداة للعمل عند <b>{n}</b> إذا كان رمزه ما زال صالحاً.",activateOk:"نعم، أعد التفعيل",activated:"تمت إعادة التفعيل",fEmp:"الموظف",allEmps:"كل الموظفين",fFrom:"من تاريخ",fTo:"إلى تاريخ",fAction:"العملية",fResult:"النتيجة",all:"الكل",show:"عرض",today:"اليوم",last7:"آخر 7 أيام",exportX:"تصدير Excel",errDates:"اختر تاريخ البداية والنهاية.",errOrder:"تاريخ البداية بعد تاريخ النهاية.",sOps:"عدد العمليات",sSucc:"معتمرون تم بنجاح",sFail:"فشل",sSkip:"تخطي",sErr:"أخطاء",pageN:"صفحة {p} · يعرض {n} عملية",prev:"السابق",next:"التالي",noExport:"لا توجد عمليات في هذه الفترة للتصدير",exported:"تم تصدير {n} عملية",csvHead:["الوقت (الرياض)","الموظف","العملية","النتيجة","رقم الاتفاقية","رقم البرنامج","رقم المجموعة","السكن","المدينة","تاريخ دخول الفندق (البرنامج)","تاريخ الدخول الفعلي","وقت الدخول الفعلي","الإجمالي","نجح","فشل","تخطي","المدة (ثانية)","ملاحظة","معاينة","الطريقة","إصدار الأداة"],logsTitle:"السجل العام",logsSub:"كل عمليات كل الموظفين",auditTitle:"سجل المدير",auditSub:"كل إجراء قام به أي مدير (آخر 200)",noAudit:"لا توجد إجراءات بعد.",thAdmin:"المدير",thDetails:"تفاصيل",expires:"ينتهي {d}",reactivation:"إعادة تفعيل",suspension:"إيقاف",purgedDet:"حذف {n} سجل أقدم من {m} شهر",setTitle:"الإعدادات",yourAcc:"حسابك",signedEmail:"مسجل الدخول بالبريد:",pwTitle:"تغيير كلمة المرور",pwCurrent:"كلمة المرور الحالية",pwNew:"كلمة المرور الجديدة",pwNewHint:"8 أحرف على الأقل، فيها حروف وأرقام",pwConfirm:"تأكيد كلمة المرور الجديدة",pwShow:"إظهار كلمة المرور",pwHide:"إخفاء كلمة المرور",pwBtn:"تغيير كلمة المرور",pwErrEmpty:"عبّئ الخانات الثلاث.",pwErrShort:"كلمة المرور الجديدة لازم تكون 8 أحرف على الأقل.",pwErrMix:"كلمة المرور الجديدة لازم يكون فيها حروف وأرقام.",pwErrMatch:"كلمة المرور الجديدة وتأكيدها غير متطابقين.",pwErrSame:"كلمة المرور الجديدة نفس الحالية.",pwErrCurrent:"كلمة المرور الحالية غير صحيحة.",pwDone:"تم تغيير كلمة المرور. استخدمها في الدخول القادم.",pwForgot:"نسيت كلمة المرور؟ تواصل مع مدير النظام لإعادة تعيينها.",purgeTitle:"حذف السجلات القديمة",purgeText:"يحذف كل السجلات الأقدم من المدة المختارة نهائياً. سياسة الشركة الافتراضية: <b>12 شهراً</b>.",olderThan:"أقدم من",m6:"6 أشهر",m12:"12 شهراً",m24:"24 شهراً",purgeBtn:"حذف السجلات القديمة",purgeConfirm:"سيتم حذف كل السجلات الأقدم من <b>{m} شهراً</b> نهائياً، ولا يمكن استرجاعها.",purgeOk:"نعم، احذف",purged:"تم حذف {n} سجل",about:"عن النظام",aboutText:"لوحة تحكم أداة إلهام لخدمات المعتمرين · الإصدار 1.0<br>أداة داخلية لشركة إلهام ناصر أبوسرهد لخدمات المعتمرين، وليست منتجاً رسمياً من منصة نسك ولا مرتبطة بها.",footer:"أداة داخلية — ليست منتجاً رسمياً من منصة نسك",eNet:"تعذر الاتصال بالخادم. تأكد من الإنترنت وحاول مرة ثانية.",eWeak:"كلمة المرور ضعيفة. اختر كلمة أطول فيها حروف وأرقام ورموز.",eLogin:"البريد أو كلمة المرور غير صحيحة.",eDup:"الرقم الوظيفي مستخدم لموظف آخر.",eData:"البيانات المدخلة غير صحيحة.",ePerm:"ليست لديك صلاحية لهذه العملية.",eUnknown:"حدث خطأ غير متوقع",act:{activated:"تفعيل الأداة",app_open:"فتح الأداة",task_start:"بدء مهمة",task_end:"انتهاء مهمة",task_stop:"إيقاف مهمة",task_pause:"إيقاف مؤقت",task_resume:"استئناف",checkin:"تأكيد سكن (دخول)",checkout:"تسجيل خروج معتمرين",passport_review:"مراجعة جوازات",error:"خطأ",info:"معلومة",export:"تصدير بيانات",session_expired:"انتهاء جلسة نسك",diag_report:"تقرير خطأ",audit_scan:"فحص التسجيل (بدون تسجيل)",keepalive:"إبقاء جلسة نسك نشطة"},res:{success:"نجاح",failed:"فشل",skipped:"تخطي"},aud:{set_config:"تعديل إعدادات الأداة",view_code:"عرض رمز التفعيل",create_employee:"إضافة موظف",update_employee:"تعديل بيانات موظف",issue_code:"إصدار رمز تفعيل",revoke_code:"إيقاف رمز التفعيل",set_status:"تغيير حالة موظف",purge_logs:"حذف السجلات القديمة",add_admin:"إضافة مسؤول",set_keepalive:"إذن إبقاء جلسة نسك",set_tools:"الأدوات المتاحة لموظف",update_admin:"تعديل صلاحيات مسؤول",remove_admin:"حذف مسؤول",reset_admin_password:"رمز دخول جديد لمسؤول",password_set:"المسؤول اختار كلمة مرور جديدة"}},en:{otherLang:"العربية",company:"Elham Nasser Abu Sarhad for Umrah Services",loginTitle:"Admin dashboard",panelName:"Admin dashboard",email:"Email",password:"Password",signIn:"Sign in",signOut:"Sign out",signedInAs:"Signed in as:",navHome:"Home",navEmployees:"Employees",navLogs:"Activity log",navAudit:"Admin log",kKeep:"Keep Nusuk session active",keepYes:"Allowed",keepNo:"Blocked",keepAllow:"Allow",keepBlock:"Block",thTools:"Tools",kTools:"Tools available in the extension",toolsAll:"Select all (every tool)",toolsHint:"Dashboard and Log are always available. Choose the extra tools this employee can use.",toolsNone:"No tools",toolsAllBadge:"All tools",toolsNeed:"Pick at least one tool, or press Select all",toolsEdit:"Edit tools",toolsSaved:"Tools saved",admNav:"Admins",admTitle:"Admins & permissions",admSub:"Add people who manage employees with you, and choose exactly what they can do.",admAdd:"Add admin",admMain:"Main manager",admManager:"Admin",admAllPerms:"All permissions",admNone:"No other admins yet.",admInvites:"Invites waiting for sign-up",admNoInv:"No pending invites.",admPerms:"Permissions",admEditT:"Edit permissions of {n}",admNewT:"Add a new admin",admName:"Name",admEmail:"Email",admStatus:"Status",admActive:"Active",admSusp:"Suspended",admSave:"Save",admRemove:"Remove",admRemoveT:"Remove admin",admRemoveX:"{n} will be removed and can no longer open the dashboard. Continue?",admRemoved:"Admin removed",admSaved:"Permissions saved",admInvCreated:"Invite created",admInvCode:"Invite code",admExpires:"Expires",admRevokeInv:"Cancel invite",admInvRevoked:"Invite cancelled",admCopyMsg:"Copy invite message",admMsgCopied:"Message copied. Send it to the admin by WhatsApp or email.",admInvMsg:`Hello {n},
+You've been added as an admin on the Elham tool dashboard.
 
-let employeesCache = null;
-async function getEmployees(force=false){ if(!employeesCache || force) employeesCache = await q("employee_overview", [["select","*"],["order","name.asc"]]); return employeesCache; }
-let TOOLS = null;   // قائمة أدوات الإضافة من السيرفر (تأكيد السكن، الجوازات…) — أي أداة جديدة تظهر هنا تلقائياً
-async function getTools(){ if(!TOOLS) TOOLS = await q("tools", [["select","key,name_ar,name_en,sort"],["active","eq.true"],["order","sort.asc"]]); return TOOLS; }
-const toolName = k => { const x = (TOOLS||[]).find(t=>t.key===k); return x ? (LANG==="en" ? x.name_en : x.name_ar) : k; };
-function toolsBadges(e){
-  const mine = (e.tools||[]).filter(k => (TOOLS||[]).some(t=>t.key===k));
-  if(!mine.length) return `<span class="badge b-gray">${t("toolsNone")}</span>`;
-  if(TOOLS && TOOLS.length > 1 && mine.length === TOOLS.length) return `<span class="badge b-ok">${t("toolsAllBadge")}</span>`;
-  return mine.map(k=>`<span class="badge b-ok">${esc(toolName(k))}</span>`).join(" ");
-}
-const toolsPicker = sel => `<div class="f"><span>${t("kTools")}</span>
-  <div class="perm-list" id="toolsBox"><label style="font-weight:700"><input type="checkbox" id="toolsAll"> ${t("toolsAll")}</label>
-  ${(TOOLS||[]).map(x=>`<label><input type="checkbox" class="toolCb" value="${esc(x.key)}" ${sel.includes(x.key)?"checked":""}> ${esc(LANG==="en"?x.name_en:x.name_ar)}</label>`).join("")}</div>
-  <small class="muted">${t("toolsHint")}</small></div>`;
-function bindToolsPicker(){
-  const all = $("#toolsAll"), cbs = [...document.querySelectorAll(".toolCb")];
-  const sync = () => { all.checked = cbs.length && cbs.every(c=>c.checked); };
-  all.onchange = () => { cbs.forEach(c => c.checked = all.checked); };
-  cbs.forEach(c => c.onchange = sync); sync();
-}
-const pickedTools = () => [...document.querySelectorAll(".toolCb")].filter(c=>c.checked).map(c=>c.value);
-function empName(id){ const e = (employeesCache||[]).find(x=>x.id===id); return e ? e.name : t("deletedEmp"); }
+1) Open: {u}
+2) Click “I have an invite — create account”
+3) Your email: {e}
+4) Invite code: {c}
+5) Choose a strong password
 
-/* ===== Login ===== */
-function showLogin(msg){ $("#app").classList.add("hidden"); $("#login").classList.remove("hidden"); $("#lgErr").textContent = msg || ""; closeModal(); }
-async function showApp(){
-  try{
-    ME = await rpc("admin_me");
-    if(!ME || !ME.role){ ME = null; saveSession(null); showLogin(t("notAdmin")); return; }
-    if(ME.must_change_password){ showSetPassword(); return; }
-  }catch(e){ if(e.status!==401) showLogin(e.message); return; }
-  $("#meEmail").textContent = session.email;
-  applyPerms();
-  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden");
-  if(!location.hash || location.hash==="#" || location.hash==="#/") location.hash = "#/home"; else route();
-}
-$("#loginForm").addEventListener("submit", async ev => {
-  ev.preventDefault();
-  const email = $("#lgEmail").value.trim(), pass = $("#lgPass").value;
-  if(!email || !pass){ $("#lgErr").textContent = t("needEmailPass"); return; }
-  $("#lgBtn").disabled = true; $("#lgErr").textContent = "";
-  try{ await signIn(email, pass); $("#lgPass").value=""; await showApp(); }
-  catch(e){ $("#lgErr").textContent = e.message; }
-  finally{ $("#lgBtn").disabled = false; }
-});
-$("#logoutBtn").addEventListener("click", signOut);
+The code is valid for 7 days, one time only.`,admInvNote:"Send the message to the admin. The code works once, only for this email, and expires in 7 days.",admNeedPerm:"Choose at least one permission.",admBadEmail:"Enter a valid email.",admYou:"(you)",perm_employees:"Add employees and edit their details",perm_codes:"Activation codes: issue, copy, revoke",perm_suspend:"Suspend and reactivate employees",perm_logs:"View logs and statistics",perm_export:"Export logs to Excel",perm_reports:"Error reports",perm_audit:"Admin log",perm_purge:"Delete old logs",invPass2:"Confirm password",invShort:"Password must be at least 8 characters with letters and numbers.",invMatch:"Passwords don't match.",spTitle:"Choose a new password",spText:"This is your first sign-in (or the manager gave you a new sign-in code). Choose your own password to continue. You don't need the old code.",spNew:"New password",spBtn:"Save and continue",spSame:"Choose a password different from the sign-in code.",spDone:"Password saved. Welcome!",admFirstCode:"First sign-in code",admCreated:"Account created",admReset:"New sign-in code",admResetT:"New sign-in code for {n}",admResetX:"A new sign-in code will be created, {n} will be signed out everywhere, and must choose a new password at next sign-in. Continue?",admShowCode:"Show sign-in code",admPending:"Waiting for first sign-in",admMsg:`Hello {n},
+Your Elham tool dashboard account is ready.
 
-/* ===== Permissions (the server enforces them too; here we only hide what the admin can't use) ===== */
-let ME = null;
-const PERMS = ["employees","codes","suspend","logs","export","reports","audit","purge"];
-const can = p => !!ME && (ME.role === "owner" || (ME.permissions||[]).includes(p));
-const isOwner = () => !!ME && ME.role === "owner";
-function applyPerms(){
-  const show = (r, on) => { const a = document.querySelector(`#nav a[data-r="${r}"]`); if(a) a.classList.toggle("hidden", !on); };
-  show("logs", can("logs")); show("reports", can("reports")); show("audit", can("audit")); show("admins", isOwner());
-}
+1) Open: {u}
+2) Email: {e}
+3) Password (first sign-in code): {c}
+4) After signing in you'll be asked to choose your own password.
 
-/* ===== First sign-in: must choose a new password (no old password needed) ===== */
-function showSetPassword(){
-  $("#login").classList.remove("hidden"); $("#app").classList.add("hidden");
-  $("#loginForm").classList.add("hidden"); $("#setPwForm").classList.remove("hidden"); $("#spErr").textContent = "";
-  setTimeout(() => $("#spPass").focus(), 50);
-}
-$("#spOut").onclick = () => { $("#setPwForm").classList.add("hidden"); $("#loginForm").classList.remove("hidden"); signOut(); };
-$("#setPwForm").addEventListener("submit", async ev => {
-  ev.preventDefault();
-  const p1 = $("#spPass").value, p2 = $("#spPass2").value, err = $("#spErr"); err.textContent = "";
-  if(p1.length < 8 || !/[A-Za-z؀-ۿ]/.test(p1) || !/[0-9٠-٩]/.test(p1)) return err.textContent = t("invShort");
-  if(p1 !== p2) return err.textContent = t("invMatch");
-  $("#spBtn").disabled = true;
-  try{
-    await api("/auth/v1/user", {method:"PUT", body:{password:p1}});
-    const r = await rpc("admin_password_changed");
-    if(!r || !r.ok) return err.textContent = t("spSame");
-    $("#spPass").value = $("#spPass2").value = "";
-    $("#setPwForm").classList.add("hidden"); $("#loginForm").classList.remove("hidden");
-    toast(t("spDone")); await showApp();
-  }catch(e){ err.textContent = e.message || t("eNet"); }
-  finally{ $("#spBtn").disabled = false; }
-});
-
-/* ===== Modals ===== */
-// (التحديث 13) التنبيهات اللي يشوفها الموظف في الأداة: كل نوع لوحده، أو الصنف كامل
-async function alertsPicker(e){
-  let A; try{ A = await rpc("admin_alert_types", {}); }catch(err){ toast(err.message, true); return; }
-  const hid = new Set(e.hidden_alerts || []), types = (A.types || []).filter(x => x.in_tool);
-  const nm = x => LANG === "en" ? (x.name_en || x.name_ar) : x.name_ar;
-  const cats = (A.categories || []).filter(c => types.some(x => x.category === c.key));
-  openModal(`<h3>${esc(t("kAlerts"))} — ${esc(e.name)}</h3><p class="muted">${esc(t("alPickHint"))}</p>
-    ${cats.map(c => `<div class="al-cat" style="margin:10px 0;padding:8px;border:1px solid #e3e3e3;border-radius:8px">
-      <label style="font-weight:700"><input type="checkbox" class="alc" data-k="${esc(c.key)}" ${hid.has("cat:" + c.key) ? "" : "checked"}> ${esc(nm(c))}</label>
+Don't share this code.`,admCodeNote:"Send the message to the admin. The code works until they set their own password.",roleManager:"Admin",thKind:"Type",thSummary:"Summary",kAlerts:"Alerts this employee sees",alAll:"All alerts",alHiddenN:"{n} hidden",alEdit:"Choose alerts",alHint:"Controls what shows in the tool's Alerts tab. Does not affect complaint reading.",alPickHint:"Checked items are shown. Uncheck a type to hide it, or a whole category.",alOffAll:"Types turned off for everyone in alert settings are not listed here.",modeSilent:"Silent",modeVisible:"Visible",navSettings:"Settings",loading:"Loading…",retry:"Try again",cancel:"Cancel",done:"Done",save:"Save",needEmailPass:"Enter your email and password.",notAdmin:"This account isn't an admin account. Contact your system administrator.",sessionEnded:"Your session ended. Sign in again.",homeTitle:"Home",homeSub:"Today's work, Riyadh time · {d}",stSuccess:"Completed today",stFailed:"Failed today",stSkipped:"Skipped (already done)",stOnline:"Online now",of:"of",onlineNow:"Online now",noOnline:"No employee is online right now.",recentOps:"Recent activity",startHere:"Start here",startHereText:"No employees yet. Add your first employee and issue an activation code.",goEmployees:"Go to employees",noLogs:"No activity in this period.",thTime:"Time",thEmp:"Employee",thAction:"Action",thResult:"Result",thGroup:"Group",thCount:"Count",thDur:"Duration",thNote:"Note",nSucc:"done",nFail:"failed",nSkip:"skipped",deletedEmp:"Deleted employee",empTitle:"Employees",addEmp:"Add employee",noEmps:'No employees yet. Click "Add employee" to start.',thEmpNo:"Employee no.",thStatus:"Status",thCode:"Activation code",thLastSeen:"Last seen",thToday:"Today",thActions:"Actions",issueCode:"Issue code",openLog:"Log",empLegend:'Green dot = online now (last {m} minutes). "Today" = done / failed.',stActive:"Active",stSuspended:"Suspended",codeNone:"No code",codeUnused:"Not used yet",codeActive:"Active",codeRevoked:"Revoked",never:"Never seen",now:"Just now",minAgo:"{n} min ago",hrAgo:"{n} h ago",sec:"s",min:"m",editEmp:"Edit employee",newEmp:"Add a new employee",empName:"Employee name",optional:"(optional)",phone:"Mobile number",saveChanges:"Save changes",addEmpBtn:"Add employee",errName:"Enter the employee's name (at least 2 characters).",errPhone:"The mobile number isn't valid.",saved:"Changes saved",added:"Employee added",issueNowQ:"Issue an activation code",issueNowText:"<b>{n}</b> was added. Issue an activation code now?",issueNowBtn:"Issue code now",empMissing:"Employee not found.",issueFor:"Issue activation code — {n}",replaceWarn:"⚠️ {n} already has a code. Issuing a new one <b>cancels the old code</b> and stops the tool on their current device.",validity:"Code validity",noExpiry:"No expiry",d1:"1 day",d7:"1 week",d30:"1 month",d90:"3 months",d365:"1 year",issueBtn:"Issue code",issuedFor:"✅ Code issued — {n}",onceWarn:"Copy the code and send it to the employee. You can copy it again from the employee page as long as it's <b>not activated yet</b>. Once activated, it's erased to protect the account.",showCode:"Show and copy code",codeOf:"Activation code — {n}",codeUnusedNote:"This code isn't activated yet. Once the employee activates it, it's erased and can't be shown again.",codeOldNote:"This code was issued before the system update, so it can't be shown. Issue a new code for the employee.",codeNoneNote:"There's no unactivated code to show. Activated codes are hidden to protect the account; you can issue a new code.",validUntil:"Valid until {d}",validForever:"Valid with no expiry",oneDevice:"Works on one device only.",copyCode:"Copy code",copyMsg:"Copy message for employee",codeCopied:"Code copied",msgCopied:"Message copied",copyManual:"Copy manually: select the text, then Cmd+C",empMsg:`Hello {n},
+Your Elham tool activation code:
+{c}
+Enter it in the Settings tab inside the tool. It works on one device only; don't share it.`,edit:"Edit",suspendShort:"Suspend",activateShort:"Reactivate",newCode:"Issue new code",revokeCode:"Revoke code",suspendEmp:"Suspend employee",activateEmp:"Reactivate employee",kStatus:"Status",kCode:"Activation code",kIssued:"Code issued",kExpiry:"Code expires",kLastSeen:"Last seen",kVersion:"Tool version",kEmpNo:"Employee no.",kPhone:"Mobile",fullLog:"Full activity log — {n}",revokeTitle:"Revoke activation code",revokeText:"The tool will stop for <b>{n}</b> within minutes, and the current code won't work again. You can issue a new code later.",revokeOk:"Yes, revoke",revoked:"Code revoked",suspendTitle:"Suspend employee",suspendText:"The tool will stop for <b>{n}</b> immediately until you reactivate them. Past logs are kept.",suspendOk:"Yes, suspend",suspended:"Employee suspended",activateTitle:"Reactivate employee",activateText:"The tool will work again for <b>{n}</b> if their code is still valid.",activateOk:"Yes, reactivate",activated:"Employee reactivated",fEmp:"Employee",allEmps:"All employees",fFrom:"From",fTo:"To",fAction:"Action",fResult:"Result",all:"All",show:"Show",today:"Today",last7:"Last 7 days",exportX:"Export to Excel",errDates:"Choose a start and end date.",errOrder:"The start date is after the end date.",sOps:"Actions",sSucc:"Pilgrims done",sFail:"Failed",sSkip:"Skipped",sErr:"Errors",pageN:"Page {p} · showing {n}",prev:"Previous",next:"Next",noExport:"No activity in this period to export",exported:"Exported {n} records",csvHead:["Time (Riyadh)","Employee","Action","Result","Agreement no.","Program no.","Group no.","Accommodation","City","Hotel entry date (program)","Actual entry date","Actual entry time","Total","Done","Failed","Skipped","Duration (s)","Note","Preview","Method","Tool version"],logsTitle:"Activity log",logsSub:"Every action by every employee",auditTitle:"Admin log",auditSub:"Every action taken by an admin (latest 200)",noAudit:"No admin actions yet.",thAdmin:"Admin",thDetails:"Details",expires:"Expires {d}",reactivation:"Reactivated",suspension:"Suspended",purgedDet:"Deleted {n} records older than {m} months",setTitle:"Settings",yourAcc:"Your account",signedEmail:"Signed in with:",pwTitle:"Change password",pwCurrent:"Current password",pwNew:"New password",pwNewHint:"At least 8 characters, with letters and numbers",pwConfirm:"Confirm new password",pwShow:"Show password",pwHide:"Hide password",pwBtn:"Change password",pwErrEmpty:"Fill in all three fields.",pwErrShort:"The new password must be at least 8 characters.",pwErrMix:"The new password must contain letters and numbers.",pwErrMatch:"The new password and its confirmation don't match.",pwErrSame:"The new password is the same as the current one.",pwErrCurrent:"The current password is wrong.",pwDone:"Password changed. Use it next time you sign in.",pwForgot:"Forgot your password? Contact the system administrator to reset it.",purgeTitle:"Delete old logs",purgeText:"Permanently deletes all logs older than the chosen period. Company default: <b>12 months</b>.",olderThan:"Older than",m6:"6 months",m12:"12 months",m24:"24 months",purgeBtn:"Delete old logs",purgeConfirm:"All logs older than <b>{m} months</b> will be deleted permanently and can't be restored.",purgeOk:"Yes, delete",purged:"Deleted {n} records",about:"About",aboutText:"Elham Umrah Services tool — admin dashboard · version 1.0<br>An internal tool of Elham Nasser Abu Sarhad for Umrah Services. It is not an official Nusuk product and is not affiliated with Nusuk.",footer:"Internal tool — not an official Nusuk product",eNet:"Couldn't reach the server. Check your internet connection and try again.",eWeak:"That password is too weak. Choose a longer one with letters, numbers and symbols.",eLogin:"Wrong email or password.",eDup:"That employee number is already used by another employee.",eData:"The data entered isn't valid.",ePerm:"You don't have permission for this. This account isn't an admin.",eUnknown:"Something went wrong",act:{activated:"Tool activated",app_open:"Tool opened",task_start:"Task started",task_end:"Task finished",task_stop:"Task stopped",task_pause:"Paused",task_resume:"Resumed",checkin:"Housing check-in",checkout:"Pilgrim check-out",passport_review:"Passport review",error:"Error",info:"Info",export:"Data exported",session_expired:"Nusuk session expired",diag_report:"Error report",audit_scan:"Registration check (read-only)",keepalive:"Keep Nusuk session active"},res:{success:"Success",failed:"Failed",skipped:"Skipped"},aud:{set_config:"Tool settings changed",view_code:"Activation code viewed",create_employee:"Employee added",update_employee:"Employee edited",issue_code:"Activation code issued",revoke_code:"Activation code revoked",set_status:"Employee status changed",purge_logs:"Old logs deleted",add_admin:"Admin added",set_keepalive:"Keep-session permission",set_tools:"Employee tools",update_admin:"Admin permissions changed",remove_admin:"Admin removed",reset_admin_password:"New sign-in code for admin",password_set:"Admin set a new password"}}},$e={"الموظف غير موجود":"Employee not found.","تاريخ الانتهاء يجب أن يكون في المستقبل":"The expiry date must be in the future.","حالة غير صحيحة":"Invalid status.","أقل مدة شهر واحد":"The minimum is one month.","تعذر توليد رمز، حاول مرة أخرى":"Couldn't generate a code. Try again.","غير مصرح: هذه العملية للمدير فقط":"Not allowed: admins only.","غير مصرح: ليست لديك صلاحية لهذه العملية":"Not allowed: you don't have permission for this.","غير مصرح: هذه العملية للمدير الرئيسي فقط":"Not allowed: main manager only.","البريد غير صحيح":"Invalid email.","اكتب الاسم":"Enter the name.","هذا البريد مضاف مسبقاً كمسؤول":"This email is already an admin.","لا يمكنك تعديل حسابك من هنا":"You can't edit your own account here.","يمكن تعديل المسؤولين فقط":"Only admin accounts you added can be edited.","لا يمكنك حذف حسابك":"You can't remove your own account.","يمكن حذف المسؤولين فقط":"Only admin accounts you added can be removed."};let g="ar";try{g=localStorage.getItem("elham-admin-lang")||"ar"}catch{}function e(t,a){let s=S[g][t]??S.ar[t]??t;if(a)for(const o in a)s=s.split("{"+o+"}").join(a[o]);return s}let Q,ee;function te(){document.documentElement.lang=g,document.documentElement.dir=g==="ar"?"rtl":"ltr",document.title=g==="ar"?"لوحة تحكم المدير — إلهام":"Admin dashboard — Elham",document.querySelectorAll("[data-t]").forEach(a=>a.textContent=e(a.dataset.t));const t=g==="ar"?"ar-SA-u-nu-latn-ca-gregory":"en-GB";Q=new Intl.DateTimeFormat(t,{timeZone:k.TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:!0}),ee=new Intl.DateTimeFormat(t,{timeZone:k.TZ,weekday:"long",year:"numeric",month:"long",day:"numeric"})}function _e(t){g=t;try{localStorage.setItem("elham-admin-lang",t)}catch{}te(),b(),v&&!n("#app").classList.contains("hidden")&&$()}document.querySelectorAll("[data-lang-toggle]").forEach(t=>t.addEventListener("click",()=>_e(g==="ar"?"en":"ar")));const n=(t,a=document)=>a.querySelector(t);function d(t){return String(t??"").replace(/[&<>"']/g,a=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[a])}const f=t=>`<svg class="i"><use href="#i-${t}"/></svg>`;function T(t){return t?Q.format(new Date(t)):"—"}function ae(t){if(!t)return e("never");const a=Math.round((Date.now()-new Date(t).getTime())/6e4);if(a<1)return e("now");if(a<60)return e("minAgo",{n:a});const s=Math.round(a/60);return s<24?e("hrAgo",{n:s}):T(t)}function H(t){return!!t&&Date.now()-new Date(t).getTime()<k.ONLINE_MINUTES*6e4}function ke(t){if(t==null)return"—";const a=Math.round(t/1e3);return a<60?a+" "+e("sec"):Math.floor(a/60)+" "+e("min")+" "+a%60+" "+e("sec")}function I(t=new Date){return new Intl.DateTimeFormat("en-CA",{timeZone:k.TZ}).format(t)}function Ee(t){return new Date(t+"T00:00:00+03:00").toISOString()}function Se(t){const a=new Date(t+"T00:00:00+03:00");return a.setUTCDate(a.getUTCDate()+1),a.toISOString()}function m(t,a=!1){const s=n("#toast");s.textContent=t,s.className=a?"bad":"",clearTimeout(m._t),m._t=setTimeout(()=>s.className="hidden",a?6e3:3e3)}const se=t=>S[g].act[t]||t;function xe(t){return t?`<span class="badge ${{success:"b-ok",failed:"b-bad",skipped:"b-gray"}[t]||"b-gray"}">${d(S[g].res[t]||t)}</span>`:'<span class="muted">—</span>'}function ne(t){const a={unused:["codeUnused","b-warn"],active:["codeActive","b-ok"],revoked:["codeRevoked","b-bad"]}[t];return a?`<span class="badge ${a[1]}">${d(e(a[0]))}</span>`:`<span class="badge b-gray">${d(e("codeNone"))}</span>`}function oe(t){return t==="active"?`<span class="badge b-ok">${e("stActive")}</span>`:`<span class="badge b-bad">${e("stSuspended")}</span>`}function Te(t){if(t.count_total==null&&t.count_success==null&&t.count_failed==null&&t.count_skipped==null)return'<span class="muted">—</span>';const a=[];return t.count_success!=null&&a.push(`<span style="color:var(--ok)">${t.count_success} ${e("nSucc")}</span>`),t.count_failed&&a.push(`<span style="color:var(--bad)">${t.count_failed} ${e("nFail")}</span>`),t.count_skipped&&a.push(`<span class="muted">${t.count_skipped} ${e("nSkip")}</span>`),(t.count_total!=null?`<b>${t.count_total}</b> · `:"")+a.join(" · ")}const U="elham-admin-session-v1";let v=null;function Ce(){try{v=JSON.parse(localStorage.getItem(U)||"null")}catch{v=null}}function M(t){v=t;try{t?localStorage.setItem(U,JSON.stringify(t)):localStorage.removeItem(U)}catch{}}class Y extends Error{constructor(a,s,o){super(a),this.code=s,this.status=o}}function Ae(t,a){const s=t&&(t.code||t.error_code||t.error),o=String(t&&(t.message||t.msg||t.error_description)||"");return a===0?e("eNet"):s==="invalid_grant"||s==="invalid_credentials"||/invalid login/i.test(o)?e("eLogin"):t&&(t.error_code==="same_password"||/different from the old/i.test(o))?e("spSame"):s==="weak_password"||/weak|should be at least|password should/i.test(o)?e("eWeak"):s==="23505"?e("eDup"):s==="23514"||s==="22001"||s==="22P02"?e("eData"):s==="42501"?e("ePerm"):s==="PGRST301"||s==="PGRST303"||a===401?e("sessionEnded"):/[؀-ۿ]/.test(o)?g==="en"&&$e[o.trim()]||o:e("eUnknown")+(o?": "+o:"")+"."}async function N(t,{method:a="GET",body:s,auth:o=!0}={}){const i={apikey:k.SUPABASE_KEY,"Content-Type":"application/json"};o&&v&&(i.Authorization="Bearer "+v.access_token);let l;try{l=await fetch(k.SUPABASE_URL+t,{method:a,headers:i,body:s===void 0?void 0:JSON.stringify(s)})}catch{throw new Y(e("eNet"),"network",0)}const p=await l.text();let r=null;try{r=p?JSON.parse(p):null}catch{r={message:p}}if(!l.ok)throw new Y(Ae(r,l.status),r&&r.code,l.status);return r}async function ie(t,a){const s=await N("/auth/v1/token?grant_type=password",{method:"POST",auth:!1,body:{email:t,password:a}});M({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:Date.now()+(s.expires_in||3600)*1e3,email:s.user&&s.user.email||t})}async function de(){if(!v||!v.refresh_token)throw new Y(e("sessionEnded"),"nosession",401);const t=await N("/auth/v1/token?grant_type=refresh_token",{method:"POST",auth:!1,body:{refresh_token:v.refresh_token}});M({...v,access_token:t.access_token,refresh_token:t.refresh_token,expires_at:Date.now()+(t.expires_in||3600)*1e3})}async function le(){try{await N("/auth/v1/logout",{method:"POST"})}catch{}M(null),_=null,R()}async function D(t,a={}){const s=()=>{M(null),R(e("sessionEnded"))};if(v&&Date.now()>v.expires_at-6e4)try{await de()}catch(o){throw s(),o}try{return await N(t,a)}catch(o){if(o.status===401&&v)try{return await de(),await N(t,a)}catch(i){throw s(),i}throw o}}const y=(t,a={})=>D("/rest/v1/rpc/"+t,{method:"POST",body:a});function C(t,a){const s=new URLSearchParams;for(const[o,i]of a)s.append(o,i);return D("/rest/v1/"+t+"?"+s.toString())}let _=null;async function P(t=!1){return(!_||t)&&(_=await C("employee_overview",[["select","*"],["order","name.asc"]])),_}let x=null;async function q(){return x||(x=await C("tools",[["select","key,name_ar,name_en,sort"],["active","eq.true"],["order","sort.asc"]])),x}const Ne=t=>{const a=(x||[]).find(s=>s.key===t);return a?g==="en"?a.name_en:a.name_ar:t};function re(t){const a=(t.tools||[]).filter(s=>(x||[]).some(o=>o.key===s));return a.length?x&&x.length>1&&a.length===x.length?`<span class="badge b-ok">${e("toolsAllBadge")}</span>`:a.map(s=>`<span class="badge b-ok">${d(Ne(s))}</span>`).join(" "):`<span class="badge b-gray">${e("toolsNone")}</span>`}const Pe=t=>`<div class="f"><span>${e("kTools")}</span>
+  <div class="perm-list" id="toolsBox"><label style="font-weight:700"><input type="checkbox" id="toolsAll"> ${e("toolsAll")}</label>
+  ${(x||[]).map(a=>`<label><input type="checkbox" class="toolCb" value="${d(a.key)}" ${t.includes(a.key)?"checked":""}> ${d(g==="en"?a.name_en:a.name_ar)}</label>`).join("")}</div>
+  <small class="muted">${e("toolsHint")}</small></div>`;function Le(){const t=n("#toolsAll"),a=[...document.querySelectorAll(".toolCb")],s=()=>{t.checked=a.length&&a.every(o=>o.checked)};t.onchange=()=>{a.forEach(o=>o.checked=t.checked)},a.forEach(o=>o.onchange=s),s()}const Oe=()=>[...document.querySelectorAll(".toolCb")].filter(t=>t.checked).map(t=>t.value);function j(t){const a=(_||[]).find(s=>s.id===t);return a?a.name:e("deletedEmp")}function R(t){if(window.__ELHAM_BOOT){try{t&&sessionStorage.setItem("elham-msg",t)}catch{}location.reload();return}n("#app").classList.add("hidden"),n("#login").classList.remove("hidden"),n("#lgErr").textContent=t||"",b()}async function G(){try{if(E=await y("admin_me"),!E||!E.role){E=null,M(null),R(e("notAdmin"));return}if(E.must_change_password){Re();return}}catch(t){t.status!==401&&R(t.message);return}n("#meEmail").textContent=v.email,De(),n("#login").classList.add("hidden"),n("#app").classList.remove("hidden"),!location.hash||location.hash==="#"||location.hash==="#/"?location.hash="#/home":$()}n("#loginForm").addEventListener("submit",async t=>{t.preventDefault();const a=n("#lgEmail").value.trim(),s=n("#lgPass").value;if(!a||!s){n("#lgErr").textContent=e("needEmailPass");return}n("#lgBtn").disabled=!0,n("#lgErr").textContent="";try{await ie(a,s),n("#lgPass").value="",await G()}catch(o){n("#lgErr").textContent=o.message,o.status===400&&N("/rest/v1/rpc/sec_login_failed",{method:"POST",auth:!1,body:{p_email:a}}).catch(()=>{})}finally{n("#lgBtn").disabled=!1}}),n("#logoutBtn").addEventListener("click",le);let E=null;const Me=["employees","codes","suspend","logs","export","audit","purge"],F=()=>!!E&&!!E.role&&E.role!=="viewer",h=t=>F()||!!E&&(E.permissions||[]).includes(t),ce=()=>!1;function De(){const t=(a,s)=>{const o=document.querySelector(`#nav a[data-r="${a}"]`);o&&o.classList.toggle("hidden",!s)};t("logs",h("logs")),t("audit",h("audit")),t("admins",F())}function Re(){n("#login").classList.remove("hidden"),n("#app").classList.add("hidden"),n("#loginForm").classList.add("hidden"),n("#setPwForm").classList.remove("hidden"),n("#spErr").textContent="",setTimeout(()=>n("#spPass").focus(),50)}n("#spOut").onclick=()=>{n("#setPwForm").classList.add("hidden"),n("#loginForm").classList.remove("hidden"),le()},n("#setPwForm").addEventListener("submit",async t=>{t.preventDefault();const a=n("#spPass").value,s=n("#spPass2").value,o=n("#spErr");if(o.textContent="",a.length<8||!/[A-Za-z؀-ۿ]/.test(a)||!/[0-9٠-٩]/.test(a))return o.textContent=e("invShort");if(a!==s)return o.textContent=e("invMatch");n("#spBtn").disabled=!0;try{await D("/auth/v1/user",{method:"PUT",body:{password:a}});const i=await y("admin_password_changed");if(!i||!i.ok)return o.textContent=e("spSame");n("#spPass").value=n("#spPass2").value="",n("#setPwForm").classList.add("hidden"),n("#loginForm").classList.remove("hidden"),m(e("spDone")),await G()}catch(i){o.textContent=i.message||e("eNet")}finally{n("#spBtn").disabled=!1}});async function Ie(t){let a;try{a=await y("admin_alert_types",{})}catch(r){m(r.message,!0);return}const s=new Set(t.hidden_alerts||[]),o=(a.types||[]).filter(r=>r.in_tool),i=r=>g==="en"&&r.name_en||r.name_ar,l=(a.categories||[]).filter(r=>o.some(c=>c.category===r.key));A(`<h3>${d(e("kAlerts"))} — ${d(t.name)}</h3><p class="muted">${d(e("alPickHint"))}</p>
+    ${l.map(r=>`<div class="al-cat" style="margin:10px 0;padding:8px;border:1px solid #e3e3e3;border-radius:8px">
+      <label style="font-weight:700"><input type="checkbox" class="alc" data-k="${d(r.key)}" ${s.has("cat:"+r.key)?"":"checked"}> ${d(i(r))}</label>
       <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;padding-inline-start:20px">
-      ${types.filter(x => x.category === c.key).map(x => `<label><input type="checkbox" class="alt" data-c="${esc(c.key)}" data-k="${esc(x.key)}" ${hid.has(x.key) ? "" : "checked"}> ${esc(x.icon)} ${esc(nm(x))}</label>`).join("")}</div></div>`).join("")}
-    <div class="muted" style="font-size:12px">${esc(t("alOffAll"))}</div>
-    <div class="err" id="alErr"></div><div class="row"><button class="btn primary" id="alOk">${t("save")}</button><button class="btn" id="alNo">${t("cancel")}</button></div>`);
-  const sync = () => document.querySelectorAll(".alc").forEach(c => document.querySelectorAll(`.alt[data-c="${c.dataset.k}"]`).forEach(x => x.disabled = !c.checked));
-  document.querySelectorAll(".alc").forEach(c => c.onchange = sync); sync();
-  $("#alNo").onclick = closeModal;
-  $("#alOk").onclick = async () => {
-    const hidden = [...document.querySelectorAll(".alc")].filter(c => !c.checked).map(c => "cat:" + c.dataset.k)
-      .concat([...document.querySelectorAll(".alt")].filter(x => !x.checked).map(x => x.dataset.k))
-      .concat([...hid].filter(k => !types.some(x => x.key === k) && !cats.some(c => "cat:" + c.key === k)));   // نحافظ على أي نوع مخفي مو ظاهر هنا
-    $("#alOk").disabled = true;
-    try{ await rpc("admin_set_hidden_alerts", {p_employee_id: e.id, p_hidden: hidden}); employeesCache = null; closeModal(); toast(t("saved")); route(); }
-    catch(err){ $("#alErr").textContent = err.message; $("#alOk").disabled = false; }
-  };
-}
-function openModal(html){ $("#modalRoot").innerHTML = `<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
-  $("#ov").addEventListener("mousedown", e => { if(e.target.id==="ov") closeModal(); });
-  const f = $("#modalRoot input, #modalRoot select, #modalRoot button"); if(f) f.focus(); }
-function closeModal(){ $("#modalRoot").innerHTML = ""; }
-document.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
-function confirmBox(title, html, okLabel, danger=true){
-  return new Promise(resolve => {
-    openModal(`<h3>${esc(title)}</h3><p>${html}</p><div class="row"><button class="btn ${danger?"danger":"primary"}" id="cfOk">${esc(okLabel)}</button><button class="btn" id="cfNo">${t("cancel")}</button></div>`);
-    $("#cfOk").onclick = () => { closeModal(); resolve(true); };
-    $("#cfNo").onclick = () => { closeModal(); resolve(false); };
-  });
-}
-
-/* ===== Routing ===== */
-const view = () => $("#view");
-const footer = () => `<div class="foot">${esc(t("footer"))}</div>`;
-let routing = false, routeAgain = false;
-async function route(){
-  if(routing){ routeAgain = true; return; }
-  routing = true;
-  try{ do{ routeAgain = false; await routeOnce(); } while(routeAgain); }
-  finally{ routing = false; }
-}
-async function routeOnce(){
-  if(!session) return;
-  const parts = (location.hash.replace(/^#\/?/,"") || "home").split("/");
-  const r = parts[0];
-  document.querySelectorAll("#nav a").forEach(a => a.classList.toggle("active", a.dataset.r === (r==="employee"?"employees":r)));
-  view().innerHTML = `<div class="empty">${t("loading")}</div>`;
-  try{
-    const need = {logs:()=>can("logs"), reports:()=>can("reports"), audit:()=>can("audit"), admins:isOwner}[r];
-    if(need && !need()){ location.hash = "#/home"; return; }
-    if(r==="home") await pageHome();
-    else if(r==="employees") await pageEmployees();
-    else if(r==="employee") await pageEmployee(decodeURIComponent(parts[1]||""));
-    else if(r==="logs") await pageLogs();
-    else if(r==="audit") await pageAudit();
-    else if(r==="reports") await pageReports();
-    else if(r==="admins") await pageAdmins();
-    else if(r==="settings") await pageSettings();
-    else { location.hash = "#/home"; return; }
-    view().insertAdjacentHTML("beforeend", footer());
-  }catch(e){ if(session) view().innerHTML = `<div class="card"><div class="err">${esc(e.message)}</div><button class="btn" id="rtry">${t("retry")}</button></div>`; const b=$("#rtry"); if(b) b.onclick=route; }
-}
-window.addEventListener("hashchange", route);
-
-/* ===== Home ===== */
-async function pageHome(){
-  const [emps, recent] = await Promise.all([ getEmployees(true), can("logs") ? q("activity_logs", [["select","*"],["order","occurred_at.desc"],["limit","10"]]) : Promise.resolve(null) ]);
-  const sum = k => emps.reduce((a,e)=>a+(Number(e[k])||0),0);
-  const online = emps.filter(e=>isOnline(e.last_seen) && e.status==="active");
-  const activeCount = emps.filter(e=>e.status==="active").length;
-  view().innerHTML = `
-  <div class="head"><h1>${t("homeTitle")}</h1><span class="sub">${esc(t("homeSub",{d:fmtDay.format(new Date())}))}</span></div>
+      ${o.filter(c=>c.category===r.key).map(c=>`<label><input type="checkbox" class="alt" data-c="${d(r.key)}" data-k="${d(c.key)}" ${s.has(c.key)?"":"checked"}> ${d(c.icon)} ${d(i(c))}</label>`).join("")}</div></div>`).join("")}
+    <div class="muted" style="font-size:12px">${d(e("alOffAll"))}</div>
+    <div class="err" id="alErr"></div><div class="row"><button class="btn primary" id="alOk">${e("save")}</button><button class="btn" id="alNo">${e("cancel")}</button></div>`);const p=()=>document.querySelectorAll(".alc").forEach(r=>document.querySelectorAll(`.alt[data-c="${r.dataset.k}"]`).forEach(c=>c.disabled=!r.checked));document.querySelectorAll(".alc").forEach(r=>r.onchange=p),p(),n("#alNo").onclick=b,n("#alOk").onclick=async()=>{const r=[...document.querySelectorAll(".alc")].filter(c=>!c.checked).map(c=>"cat:"+c.dataset.k).concat([...document.querySelectorAll(".alt")].filter(c=>!c.checked).map(c=>c.dataset.k)).concat([...s].filter(c=>!o.some(u=>u.key===c)&&!l.some(u=>"cat:"+u.key===c)));n("#alOk").disabled=!0;try{await y("admin_set_hidden_alerts",{p_employee_id:t.id,p_hidden:r}),_=null,b(),m(e("saved")),$()}catch(c){n("#alErr").textContent=c.message,n("#alOk").disabled=!1}}}function A(t){n("#modalRoot").innerHTML=`<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${t}</div></div>`,n("#ov").addEventListener("mousedown",s=>{s.target.id==="ov"&&b()});const a=n("#modalRoot input, #modalRoot select, #modalRoot button");a&&a.focus()}function b(){n("#modalRoot").innerHTML=""}document.addEventListener("keydown",t=>{t.key==="Escape"&&b()});function L(t,a,s,o=!0){return new Promise(i=>{A(`<h3>${d(t)}</h3><p>${a}</p><div class="row"><button class="btn ${o?"danger":"primary"}" id="cfOk">${d(s)}</button><button class="btn" id="cfNo">${e("cancel")}</button></div>`),n("#cfOk").onclick=()=>{b(),i(!0)},n("#cfNo").onclick=()=>{b(),i(!1)}})}const w=()=>n("#view"),Fe=()=>`<div class="foot">${d(e("footer"))}</div>`;let z=!1,Z=!1;async function $(){if(z){Z=!0;return}z=!0;try{do Z=!1,await Be();while(Z)}finally{z=!1}}async function Be(){if(!v)return;const t=(location.hash.replace(/^#\/?/,"")||"home").split("/"),a=t[0];document.querySelectorAll("#nav a").forEach(s=>s.classList.toggle("active",s.dataset.r===(a==="employee"?"employees":a))),w().innerHTML=`<div class="empty">${e("loading")}</div>`;try{const s={logs:()=>h("logs"),reports:ce,dev:ce,audit:()=>h("audit"),admins:F}[a];if(s&&!s()){location.hash="#/home";return}if(a==="home")await He();else if(a==="employees")await Ue();else if(a==="employee")await Ye(decodeURIComponent(t[1]||""));else if(a==="logs")await je();else if(a==="audit")await Ge();else if(a==="admins")await Ke();else if(a==="settings")await Xe();else{location.hash="#/home";return}w().insertAdjacentHTML("beforeend",Fe())}catch(s){v&&(w().innerHTML=`<div class="card"><div class="err">${d(s.message)}</div><button class="btn" id="rtry">${e("retry")}</button></div>`);const o=n("#rtry");o&&(o.onclick=$)}}window.addEventListener("hashchange",$);async function He(){const[t,a]=await Promise.all([P(!0),h("logs")?C("activity_logs",[["select","*"],["order","occurred_at.desc"],["limit","10"]]):Promise.resolve(null)]),s=l=>t.reduce((p,r)=>p+(Number(r[l])||0),0),o=t.filter(l=>H(l.last_seen)&&l.status==="active"),i=t.filter(l=>l.status==="active").length;w().innerHTML=`
+  <div class="head"><h1>${e("homeTitle")}</h1><span class="sub">${d(e("homeSub",{d:ee.format(new Date)}))}</span></div>
   <div class="stats">
-    ${can("logs")?`<div class="stat ok"><div class="l">${t("stSuccess")}</div><div class="v">${sum("today_success")}</div></div>
-    <div class="stat bad"><div class="l">${t("stFailed")}</div><div class="v">${sum("today_failed")}</div></div>
-    <div class="stat"><div class="l">${t("stSkipped")}</div><div class="v">${sum("today_skipped")}</div></div>`:""}
-    <div class="stat brand"><div class="l">${t("stOnline")}</div><div class="v">${online.length} <small class="muted" style="font-size:14px;font-weight:500">${t("of")} ${activeCount}</small></div></div>
+    ${h("logs")?`<div class="stat ok"><div class="l">${e("stSuccess")}</div><div class="v">${s("today_success")}</div></div>
+    <div class="stat bad"><div class="l">${e("stFailed")}</div><div class="v">${s("today_failed")}</div></div>
+    <div class="stat"><div class="l">${e("stSkipped")}</div><div class="v">${s("today_skipped")}</div></div>`:""}
+    <div class="stat brand"><div class="l">${e("stOnline")}</div><div class="v">${o.length} <small class="muted" style="font-size:14px;font-weight:500">${e("of")} ${i}</small></div></div>
   </div>
-  ${emps.length===0 ? `<div class="card"><h2>${t("startHere")}</h2><p>${t("startHereText")}</p><a class="btn primary" href="#/employees">${icon("users")}${t("goEmployees")}</a></div>` : ""}
-  <div class="card"><h2>${t("onlineNow")}</h2>${online.length ? online.map(e=>`<a href="#/employee/${esc(e.id)}" class="badge b-ok" style="margin:2px;text-decoration:none">${esc(e.name)}</a>`).join("") : `<span class="muted">${t("noOnline")}</span>`}</div>
-  ${recent ? `<div class="card"><h2>${t("recentOps")}</h2>${logsTable(recent, true)}</div>` : ""}`;
-}
-
-/* ===== Log table ===== */
-function logsTable(rows, showEmp){
-  if(!rows || rows.length===0) return `<div class="empty">${t("noLogs")}</div>`;
-  return `<div class="tbl-wrap"><table><thead><tr><th>${t("thTime")}</th>${showEmp?`<th>${t("thEmp")}</th>`:""}<th>${t("thAction")}</th><th>${t("thResult")}</th><th>${t("thGroup")}</th><th>${t("thCount")}</th><th>${t("thDur")}</th><th>${t("thNote")}</th></tr></thead><tbody>
-  ${rows.map(l=>`<tr><td class="nowrap">${esc(dt(l.occurred_at))}</td>${showEmp?`<td class="nowrap"><a href="#/employee/${esc(l.employee_id)}">${esc(empName(l.employee_id))}</a></td>`:""}
-  <td class="nowrap">${esc(actName(l.action))}</td><td>${resultBadge(l.result)}</td><td class="mono">${esc(l.group_no||"—")}</td>
-  <td class="nowrap">${counts(l)}</td><td class="nowrap">${esc(dur(l.duration_ms))}</td><td>${esc(l.message||"")}</td></tr>`).join("")}
-  </tbody></table></div>`;
-}
-
-/* ===== Employees ===== */
-async function pageEmployees(){
-  const emps = await getEmployees(true); await getTools().catch(()=>[]);
-  view().innerHTML = `
-  <div class="head"><h1>${t("empTitle")} <span class="muted" style="font-size:15px;font-weight:500">(${emps.length})</span></h1>${can("employees")?`<button class="btn primary" id="addEmp">${icon("plus")}${t("addEmp")}</button>`:""}</div>
-  ${emps.length===0 ? `<div class="card empty">${t("noEmps")}</div>` : `
-  <div class="tbl-wrap"><table><thead><tr><th>${t("thEmp")}</th><th>${t("thEmpNo")}</th><th>${t("thStatus")}</th><th>${t("thTools")}</th><th>${t("thCode")}</th><th>${t("thLastSeen")}</th><th>${t("thToday")}</th><th>${t("thActions")}</th></tr></thead><tbody>
-  ${emps.map(e=>`<tr class="click" data-id="${esc(e.id)}">
-    <td class="nowrap"><span class="dot ${isOnline(e.last_seen)&&e.status==="active"?"on":""}"></span><b>${esc(e.name)}</b></td>
-    <td class="mono">${esc(e.employee_no||"—")}</td><td>${empBadge(e.status)}</td><td>${toolsBadges(e)}${e.silent_allowed?` <span class="badge b-ok" title="${esc(t("kSilent"))}">🔇</span>`:""}${e.learn_enabled?` <span class="badge b-ok" title="${esc(t("kLearn"))}">📡</span>`:""}</td>
-    <td class="nowrap">${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}</td>
-    <td class="nowrap">${esc(ago(e.last_seen))}</td>
-    <td class="nowrap"><span style="color:var(--ok)">${e.today_success||0}</span> / <span style="color:var(--bad)">${e.today_failed||0}</span></td>
-    <td><div class="actions">${can("codes") && e.code_status==="unused" ? `<button class="btn sm" data-act="show">${icon("copy")}${t("copyCode")}</button>` : ""}${can("codes")?`<button class="btn sm" data-act="code">${icon("key")}${t("issueCode")}</button>`:""}<button class="btn sm" data-act="open">${icon("list")}${t("openLog")}</button>${!can("suspend") ? "" : e.status==="active" ? `<button class="btn sm danger" data-act="suspend">${icon("stop")}${t("suspendShort")}</button>` : `<button class="btn sm" data-act="activate">${t("activateShort")}</button>`}</div></td>
+  ${t.length===0?`<div class="card"><h2>${e("startHere")}</h2><p>${e("startHereText")}</p><a class="btn primary" href="#/employees">${f("users")}${e("goEmployees")}</a></div>`:""}
+  <div class="card"><h2>${e("onlineNow")}</h2>${o.length?o.map(l=>`<a href="#/employee/${d(l.id)}" class="badge b-ok" style="margin:2px;text-decoration:none">${d(l.name)}</a>`).join(""):`<span class="muted">${e("noOnline")}</span>`}</div>
+  ${a?`<div class="card"><h2>${e("recentOps")}</h2>${pe(a,!0)}</div>`:""}`}function pe(t,a){return!t||t.length===0?`<div class="empty">${e("noLogs")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>${e("thTime")}</th>${a?`<th>${e("thEmp")}</th>`:""}<th>${e("thAction")}</th><th>${e("thResult")}</th><th>${e("thGroup")}</th><th>${e("thCount")}</th><th>${e("thDur")}</th><th>${e("thNote")}</th></tr></thead><tbody>
+  ${t.map(s=>`<tr><td class="nowrap">${d(T(s.occurred_at))}</td>${a?`<td class="nowrap"><a href="#/employee/${d(s.employee_id)}">${d(j(s.employee_id))}</a></td>`:""}
+  <td class="nowrap">${d(se(s.action))}</td><td>${xe(s.result)}</td><td class="mono">${d(s.group_no||"—")}</td>
+  <td class="nowrap">${Te(s)}</td><td class="nowrap">${d(ke(s.duration_ms))}</td><td>${d(s.message||"")}</td></tr>`).join("")}
+  </tbody></table></div>`}async function Ue(){const t=await P(!0);await q().catch(()=>[]),w().innerHTML=`
+  <div class="head"><h1>${e("empTitle")} <span class="muted" style="font-size:15px;font-weight:500">(${t.length})</span></h1>${h("employees")?`<button class="btn primary" id="addEmp">${f("plus")}${e("addEmp")}</button>`:""}</div>
+  ${t.length===0?`<div class="card empty">${e("noEmps")}</div>`:`
+  <div class="tbl-wrap"><table><thead><tr><th>${e("thEmp")}</th><th>${e("thEmpNo")}</th><th>${e("thStatus")}</th><th>${e("thTools")}</th><th>${e("thCode")}</th><th>${e("thLastSeen")}</th><th>${e("thToday")}</th><th>${e("thActions")}</th></tr></thead><tbody>
+  ${t.map(a=>`<tr class="click" data-id="${d(a.id)}">
+    <td class="nowrap"><span class="dot ${H(a.last_seen)&&a.status==="active"?"on":""}"></span><b>${d(a.name)}</b></td>
+    <td class="mono">${d(a.employee_no||"—")}</td><td>${oe(a.status)}</td><td>${re(a)}</td>
+    <td class="nowrap">${ne(a.code_status)} ${a.code_hint?`<span class="mono muted">…${d(a.code_hint)}</span>`:""}</td>
+    <td class="nowrap">${d(ae(a.last_seen))}</td>
+    <td class="nowrap"><span style="color:var(--ok)">${a.today_success||0}</span> / <span style="color:var(--bad)">${a.today_failed||0}</span></td>
+    <td><div class="actions">${h("codes")&&a.code_status==="unused"?`<button class="btn sm" data-act="show">${f("copy")}${e("copyCode")}</button>`:""}${h("codes")?`<button class="btn sm" data-act="code">${f("key")}${e("issueCode")}</button>`:""}<button class="btn sm" data-act="open">${f("list")}${e("openLog")}</button>${h("suspend")?a.status==="active"?`<button class="btn sm danger" data-act="suspend">${f("stop")}${e("suspendShort")}</button>`:`<button class="btn sm" data-act="activate">${e("activateShort")}</button>`:""}</div></td>
   </tr>`).join("")}</tbody></table></div>
-  <p class="muted" style="font-size:13px">${esc(t("empLegend",{m:CONFIG.ONLINE_MINUTES}))}</p>`}`;
-  if($("#addEmp")) $("#addEmp").onclick = () => employeeForm();
-  view().querySelectorAll("tr.click").forEach(tr => tr.addEventListener("click", ev => {
-    const b = ev.target.closest("button"); const id = tr.dataset.id;
-    if(b && b.dataset.act==="code"){ ev.stopPropagation(); issueCode(id); return; }
-    if(b && (b.dataset.act==="suspend" || b.dataset.act==="activate")){
-      ev.stopPropagation(); const em = emps.find(x=>x.id===id); if(!em) return;
-      const on = b.dataset.act==="activate", n = esc(em.name);
-      confirmBox(t(on?"activateTitle":"suspendTitle"), t(on?"activateText":"suspendText",{n}), t(on?"activateOk":"suspendOk"), !on).then(async yes => {
-        if(!yes) return;
-        try{ await rpc("admin_set_employee_status",{p_employee_id:id, p_status: on?"active":"suspended"}); toast(t(on?"activated":"suspended")); employeesCache=null; route(); }
-        catch(err){ toast(err.message, true); }
-      });
-      return;
-    }
-    if(b && b.dataset.act==="show"){ ev.stopPropagation(); const em = emps.find(x=>x.id===id); showCode(id, em ? em.name : ""); return; }
-    location.hash = "#/employee/" + id;
-  }));
-}
-
-async function employeeForm(emp){
-  const edit = !!emp;
-  try{ await getTools(); }catch(e){ toast(e.message, true); return; }
-  openModal(`<h3>${edit?t("editEmp"):t("newEmp")}</h3>
+  <p class="muted" style="font-size:13px">${d(e("empLegend",{m:k.ONLINE_MINUTES}))}</p>`}`,n("#addEmp")&&(n("#addEmp").onclick=()=>W()),w().querySelectorAll("tr.click").forEach(a=>a.addEventListener("click",s=>{const o=s.target.closest("button"),i=a.dataset.id;if(o&&o.dataset.act==="code"){s.stopPropagation(),B(i);return}if(o&&(o.dataset.act==="suspend"||o.dataset.act==="activate")){s.stopPropagation();const l=t.find(c=>c.id===i);if(!l)return;const p=o.dataset.act==="activate",r=d(l.name);L(e(p?"activateTitle":"suspendTitle"),e(p?"activateText":"suspendText",{n:r}),e(p?"activateOk":"suspendOk"),!p).then(async c=>{if(c)try{await y("admin_set_employee_status",{p_employee_id:i,p_status:p?"active":"suspended"}),m(e(p?"activated":"suspended")),_=null,$()}catch(u){m(u.message,!0)}});return}if(o&&o.dataset.act==="show"){s.stopPropagation();const l=t.find(p=>p.id===i);ue(i,l?l.name:"");return}location.hash="#/employee/"+i}))}async function W(t){const a=!!t;try{await q()}catch(s){m(s.message,!0);return}A(`<h3>${e(a?"editEmp":"newEmp")}</h3>
   <form id="empForm" novalidate>
-    <label class="f">${t("empName")}<input type="text" id="efName" maxlength="100" value="${esc(emp?emp.name:"")}"></label>
-    <label class="f"><span>${t("thEmpNo")} <small>${t("optional")}</small></span><input type="text" id="efNo" class="ltr" maxlength="50" value="${esc(emp?emp.employee_no||"":"")}"></label>
-    <label class="f"><span>${t("phone")} <small>${t("optional")}</small></span><input type="tel" id="efPhone" class="ltr" maxlength="20" placeholder="05xxxxxxxx" value="${esc(emp?emp.phone||"":"")}"></label>
-    ${toolsPicker(emp ? (emp.tools||[]) : [])}
+    <label class="f">${e("empName")}<input type="text" id="efName" maxlength="100" value="${d(t?t.name:"")}"></label>
+    <label class="f"><span>${e("thEmpNo")} <small>${e("optional")}</small></span><input type="text" id="efNo" class="ltr" maxlength="50" value="${d(t&&t.employee_no||"")}"></label>
+    <label class="f"><span>${e("phone")} <small>${e("optional")}</small></span><input type="tel" id="efPhone" class="ltr" maxlength="20" placeholder="05xxxxxxxx" value="${d(t&&t.phone||"")}"></label>
+    ${Pe(t?t.tools||[]:[])}
     <div class="err" id="efErr"></div>
-    <div class="row"><button class="btn primary" id="efBtn" type="submit">${edit?t("saveChanges"):t("addEmpBtn")}</button><button class="btn" type="button" id="efCancel">${t("cancel")}</button></div>
-  </form>`);
-  $("#efCancel").onclick = closeModal; bindToolsPicker();
-  $("#empForm").addEventListener("submit", async ev => {
-    ev.preventDefault();
-    const name = $("#efName").value.trim(), no = $("#efNo").value.trim(), phone = $("#efPhone").value.trim();
-    if(name.length < 2){ $("#efErr").textContent = t("errName"); return; }
-    if(phone && !/^[0-9+\s-]{7,20}$/.test(phone)){ $("#efErr").textContent = t("errPhone"); return; }
-    const tools = pickedTools();
-    if(!edit && !tools.length){ $("#efErr").textContent = t("toolsNeed"); return; }
-    $("#efBtn").disabled = true; $("#efErr").textContent = "";
-    try{
-      if(edit){ await rpc("admin_update_employee", {p_employee_id: emp.id, p_name: name, p_employee_no: no||null, p_phone: phone||null});
-        await rpc("admin_set_tools", {p_employee_id: emp.id, p_tools: tools}); employeesCache = null; closeModal(); toast(t("saved")); route(); }
-      else{
-        const id = await rpc("admin_create_employee", {p_name: name, p_employee_no: no||null, p_phone: phone||null});
-        await rpc("admin_set_tools", {p_employee_id: id, p_tools: tools});
-        closeModal(); toast(t("added")); employeesCache = null;
-        if(await confirmBox(t("issueNowQ"), t("issueNowText",{n:esc(name)}), t("issueNowBtn"), false)) await issueCode(id);
-        else route();
-      }
-    }catch(e){ $("#efErr").textContent = e.message; $("#efBtn").disabled = false; }
-  });
-}
-
-async function issueCode(empId){
-  let emps; try{ emps = await getEmployees(true); }catch(e){ toast(e.message, true); return; }
-  const e = emps.find(x=>x.id===empId); if(!e){ toast(t("empMissing"), true); return; }
-  const hasCode = e.code_status && e.code_status !== "revoked";
-  openModal(`<h3>${esc(t("issueFor",{n:e.name}))}</h3>
+    <div class="row"><button class="btn primary" id="efBtn" type="submit">${e(a?"saveChanges":"addEmpBtn")}</button><button class="btn" type="button" id="efCancel">${e("cancel")}</button></div>
+  </form>`),n("#efCancel").onclick=b,Le(),n("#empForm").addEventListener("submit",async s=>{s.preventDefault();const o=n("#efName").value.trim(),i=n("#efNo").value.trim(),l=n("#efPhone").value.trim();if(o.length<2){n("#efErr").textContent=e("errName");return}if(l&&!/^[0-9+\s-]{7,20}$/.test(l)){n("#efErr").textContent=e("errPhone");return}const p=Oe();if(!a&&!p.length){n("#efErr").textContent=e("toolsNeed");return}n("#efBtn").disabled=!0,n("#efErr").textContent="";try{if(a)await y("admin_update_employee",{p_employee_id:t.id,p_name:o,p_employee_no:i||null,p_phone:l||null}),await y("admin_set_tools",{p_employee_id:t.id,p_tools:p}),_=null,b(),m(e("saved")),$();else{const r=await y("admin_create_employee",{p_name:o,p_employee_no:i||null,p_phone:l||null});await y("admin_set_tools",{p_employee_id:r,p_tools:p}),b(),m(e("added")),_=null,await L(e("issueNowQ"),e("issueNowText",{n:d(o)}),e("issueNowBtn"),!1)?await B(r):$()}}catch(r){n("#efErr").textContent=r.message,n("#efBtn").disabled=!1}})}async function B(t){let a;try{a=await P(!0)}catch(i){m(i.message,!0);return}const s=a.find(i=>i.id===t);if(!s){m(e("empMissing"),!0);return}const o=s.code_status&&s.code_status!=="revoked";A(`<h3>${d(e("issueFor",{n:s.name}))}</h3>
   <form id="codeForm" novalidate>
-    ${hasCode?`<div class="note">${t("replaceWarn",{n:esc(e.name)})}</div>`:""}
-    <label class="f">${t("validity")}
-      <select id="cfExp"><option value="">${t("noExpiry")}</option><option value="1">${t("d1")}</option><option value="7">${t("d7")}</option><option value="30">${t("d30")}</option><option value="90">${t("d90")}</option><option value="365">${t("d365")}</option></select>
+    ${o?`<div class="note">${e("replaceWarn",{n:d(s.name)})}</div>`:""}
+    <label class="f">${e("validity")}
+      <select id="cfExp"><option value="">${e("noExpiry")}</option><option value="1">${e("d1")}</option><option value="7">${e("d7")}</option><option value="30">${e("d30")}</option><option value="90">${e("d90")}</option><option value="365">${e("d365")}</option></select>
     </label>
     <div class="err" id="cfErr"></div>
-    <div class="row"><button class="btn primary" id="cfBtn" type="submit">${icon("key")}${t("issueBtn")}</button><button class="btn" type="button" id="cfCancel">${t("cancel")}</button></div>
-  </form>`);
-  $("#cfCancel").onclick = closeModal;
-  $("#codeForm").addEventListener("submit", async ev => {
-    ev.preventDefault();
-    const days = $("#cfExp").value; const exp = days ? new Date(Date.now() + Number(days)*86400000).toISOString() : null;
-    $("#cfBtn").disabled = true;
-    try{
-      const r = await rpc("admin_issue_code", {p_employee_id: empId, p_expires_at: exp});
-      employeesCache = null;
-      codeModal(t("issuedFor",{n:e.name}), e.name, r.code, exp, t("onceWarn"));
-    }catch(err){ $("#cfErr").textContent = err.message; $("#cfBtn").disabled = false; }
-  });
-}
-function codeModal(title, name, code, exp, note){
-  const msg = t("empMsg",{n:name, c:code});
-  openModal(`<h3>${esc(title)}</h3>
-    <div class="codebox" id="theCode">${esc(code)}</div>
-    <div class="note" style="margin-top:12px">${note}</div>
-    <p class="muted" style="font-size:13px;margin:10px 0 0">${esc(exp ? t("validUntil",{d:dt(exp)}) : t("validForever"))} · ${t("oneDevice")}</p>
-    <div class="row"><button class="btn primary" id="cpCode">${icon("copy")}${t("copyCode")}</button><button class="btn" id="cpMsg">${icon("copy")}${t("copyMsg")}</button><button class="btn" id="cdDone">${t("done")}</button></div>`);
-  $("#cpCode").onclick = () => copy(code, t("codeCopied"));
-  $("#cpMsg").onclick = () => copy(msg, t("msgCopied"));
-  $("#cdDone").onclick = () => { closeModal(); route(); };
-}
-async function showCode(empId, name){
-  try{
-    const r = await rpc("admin_get_code", {p_employee_id: empId});
-    if(r && r.code) codeModal(t("codeOf",{n:name}), name, r.code, r.expires_at, t("codeUnusedNote"));
-    else{
-      openModal(`<h3>${esc(t("codeOf",{n:name}))}</h3><div class="note">${esc(r && r.reason==="issued_before_update" ? t("codeOldNote") : t("codeNoneNote"))}</div>
-        <div class="row"><button class="btn primary" id="smNew">${icon("key")}${t("newCode")}</button><button class="btn" id="smClose">${t("cancel")}</button></div>`);
-      $("#smNew").onclick = () => issueCode(empId);
-      $("#smClose").onclick = closeModal;
-    }
-  }catch(e){ toast(e.message, true); }
-}
-async function copy(text, okMsg){
-  try{ await navigator.clipboard.writeText(text); toast(okMsg); }
-  catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select();
-    try{ document.execCommand("copy"); toast(okMsg); }catch(e2){ toast(t("copyManual"), true); } ta.remove(); }
-}
-
-/* ===== Employee page ===== */
-async function pageEmployee(id){
-  const emps = await getEmployees(true); await getTools().catch(()=>[]); const e = emps.find(x=>x.id===id);
-  if(!e){ view().innerHTML = `<div class="card empty">${t("empMissing")} <a href="#/employees">${t("empTitle")}</a></div>`; return; }
-  view().innerHTML = `
-  <div class="head"><h1><a class="crumb" href="#/employees">${t("empTitle")}</a> / ${esc(e.name)}</h1>
+    <div class="row"><button class="btn primary" id="cfBtn" type="submit">${f("key")}${e("issueBtn")}</button><button class="btn" type="button" id="cfCancel">${e("cancel")}</button></div>
+  </form>`),n("#cfCancel").onclick=b,n("#codeForm").addEventListener("submit",async i=>{i.preventDefault();const l=n("#cfExp").value,p=l?new Date(Date.now()+Number(l)*864e5).toISOString():null;n("#cfBtn").disabled=!0;try{const r=await y("admin_issue_code",{p_employee_id:t,p_expires_at:p});_=null,me(e("issuedFor",{n:s.name}),s.name,r.code,p,e("onceWarn"))}catch(r){n("#cfErr").textContent=r.message,n("#cfBtn").disabled=!1}})}function me(t,a,s,o,i){const l=e("empMsg",{n:a,c:s});A(`<h3>${d(t)}</h3>
+    <div class="codebox" id="theCode">${d(s)}</div>
+    <div class="note" style="margin-top:12px">${i}</div>
+    <p class="muted" style="font-size:13px;margin:10px 0 0">${d(o?e("validUntil",{d:T(o)}):e("validForever"))} · ${e("oneDevice")}</p>
+    <div class="row"><button class="btn primary" id="cpCode">${f("copy")}${e("copyCode")}</button><button class="btn" id="cpMsg">${f("copy")}${e("copyMsg")}</button><button class="btn" id="cdDone">${e("done")}</button></div>`),n("#cpCode").onclick=()=>he(s,e("codeCopied")),n("#cpMsg").onclick=()=>he(l,e("msgCopied")),n("#cdDone").onclick=()=>{b(),$()}}async function ue(t,a){try{const s=await y("admin_get_code",{p_employee_id:t});s&&s.code?me(e("codeOf",{n:a}),a,s.code,s.expires_at,e("codeUnusedNote")):(A(`<h3>${d(e("codeOf",{n:a}))}</h3><div class="note">${d(s&&s.reason==="issued_before_update"?e("codeOldNote"):e("codeNoneNote"))}</div>
+        <div class="row"><button class="btn primary" id="smNew">${f("key")}${e("newCode")}</button><button class="btn" id="smClose">${e("cancel")}</button></div>`),n("#smNew").onclick=()=>B(t),n("#smClose").onclick=b)}catch(s){m(s.message,!0)}}async function he(t,a){try{await navigator.clipboard.writeText(t),m(a)}catch{const o=document.createElement("textarea");o.value=t,document.body.appendChild(o),o.select();try{document.execCommand("copy"),m(a)}catch{m(e("copyManual"),!0)}o.remove()}}async function Ye(t){const a=await P(!0);await q().catch(()=>[]);const s=a.find(l=>l.id===t);if(!s){w().innerHTML=`<div class="card empty">${e("empMissing")} <a href="#/employees">${e("empTitle")}</a></div>`;return}w().innerHTML=`
+  <div class="head"><h1><a class="crumb" href="#/employees">${e("empTitle")}</a> / ${d(s.name)}</h1>
     <div class="actions">
-      ${can("employees")?`<button class="btn" id="eEdit">${icon("edit")}${t("edit")}</button>`:""}
-      ${can("codes")?`<button class="btn primary" id="eCode">${icon("key")}${t("newCode")}</button>`:""}
-      ${can("codes") && e.code_status && e.code_status!=="revoked" ? `<button class="btn danger" id="eRevoke">${icon("stop")}${t("revokeCode")}</button>` : ""}
-      ${!can("suspend") ? "" : e.status==="active" ? `<button class="btn danger" id="eSuspend">${t("suspendEmp")}</button>` : `<button class="btn" id="eActivate">${t("activateEmp")}</button>`}
+      ${h("employees")?`<button class="btn" id="eEdit">${f("edit")}${e("edit")}</button>`:""}
+      ${h("codes")?`<button class="btn primary" id="eCode">${f("key")}${e("newCode")}</button>`:""}
+      ${h("codes")&&s.code_status&&s.code_status!=="revoked"?`<button class="btn danger" id="eRevoke">${f("stop")}${e("revokeCode")}</button>`:""}
+      ${h("suspend")?s.status==="active"?`<button class="btn danger" id="eSuspend">${e("suspendEmp")}</button>`:`<button class="btn" id="eActivate">${e("activateEmp")}</button>`:""}
     </div></div>
   <div class="card"><div class="kv">
-    <div><span class="k">${t("kStatus")}</span>${empBadge(e.status)}</div>
-    <div><span class="k">${t("kCode")}</span>${codeBadge(e.code_status)} ${e.code_hint?`<span class="mono muted">…${esc(e.code_hint)}</span>`:""}
-      ${can("codes") && e.code_status==="unused" ? `<div style="margin-top:6px"><button class="btn sm" id="eShow">${icon("copy")}${t("showCode")}</button></div>` : ""}</div>
-    <div><span class="k">${t("kIssued")}</span>${esc(dt(e.code_issued_at))}</div>
-    <div><span class="k">${t("kExpiry")}</span>${e.code_expires_at?esc(dt(e.code_expires_at)):t("noExpiry")}</div>
-    <div><span class="k">${t("kLastSeen")}</span><span class="dot ${isOnline(e.last_seen)?"on":""}"></span>${esc(ago(e.last_seen))}</div>
-    <div><span class="k">${t("kVersion")}</span><span class="mono">${esc(e.ext_version||"—")}</span></div>
-    <div><span class="k">${t("kEmpNo")}</span><span class="mono">${esc(e.employee_no||"—")}</span></div>
-    <div><span class="k">${t("kPhone")}</span><span class="mono">${esc(e.phone||"—")}</span></div>
-    <div><span class="k">${t("kKeep")}</span>${e.keepalive_allowed===false?`<span class="badge b-gray">${t("keepNo")}</span>`:`<span class="badge b-ok">${t("keepYes")}</span>`}
-      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eKeep">${e.keepalive_allowed===false?t("keepAllow"):t("keepBlock")}</button></div>`:""}</div>
-    <div><span class="k">${t("kTools")}</span>${toolsBadges(e)}
-      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eTools">${t("toolsEdit")}</button></div>`:""}</div>
-    <div><span class="k">${t("kSilent")}</span>${e.silent_allowed?`<span class="badge b-ok">🔇 ${t("silentYes")}</span>`:`<span class="badge b-gray">${t("silentNo")}</span>`}
-      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eSilent">${e.silent_allowed?t("silentOff"):t("silentOn")}</button></div>`:""}<div class="muted" style="margin-top:4px;font-size:12px">${t("silentHint")}</div></div>
-    <div><span class="k">${t("kLearn")}</span>${e.learn_enabled?`<span class="badge b-ok">📡 ${t("silentYes")}</span>`:`<span class="badge b-gray">${t("silentNo")}</span>`}
-      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eLearn">${e.learn_enabled?t("learnOff"):t("learnOn")}</button></div>`:""}
-      ${can("reports")?`<div style="margin-top:6px" class="muted" id="eLearnSum">…</div><div style="margin-top:6px"><button class="btn sm" id="eLearnDl">⬇ ${t("learnDl")}</button></div>`:""}
-      <div class="muted" style="margin-top:4px;font-size:12px">${t("learnHint")}</div></div>
-    <div><span class="k">${t("kAlerts")}</span><span id="eAlSum">${(e.hidden_alerts||[]).length?`<span class="badge b-gray">${t("alHiddenN").replace("{n}", (e.hidden_alerts||[]).length)}</span>`:`<span class="badge b-ok">${t("alAll")}</span>`}</span>
-      ${can("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eAlerts">${t("alEdit")}</button></div>`:""}
-      <div class="muted" style="margin-top:4px;font-size:12px">${t("alHint")}</div></div>
-    ${isOwner()?`<div><span class="k">${t("kDev")}</span>${e.is_developer?`<span class="badge b-ok">🛠 ${t("devYes")}</span>`:`<span class="badge b-gray">${t("devNo")}</span>`}
-      <div style="margin-top:6px"><button class="btn sm" id="eDev">${e.is_developer?t("devOff"):t("devOn")}</button></div><div class="muted" style="margin-top:4px;font-size:12px">${t("devHint")}</div></div>`:""}
+    <div><span class="k">${e("kStatus")}</span>${oe(s.status)}</div>
+    <div><span class="k">${e("kCode")}</span>${ne(s.code_status)} ${s.code_hint?`<span class="mono muted">…${d(s.code_hint)}</span>`:""}
+      ${h("codes")&&s.code_status==="unused"?`<div style="margin-top:6px"><button class="btn sm" id="eShow">${f("copy")}${e("showCode")}</button></div>`:""}</div>
+    <div><span class="k">${e("kIssued")}</span>${d(T(s.code_issued_at))}</div>
+    <div><span class="k">${e("kExpiry")}</span>${s.code_expires_at?d(T(s.code_expires_at)):e("noExpiry")}</div>
+    <div><span class="k">${e("kLastSeen")}</span><span class="dot ${H(s.last_seen)?"on":""}"></span>${d(ae(s.last_seen))}</div>
+    <div><span class="k">${e("kVersion")}</span><span class="mono">${d(s.ext_version||"—")}</span></div>
+    <div><span class="k">${e("kEmpNo")}</span><span class="mono">${d(s.employee_no||"—")}</span></div>
+    <div><span class="k">${e("kPhone")}</span><span class="mono">${d(s.phone||"—")}</span></div>
+    <div><span class="k">${e("kKeep")}</span>${s.keepalive_allowed===!1?`<span class="badge b-gray">${e("keepNo")}</span>`:`<span class="badge b-ok">${e("keepYes")}</span>`}
+      ${h("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eKeep">${s.keepalive_allowed===!1?e("keepAllow"):e("keepBlock")}</button></div>`:""}</div>
+    <div><span class="k">${e("kTools")}</span>${re(s)}
+      ${h("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eTools">${e("toolsEdit")}</button></div>`:""}</div>
+    
+    <div><span class="k">${e("kAlerts")}</span><span id="eAlSum">${(s.hidden_alerts||[]).length?`<span class="badge b-gray">${e("alHiddenN").replace("{n}",(s.hidden_alerts||[]).length)}</span>`:`<span class="badge b-ok">${e("alAll")}</span>`}</span>
+      ${h("employees")?`<div style="margin-top:6px"><button class="btn sm" id="eAlerts">${e("alEdit")}</button></div>`:""}
+      <div class="muted" style="margin-top:4px;font-size:12px">${e("alHint")}</div></div>
+    
   </div></div>
-  ${can("logs")?`<div class="card"><h2>${esc(t("fullLog",{n:e.name}))}</h2>${filtersHtml(false)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`:""}`;
-  if($("#eEdit")) $("#eEdit").onclick = () => employeeForm(e);
-  if($("#eTools")) $("#eTools").onclick = () => employeeForm(e);
-  if($("#eAlerts")) $("#eAlerts").onclick = () => alertsPicker(e);
-  if($("#eDev")) $("#eDev").onclick = async () => { try{ await rpc("admin_set_developer",{p_employee_id:e.id, p_on: !e.is_developer}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
-  if($("#eLearn")) $("#eLearn").onclick = async () => { try{ await rpc("admin_set_learn",{p_employee_id:e.id, p_on: !e.learn_enabled}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
-  { const ls = $("#eLearnSum"); if (ls) rpc("admin_learn_summary",{p_employee_id:e.id}).then(r => { if (!ls.isConnected) return; ls.textContent = r && r.chunks ? t("learnSum").replace("{n}", r.requests).replace("{at}", fmtDT.format(new Date(r.last))) : t("learnNone"); }).catch(() => { if (ls.isConnected) ls.textContent = ""; }); }
-  if($("#eLearnDl")) $("#eLearnDl").onclick = async () => {
-    try{ const all = []; for (let off = 0; off < 2000; off += 20) { const part = await rpc("admin_learn_get",{p_employee_id:e.id, p_days:7, p_offset:off}); all.push(...(part||[])); if(!part || part.length < 20) break; }
-      if(!all.length){ toast(t("learnNone"), true); return; }
-      const rep = { kind:"elham-learn-report", employee_no: e.employee_no, exportedAt: new Date().toISOString(), parts: all.length,
-                    requests: all.flatMap(c => ((c.payload && c.payload.requests) || []).map(x => ({ ...x, v: c.version }))) };
-      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(rep)], {type:"application/json"}));
-      a.download = `elham-learn-${e.employee_no||"emp"}-${new Date().toISOString().slice(0,10)}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-    }catch(err){ toast(err.message,true); } };
-  if($("#eSilent")) $("#eSilent").onclick = async () => { try{ await rpc("admin_set_silent",{p_employee_id:e.id, p_on: !e.silent_allowed}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
-  if($("#eKeep")) $("#eKeep").onclick = async () => { try{ await rpc("admin_set_keepalive",{p_employee_id:e.id, p_allowed: e.keepalive_allowed===false}); employeesCache=null; toast(t("saved")); route(); }catch(err){ toast(err.message,true); } };
-  if($("#eCode")) $("#eCode").onclick = () => issueCode(e.id);
-  if($("#eShow")) $("#eShow").onclick = () => showCode(e.id, e.name);
-  const act = async (title, text, label, fn, ok) => { if(await confirmBox(title, text, label)){ try{ await fn(); toast(ok); employeesCache=null; route(); }catch(err){ toast(err.message, true); } } };
-  const n = esc(e.name);
-  if($("#eRevoke")) $("#eRevoke").onclick = () => act(t("revokeTitle"), t("revokeText",{n}), t("revokeOk"), () => rpc("admin_revoke_code",{p_employee_id:e.id}), t("revoked"));
-  if($("#eSuspend")) $("#eSuspend").onclick = () => act(t("suspendTitle"), t("suspendText",{n}), t("suspendOk"), () => rpc("admin_set_employee_status",{p_employee_id:e.id,p_status:"suspended"}), t("suspended"));
-  if($("#eActivate")) $("#eActivate").onclick = () => act(t("activateTitle"), t("activateText",{n}), t("activateOk"), () => rpc("admin_set_employee_status",{p_employee_id:e.id,p_status:"active"}), t("activated"));
-  if(can("logs")) bindFilters({employeeId: e.id, fileName: "elham-employee-" + ((e.employee_no && /^[A-Za-z0-9_-]+$/.test(e.employee_no)) ? e.employee_no : e.id.slice(0,8))});
-}
-
-/* ===== Filters + log (shared) ===== */
-function filtersHtml(withEmp){
-  const today = riyadhDate();
-  const opts = obj => Object.entries(obj).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join("");
-  return `<div class="filters">
-    ${withEmp?`<label>${t("fEmp")}<select id="fEmp"><option value="">${t("allEmps")}</option>${(employeesCache||[]).map(e=>`<option value="${esc(e.id)}">${esc(e.name)}</option>`).join("")}</select></label>`:""}
-    <label>${t("fFrom")}<input type="date" id="fFrom" value="${today}"></label>
-    <label>${t("fTo")}<input type="date" id="fTo" value="${today}"></label>
-    <label>${t("fAction")}<select id="fAct"><option value="">${t("all")}</option>${opts(STR[LANG].act)}</select></label>
-    <label>${t("fResult")}<select id="fRes"><option value="">${t("all")}</option>${opts(STR[LANG].res)}</select></label>
-    <button class="btn primary" id="fGo">${t("show")}</button>
-    <button class="btn" id="fToday">${t("today")}</button>
-    <button class="btn" id="fWeek">${t("last7")}</button>
-    ${can("export")?`<button class="btn" id="fCsv">${icon("dl")}${t("exportX")}</button>`:""}
-  </div><div class="err" id="fErr"></div>`;
-}
-function readFilters(base){
-  const f = {from: $("#fFrom").value, to: $("#fTo").value, act: $("#fAct").value, res: $("#fRes").value, emp: base.employeeId || ($("#fEmp") ? $("#fEmp").value : "")};
-  if(!f.from || !f.to) throw new Error(t("errDates"));
-  if(f.from > f.to) throw new Error(t("errOrder"));
-  return f;
-}
-function filterParams(f){
-  const p = [["occurred_at","gte."+dayStart(f.from)],["occurred_at","lt."+dayEnd(f.to)]];
-  if(f.emp) p.push(["employee_id","eq."+f.emp]);
-  if(f.act) p.push(["action","eq."+f.act]);
-  if(f.res) p.push(["result","eq."+f.res]);
-  return p;
-}
-function bindFilters(base){
-  const st = {page:0};
-  const tbl = $("#fTable"), stats = $("#fStats"), errEl = $("#fErr");
-  const alive = () => document.body.contains(tbl);
-  const load = async () => {
-    if(!alive()) return;
-    errEl.textContent = "";
-    let f; try{ f = readFilters(base); }catch(e){ errEl.textContent = e.message; return; }
-    tbl.classList.add("loading");
-    try{
-      const [rows, sums] = await Promise.all([
-        q("activity_logs", [["select","*"], ...filterParams(f), ["order","occurred_at.desc"], ["limit", String(CONFIG.PAGE_SIZE+1)], ["offset", String(st.page*CONFIG.PAGE_SIZE)]]),
-        q("activity_logs", [["select","action,result,count_success,count_failed,count_skipped"], ...filterParams(f), ["limit","10000"]])
-      ]);
-      if(!alive()) return;
-      const more = rows.length > CONFIG.PAGE_SIZE; const shown = rows.slice(0, CONFIG.PAGE_SIZE);
-      const work = sums.filter(r=>["checkin","checkout","passport_review"].includes(r.action));
-      const s = k => work.reduce((a,r)=>a+(Number(r[k])||0),0);
-      stats.innerHTML = `
-        <div class="stat"><div class="l">${t("sOps")}</div><div class="v">${sums.length}${sums.length>=10000?"+":""}</div></div>
-        <div class="stat ok"><div class="l">${t("sSucc")}</div><div class="v">${s("count_success")}</div></div>
-        <div class="stat bad"><div class="l">${t("sFail")}</div><div class="v">${s("count_failed")}</div></div>
-        <div class="stat"><div class="l">${t("sSkip")}</div><div class="v">${s("count_skipped")}</div></div>
-        <div class="stat bad"><div class="l">${t("sErr")}</div><div class="v">${sums.filter(r=>r.action==="error"||r.result==="failed").length}</div></div>`;
-      tbl.innerHTML = logsTable(shown, !base.employeeId) + `<div class="pager"><span>${esc(t("pageN",{p:st.page+1,n:shown.length}))}</span><span class="actions">
-        <button class="btn sm" id="pPrev" ${st.page===0?"disabled":""}>${t("prev")}</button><button class="btn sm" id="pNext" ${more?"":"disabled"}>${t("next")}</button></span></div>`;
-      $("#pPrev").onclick = () => { st.page--; load(); };
-      $("#pNext").onclick = () => { st.page++; load(); };
-    }catch(e){ if(alive()) errEl.textContent = e.message; }
-    finally{ tbl.classList.remove("loading"); }
-  };
-  $("#fGo").onclick = () => { st.page = 0; load(); };
-  $("#fToday").onclick = () => { const d = riyadhDate(); $("#fFrom").value = d; $("#fTo").value = d; st.page = 0; load(); };
-  $("#fWeek").onclick = () => { $("#fFrom").value = riyadhDate(new Date(Date.now()-6*86400000)); $("#fTo").value = riyadhDate(); st.page = 0; load(); };
-  if($("#fCsv")) $("#fCsv").onclick = () => exportCsv(base);
-  load();
-}
-async function exportCsv(base){
-  let f; try{ f = readFilters(base); }catch(e){ $("#fErr").textContent = e.message; return; }
-  $("#fCsv").disabled = true;
-  try{
-    const all = []; let off = 0;
-    while(true){
-      const part = await q("activity_logs", [["select","*"], ...filterParams(f), ["order","occurred_at.asc"], ["limit","1000"], ["offset", String(off)]]);
-      all.push(...part); if(part.length < 1000 || all.length >= 50000) break; off += 1000;
-    }
-    if(all.length===0){ toast(t("noExport"), true); return; }
-    const cell = v => { let s = String(v ?? ""); if(/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g,'""') + '"'; };
-    const lines = [STR[LANG].csvHead.map(cell).join(",")].concat(all.map(l => { const d = l.details || {}; return [dt(l.occurred_at), empName(l.employee_id), actName(l.action), l.result?(STR[LANG].res[l.result]||l.result):"", d.agreement, d.program, l.group_no, d.hotel, d.city, d.program_date, d.actual_date, d.actual_time, l.count_total, l.count_success, l.count_failed, l.count_skipped, l.duration_ms!=null?Math.round(l.duration_ms/1000):"", l.message, d.preview ? "✓" : "", d.mode === "silent" ? t("modeSilent") : d.mode === "visible" ? t("modeVisible") : "", l.ext_version].map(cell).join(","); }));
-    const blob = new Blob(["﻿" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-    a.download = `${base.fileName||"elham-activity-log"}_${f.from}_${f.to}.csv`; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-    toast(t("exported",{n:all.length}));
-  }catch(e){ toast(e.message, true); }
-  finally{ const b = $("#fCsv"); if(b) b.disabled = false; }
-}
-
-/* ===== Global log ===== */
-async function pageLogs(){
-  await getEmployees(true);
-  view().innerHTML = `<div class="head"><h1>${t("logsTitle")}</h1><span class="sub">${t("logsSub")}</span></div>
-  <div class="card">${filtersHtml(true)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`;
-  bindFilters({fileName:"elham-activity-log"});
-}
-
-/* ===== Admin audit ===== */
-async function pageAudit(){
-  const [rows, admins] = await Promise.all([
-    q("admin_audit", [["select","*"],["order","created_at.desc"],["limit","200"]]),
-    api("/rest/v1/admins?select=user_id,name"), getEmployees(true)
-  ]);
-  const an = id => (admins.find(a=>a.user_id===id)||{}).name || "—";
-  const det = r => { const d = r.details||{}; if(r.action==="issue_code") return d.expires_at?t("expires",{d:dt(d.expires_at)}):t("noExpiry");
-    if(r.action==="set_status") return d.status==="active"?t("reactivation"):t("suspension"); if(r.action==="purge_logs") return t("purgedDet",{n:d.deleted,m:d.months}); return ""; };
-  view().innerHTML = `<div class="head"><h1>${t("auditTitle")}</h1><span class="sub">${t("auditSub")}</span></div>
-  ${rows.length===0?`<div class="card empty">${t("noAudit")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>${t("thTime")}</th><th>${t("thAdmin")}</th><th>${t("thAction")}</th><th>${t("thEmp")}</th><th>${t("thDetails")}</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr><td class="nowrap">${esc(dt(r.created_at))}</td><td>${esc(an(r.admin_id))}</td><td>${esc(STR[LANG].aud[r.action]||r.action)}</td>
-  <td>${r.employee_id?`<a href="#/employee/${esc(r.employee_id)}">${esc(empName(r.employee_id))}</a>`:"—"}</td><td class="muted">${esc(det(r))}</td></tr>`).join("")}</tbody></table></div>`}`;
-}
-
-
-/* ===== Error reports (for the developer) ===== */
-async function pageReports(){
-  const [rows] = await Promise.all([ q("diag_reports", [["select","id,employee_id,kind,note,summary,ext_version,created_at"],["order","created_at.desc"],["limit","200"]]), getEmployees(true) ]);
-  view().innerHTML = `<div class="head"><h1>${t("repTitle")}</h1><span class="sub">${t("repSub")}</span></div>
-  ${rows.length===0?`<div class="card empty">${t("noReports")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>#</th><th>${t("thTime")}</th><th>${t("thEmp")}</th><th>${t("thKind")}</th><th>${t("thSummary")}</th><th>${t("thActions")}</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr><td class="mono">${r.id}</td><td class="nowrap">${esc(dt(r.created_at))}</td><td class="nowrap"><a href="#/employee/${esc(r.employee_id)}">${esc(empName(r.employee_id))}</a></td>
-  <td class="nowrap"><span class="badge ${r.kind==="auto"?"b-bad":"b-gray"}">${r.kind==="auto"?t("kindAuto"):t("kindManual")}</span></td>
-  <td>${esc(r.summary||"")}${r.note?`<div class="muted" style="font-size:13px">“${esc(r.note)}”</div>`:""}</td>
-  <td><div class="actions"><button class="btn sm" data-rep="${r.id}">${icon("list")}${t("repView")}</button><button class="btn sm" data-repdl="${r.id}">${icon("dl")}${t("repDl")}</button></div></td></tr>`).join("")}</tbody></table></div>`}`;
-  const load = async id => (await q("diag_reports", [["select","*"],["id","eq."+id]]))[0];
-  view().querySelectorAll("[data-repdl]").forEach(b => b.onclick = async () => {
-    const r = await load(b.dataset.repdl); if(!r) return;
-    const blob = new Blob([JSON.stringify(r, null, 2)], {type:"application/json"});
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `elham-report-${r.id}.json`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
-  });
-  view().querySelectorAll("[data-rep]").forEach(b => b.onclick = async () => { const r = await load(b.dataset.rep); if(r) showReport(r); });
-}
-function showReport(r){
-  const p = r.payload || {}, run = p.run || {}, prm = run.params || {}, plan = run.plan || [], eng = p.engine;
-  const failed = plan.filter(x => x.status === "failed" || x.status === "not_found");
-  const apiErr = eng && eng.diag ? eng.diag.filter(d => d.kind === "api" && !d.ok).slice(-15) : [];
-  const steps = eng && eng.diag ? eng.diag.filter(d => d.kind === "step").slice(-15) : [];
-  const missing = eng && eng.selectors ? Object.entries(eng.selectors).filter(([k,v]) => v === 0 || v === "bad").map(([k]) => k) : [];
-  const sec = (title, body) => `<h4 style="margin:16px 0 6px">${esc(title)}</h4>${body}`;
-  const mini = (head, rows) => `<div class="tbl-wrap"><table><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(c=>`<tr>${c.map(v=>`<td>${esc(v==null?"":String(v))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-  openModal(`<h3>${esc(t("repReport",{n:r.id}))} — ${r.kind==="auto"?t("kindAuto"):t("kindManual")}</h3>
-    <p><b>${esc(r.summary||"")}</b></p>
-    <p class="muted" style="font-size:13px">${t("repEmp")}: ${esc(empName(r.employee_id))} · ${esc(dt(r.created_at))} · ${t("repVer")}: ${esc(r.ext_version||p.ext_version||"—")}</p>
-    ${r.note?`<div class="note">${t("repNote")}: ${esc(r.note)}</div>`:""}
-    ${sec(t("repParams"), `<p class="mono" style="font-size:13px;direction:ltr;text-align:left">${esc(JSON.stringify({ mode: prm.mode||"visible", dates: prm.dates, time: prm.timeMode, fixed: prm.timeFixed, groups: prm.groupsMode, preview: prm.preview, status: run.status, reason: run.reason }))}</p>`)}
-    ${sec(t("repFailed"), failed.length ? mini([t("thGroup"),"status",t("thNote")], failed.map(x=>[x.group, x.status, x.note])) : `<p class="muted">${t("repNoFailed")}</p>`)}
-    ${apiErr.length ? sec(t("repApi"), mini(["name","HTTP","desc"], apiErr.map(d=>[d.name, d.status, d.desc||d.errors||""]))) : ""}
-    ${steps.length ? sec(t("repSteps"), mini(["code","msg"], steps.map(d=>[d.code, d.msg]))) : ""}
-    ${sec(t("repPage"), eng ? `<p class="mono" style="font-size:13px;direction:ltr;text-align:left">${esc(eng.page||"")} · list:${eng.isList} · details:${eng.isDetails} · dialog:${eng.dialog}</p>${missing.length?`<p class="muted" style="font-size:13px">${t("repMissing")}: <span class="mono">${esc(missing.join(", "))}</span></p>`:""}` : `<p class="muted">${t("repNoEngine")}</p>`)}
-    ${sec(t("repLogs"), `<div class="mono" style="font-size:12px;max-height:220px;overflow:auto;background:#fafbfc;border:1px solid var(--line);border-radius:8px;padding:8px">${(p.logs||[]).slice(0,60).map(l=>`<div>[${esc(dt(l.t))}] ${esc(l.text)}</div>`).join("")}</div>`)}
-    <div class="row" style="margin-top:14px"><button class="btn" id="repClose">${t("cancel")}</button></div>`);
-  const m = document.querySelector("#modalRoot .modal"); if(m) m.style.maxWidth = "900px";
-  $("#repClose").onclick = closeModal;
-}
-
-
-/* ===== Admins & permissions (owner only) ===== */
-const permChips = a => a.role==="owner" ? `<span class="badge b-ok">${t("admAllPerms")}</span>` : `<div class="chips">${(a.permissions||[]).map(p=>`<span class="badge b-gray">${esc(t("perm_"+p))}</span>`).join("") || "—"}</div>`;
-const permBoxes = sel => `<div class="perm-list">${PERMS.map(p=>`<label><input type="checkbox" value="${p}" ${sel.includes(p)?"checked":""}> ${esc(t("perm_"+p))}</label>`).join("")}</div>`;
-const pickedPerms = () => [...document.querySelectorAll("#modalRoot .perm-list input:checked")].map(i=>i.value);
-async function pageAdmins(){
-  if(!isOwner()){ location.hash = "#/home"; return; }
-  const admins = await q("admins", [["select","user_id,name,email,role,permissions,status,created_at,must_change_password"],["order","created_at.asc"]]);
-  const me = session && session.email;
-  view().innerHTML = `<div class="head"><h1>${t("admTitle")}</h1><button class="btn primary" id="admAdd">${icon("plus")}${t("admAdd")}</button></div>
-  <p class="muted" style="margin-top:-6px">${t("admSub")}</p>
-  <div class="tbl-wrap"><table><thead><tr><th>${t("admName")}</th><th>${t("admEmail")}</th><th>${t("admPerms")}</th><th>${t("admStatus")}</th><th>${t("thActions")}</th></tr></thead><tbody>
-  ${admins.map(a=>`<tr><td class="nowrap"><b>${esc(a.name)}</b> ${a.role==="owner"?`<span class="badge b-ok">${t("roleOwner")}</span>`:""} ${a.email && a.email===me?`<span class="muted">${t("admYou")}</span>`:""}</td>
-    <td class="mono">${esc(a.email||"—")}</td><td>${permChips(a)}</td>
-    <td>${a.status!=="active"?`<span class="badge b-bad">${t("admSusp")}</span>`:a.must_change_password?`<span class="badge b-warn">${t("admPending")}</span>`:`<span class="badge b-ok">${t("admActive")}</span>`}</td>
-    <td>${a.role==="manager"?`<div class="actions">${a.must_change_password?`<button class="btn sm" data-ashow="${esc(a.user_id)}">${icon("copy")}${t("admShowCode")}</button>`:""}<button class="btn sm" data-aedit="${esc(a.user_id)}">${icon("edit")}${t("edit")}</button><button class="btn sm" data-areset="${esc(a.user_id)}">${icon("key")}${t("admReset")}</button><button class="btn sm danger" data-adel="${esc(a.user_id)}">${t("admRemove")}</button></div>`:""}</td></tr>`).join("")}
+  ${h("logs")?`<div class="card"><h2>${d(e("fullLog",{n:s.name}))}</h2>${ve(!1)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`:""}`,n("#eEdit")&&(n("#eEdit").onclick=()=>W(s)),n("#eTools")&&(n("#eTools").onclick=()=>W(s)),n("#eAlerts")&&(n("#eAlerts").onclick=()=>Ie(s)),n("#eKeep")&&(n("#eKeep").onclick=async()=>{try{await y("admin_set_keepalive",{p_employee_id:s.id,p_allowed:s.keepalive_allowed===!1}),_=null,m(e("saved")),$()}catch(l){m(l.message,!0)}}),n("#eCode")&&(n("#eCode").onclick=()=>B(s.id)),n("#eShow")&&(n("#eShow").onclick=()=>ue(s.id,s.name));const o=async(l,p,r,c,u)=>{if(await L(l,p,r))try{await c(),m(u),_=null,$()}catch(X){m(X.message,!0)}},i=d(s.name);n("#eRevoke")&&(n("#eRevoke").onclick=()=>o(e("revokeTitle"),e("revokeText",{n:i}),e("revokeOk"),()=>y("admin_revoke_code",{p_employee_id:s.id}),e("revoked"))),n("#eSuspend")&&(n("#eSuspend").onclick=()=>o(e("suspendTitle"),e("suspendText",{n:i}),e("suspendOk"),()=>y("admin_set_employee_status",{p_employee_id:s.id,p_status:"suspended"}),e("suspended"))),n("#eActivate")&&(n("#eActivate").onclick=()=>o(e("activateTitle"),e("activateText",{n:i}),e("activateOk"),()=>y("admin_set_employee_status",{p_employee_id:s.id,p_status:"active"}),e("activated"))),h("logs")&&fe({employeeId:s.id,fileName:"elham-employee-"+(s.employee_no&&/^[A-Za-z0-9_-]+$/.test(s.employee_no)?s.employee_no:s.id.slice(0,8))})}function ve(t){const a=I(),s=o=>Object.entries(o).map(([i,l])=>`<option value="${i}">${d(l)}</option>`).join("");return`<div class="filters">
+    ${t?`<label>${e("fEmp")}<select id="fEmp"><option value="">${e("allEmps")}</option>${(_||[]).map(o=>`<option value="${d(o.id)}">${d(o.name)}</option>`).join("")}</select></label>`:""}
+    <label>${e("fFrom")}<input type="date" id="fFrom" value="${a}"></label>
+    <label>${e("fTo")}<input type="date" id="fTo" value="${a}"></label>
+    <label>${e("fAction")}<select id="fAct"><option value="">${e("all")}</option>${s(S[g].act)}</select></label>
+    <label>${e("fResult")}<select id="fRes"><option value="">${e("all")}</option>${s(S[g].res)}</select></label>
+    <button class="btn primary" id="fGo">${e("show")}</button>
+    <button class="btn" id="fToday">${e("today")}</button>
+    <button class="btn" id="fWeek">${e("last7")}</button>
+    ${h("export")?`<button class="btn" id="fCsv">${f("dl")}${e("exportX")}</button>`:""}
+  </div><div class="err" id="fErr"></div>`}function ye(t){const a={from:n("#fFrom").value,to:n("#fTo").value,act:n("#fAct").value,res:n("#fRes").value,emp:t.employeeId||(n("#fEmp")?n("#fEmp").value:"")};if(!a.from||!a.to)throw new Error(e("errDates"));if(a.from>a.to)throw new Error(e("errOrder"));return a}function K(t){const a=[["occurred_at","gte."+Ee(t.from)],["occurred_at","lt."+Se(t.to)]];return t.emp&&a.push(["employee_id","eq."+t.emp]),t.act&&a.push(["action","eq."+t.act]),t.res&&a.push(["result","eq."+t.res]),a}function fe(t){const a={page:0},s=n("#fTable"),o=n("#fStats"),i=n("#fErr"),l=()=>document.body.contains(s),p=async()=>{if(!l())return;i.textContent="";let r;try{r=ye(t)}catch(c){i.textContent=c.message;return}s.classList.add("loading");try{const[c,u]=await Promise.all([C("activity_logs",[["select","*"],...K(r),["order","occurred_at.desc"],["limit",String(k.PAGE_SIZE+1)],["offset",String(a.page*k.PAGE_SIZE)]]),C("activity_logs",[["select","action,result,count_success,count_failed,count_skipped"],...K(r),["limit","10000"]])]);if(!l())return;const X=c.length>k.PAGE_SIZE,we=c.slice(0,k.PAGE_SIZE),Je=u.filter(O=>["checkin","checkout","passport_review"].includes(O.action)),J=O=>Je.reduce((Qe,et)=>Qe+(Number(et[O])||0),0);o.innerHTML=`
+        <div class="stat"><div class="l">${e("sOps")}</div><div class="v">${u.length}${u.length>=1e4?"+":""}</div></div>
+        <div class="stat ok"><div class="l">${e("sSucc")}</div><div class="v">${J("count_success")}</div></div>
+        <div class="stat bad"><div class="l">${e("sFail")}</div><div class="v">${J("count_failed")}</div></div>
+        <div class="stat"><div class="l">${e("sSkip")}</div><div class="v">${J("count_skipped")}</div></div>
+        <div class="stat bad"><div class="l">${e("sErr")}</div><div class="v">${u.filter(O=>O.action==="error"||O.result==="failed").length}</div></div>`,s.innerHTML=pe(we,!t.employeeId)+`<div class="pager"><span>${d(e("pageN",{p:a.page+1,n:we.length}))}</span><span class="actions">
+        <button class="btn sm" id="pPrev" ${a.page===0?"disabled":""}>${e("prev")}</button><button class="btn sm" id="pNext" ${X?"":"disabled"}>${e("next")}</button></span></div>`,n("#pPrev").onclick=()=>{a.page--,p()},n("#pNext").onclick=()=>{a.page++,p()}}catch(c){l()&&(i.textContent=c.message)}finally{s.classList.remove("loading")}};n("#fGo").onclick=()=>{a.page=0,p()},n("#fToday").onclick=()=>{const r=I();n("#fFrom").value=r,n("#fTo").value=r,a.page=0,p()},n("#fWeek").onclick=()=>{n("#fFrom").value=I(new Date(Date.now()-6*864e5)),n("#fTo").value=I(),a.page=0,p()},n("#fCsv")&&(n("#fCsv").onclick=()=>qe(t)),p()}async function qe(t){let a;try{a=ye(t)}catch(s){n("#fErr").textContent=s.message;return}n("#fCsv").disabled=!0;try{const s=[];let o=0;for(;;){const c=await C("activity_logs",[["select","*"],...K(a),["order","occurred_at.asc"],["limit","1000"],["offset",String(o)]]);if(s.push(...c),c.length<1e3||s.length>=5e4)break;o+=1e3}if(s.length===0){m(e("noExport"),!0);return}const i=c=>{let u=String(c??"");return/^[=+\-@\t\r]/.test(u)&&(u="'"+u),'"'+u.replace(/"/g,'""')+'"'},l=[S[g].csvHead.map(i).join(",")].concat(s.map(c=>{const u=c.details||{};return[T(c.occurred_at),j(c.employee_id),se(c.action),c.result?S[g].res[c.result]||c.result:"",u.agreement,u.program,c.group_no,u.hotel,u.city,u.program_date,u.actual_date,u.actual_time,c.count_total,c.count_success,c.count_failed,c.count_skipped,c.duration_ms!=null?Math.round(c.duration_ms/1e3):"",c.message,u.preview?"✓":"",u.mode==="silent"?e("modeSilent"):u.mode==="visible"?e("modeVisible"):"",c.ext_version].map(i).join(",")})),p=new Blob(["\uFEFF"+l.join(`\r
+`)],{type:"text/csv;charset=utf-8"}),r=document.createElement("a");r.href=URL.createObjectURL(p),r.download=`${t.fileName||"elham-activity-log"}_${a.from}_${a.to}.csv`,document.body.appendChild(r),r.click(),r.remove(),setTimeout(()=>URL.revokeObjectURL(r.href),5e3),m(e("exported",{n:s.length}))}catch(s){m(s.message,!0)}finally{const s=n("#fCsv");s&&(s.disabled=!1)}}async function je(){await P(!0),w().innerHTML=`<div class="head"><h1>${e("logsTitle")}</h1><span class="sub">${e("logsSub")}</span></div>
+  <div class="card">${ve(!0)}<div class="stats" id="fStats"></div><div id="fTable"></div></div>`,fe({fileName:"elham-activity-log"})}async function Ge(){const[t,a]=await Promise.all([C("admin_audit",[["select","*"],["order","created_at.desc"],["limit","200"]]),D("/rest/v1/admins?select=user_id,name"),P(!0)]),s=i=>(a.find(l=>l.user_id===i)||{}).name||"—",o=i=>{const l=i.details||{};return i.action==="issue_code"?l.expires_at?e("expires",{d:T(l.expires_at)}):e("noExpiry"):i.action==="set_status"?l.status==="active"?e("reactivation"):e("suspension"):i.action==="purge_logs"?e("purgedDet",{n:l.deleted,m:l.months}):""};w().innerHTML=`<div class="head"><h1>${e("auditTitle")}</h1><span class="sub">${e("auditSub")}</span></div>
+  ${t.length===0?`<div class="card empty">${e("noAudit")}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>${e("thTime")}</th><th>${e("thAdmin")}</th><th>${e("thAction")}</th><th>${e("thEmp")}</th><th>${e("thDetails")}</th></tr></thead><tbody>
+  ${t.map(i=>`<tr><td class="nowrap">${d(T(i.created_at))}</td><td>${d(s(i.admin_id))}</td><td>${d(S[g].aud[i.action]||i.action)}</td>
+  <td>${i.employee_id?`<a href="#/employee/${d(i.employee_id)}">${d(j(i.employee_id))}</a>`:"—"}</td><td class="muted">${d(o(i))}</td></tr>`).join("")}</tbody></table></div>`}`}const ze=t=>t.role!=="viewer"?`<span class="badge b-ok">${e("admAllPerms")}</span>`:`<div class="chips">${(t.permissions||[]).map(a=>`<span class="badge b-gray">${d(e("perm_"+a))}</span>`).join("")||"—"}</div>`,Ze=t=>`<div class="perm-list">${Me.map(a=>`<label><input type="checkbox" value="${a}" ${t.includes(a)?"checked":""}> ${d(e("perm_"+a))}</label>`).join("")}</div>`,We=()=>[...document.querySelectorAll("#modalRoot .perm-list input:checked")].map(t=>t.value);async function Ke(){if(!F()){location.hash="#/home";return}const t=await C("admins",[["select","user_id,name,email,role,permissions,status,created_at,must_change_password"],["order","created_at.asc"]]),a=v&&v.email;w().innerHTML=`<div class="head"><h1>${e("admTitle")}</h1><button class="btn primary" id="admAdd">${f("plus")}${e("admAdd")}</button></div>
+  <p class="muted" style="margin-top:-6px">${e("admSub")}</p>
+  <div class="tbl-wrap"><table><thead><tr><th>${e("admName")}</th><th>${e("admEmail")}</th><th>${e("admPerms")}</th><th>${e("admStatus")}</th><th>${e("thActions")}</th></tr></thead><tbody>
+  ${t.map(o=>`<tr><td class="nowrap"><b>${d(o.name)}</b> ${o.role==="admin"?`<span class="badge b-ok">${e("roleMain")}</span>`:""} ${o.email&&o.email===a?`<span class="muted">${e("admYou")}</span>`:""}</td>
+    <td class="mono">${d(o.email||"—")}</td><td>${ze(o)}</td>
+    <td>${o.status!=="active"?`<span class="badge b-bad">${e("admSusp")}</span>`:o.must_change_password?`<span class="badge b-warn">${e("admPending")}</span>`:`<span class="badge b-ok">${e("admActive")}</span>`}</td>
+    <td>${o.role==="viewer"?`<div class="actions">${o.must_change_password?`<button class="btn sm" data-ashow="${d(o.user_id)}">${f("copy")}${e("admShowCode")}</button>`:""}<button class="btn sm" data-aedit="${d(o.user_id)}">${f("edit")}${e("edit")}</button><button class="btn sm" data-areset="${d(o.user_id)}">${f("key")}${e("admReset")}</button><button class="btn sm danger" data-adel="${d(o.user_id)}">${e("admRemove")}</button></div>`:""}</td></tr>`).join("")}
   </tbody></table></div>
-  ${admins.length<=1?`<p class="muted">${t("admNone")}</p>`:""}`;
-  const find = id => admins.find(a=>a.user_id===id);
-  $("#admAdd").onclick = () => adminForm();
-  view().querySelectorAll("[data-aedit]").forEach(b => b.onclick = () => adminForm(find(b.dataset.aedit)));
-  view().querySelectorAll("[data-adel]").forEach(b => b.onclick = async () => {
-    const a = find(b.dataset.adel);
-    if(await confirmBox(t("admRemoveT"), t("admRemoveX",{n:esc(a.name)}), t("admRemove"))){ try{ await rpc("admin_remove_admin",{p_user_id:a.user_id}); toast(t("admRemoved")); route(); }catch(e){ toast(e.message,true); } }
-  });
-  view().querySelectorAll("[data-areset]").forEach(b => b.onclick = async () => {
-    const a = find(b.dataset.areset);
-    if(!(await confirmBox(t("admResetT",{n:a.name}), t("admResetX",{n:esc(a.name)}), t("admReset")))) return;
-    try{ const r = await rpc("admin_reset_admin_password",{p_user_id:a.user_id}); showFirstCode(a.name, a.email, r.code, t("admReset")); }catch(e){ toast(e.message,true); }
-  });
-  view().querySelectorAll("[data-ashow]").forEach(b => b.onclick = async () => {
-    const a = find(b.dataset.ashow);
-    try{ const r = await rpc("admin_get_temp_code",{p_user_id:a.user_id}); if(r && r.code) showFirstCode(a.name, a.email, r.code, t("admFirstCode")); else route(); }catch(e){ toast(e.message,true); }
-  });
-}
-function firstCodeMessage(name, email, code){ return t("admMsg",{n:name, e:email, c:code, u: location.origin + location.pathname}); }
-function showFirstCode(name, email, code, title){
-  openModal(`<h3>${esc(title)}</h3><div class="note">${t("admCodeNote")}</div>
-    <label class="f">${t("admFirstCode")}<input class="mono ltr" id="invCodeOut" readonly value="${esc(code)}"></label>
-    <textarea id="invMsg" readonly style="width:100%;height:190px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px;box-sizing:border-box">${esc(firstCodeMessage(name, email, code))}</textarea>
-    <div class="row"><button class="btn primary" id="invCopy">${icon("copy")}${t("admCopyMsg")}</button><button class="btn" id="invDone">${t("cancel")}</button></div>`);
-  $("#invCopy").onclick = async () => { try{ await navigator.clipboard.writeText($("#invMsg").value); toast(t("admMsgCopied")); }catch(e){ $("#invMsg").select(); document.execCommand("copy"); toast(t("admMsgCopied")); } };
-  $("#invDone").onclick = () => { closeModal(); route(); };
-}
-function adminForm(a){
-  const edit = !!a;
-  openModal(`<h3>${edit?esc(t("admEditT",{n:a.name})):t("admNewT")}</h3><form id="admForm" novalidate>
-    <label class="f">${t("admName")}<input id="aName" value="${edit?esc(a.name):""}" maxlength="100"></label>
-    ${edit?"":`<label class="f">${t("admEmail")}<input type="email" id="aEmail" class="ltr" maxlength="200"></label>`}
-    <div><div style="font-weight:600;margin-bottom:6px">${t("admPerms")}</div>${permBoxes(edit?(a.permissions||[]):["employees","codes"])}</div>
-    ${edit?`<label class="f">${t("admStatus")}<select id="aStatus"><option value="active" ${a.status==="active"?"selected":""}>${t("admActive")}</option><option value="suspended" ${a.status==="suspended"?"selected":""}>${t("admSusp")}</option></select></label>`:""}
+  ${t.length<=1?`<p class="muted">${e("admNone")}</p>`:""}`;const s=o=>t.find(i=>i.user_id===o);n("#admAdd").onclick=()=>ge(),w().querySelectorAll("[data-aedit]").forEach(o=>o.onclick=()=>ge(s(o.dataset.aedit))),w().querySelectorAll("[data-adel]").forEach(o=>o.onclick=async()=>{const i=s(o.dataset.adel);if(await L(e("admRemoveT"),e("admRemoveX",{n:d(i.name)}),e("admRemove")))try{await y("admin_remove_admin",{p_user_id:i.user_id}),m(e("admRemoved")),$()}catch(l){m(l.message,!0)}}),w().querySelectorAll("[data-areset]").forEach(o=>o.onclick=async()=>{const i=s(o.dataset.areset);if(await L(e("admResetT",{n:i.name}),e("admResetX",{n:d(i.name)}),e("admReset")))try{const l=await y("admin_reset_admin_password",{p_user_id:i.user_id});V(i.name,i.email,l.code,e("admReset"))}catch(l){m(l.message,!0)}}),w().querySelectorAll("[data-ashow]").forEach(o=>o.onclick=async()=>{const i=s(o.dataset.ashow);try{const l=await y("admin_get_temp_code",{p_user_id:i.user_id});l&&l.code?V(i.name,i.email,l.code,e("admFirstCode")):$()}catch(l){m(l.message,!0)}})}function Ve(t,a,s){return e("admMsg",{n:t,e:a,c:s,u:location.origin+location.pathname})}function V(t,a,s,o){A(`<h3>${d(o)}</h3><div class="note">${e("admCodeNote")}</div>
+    <label class="f">${e("admFirstCode")}<input class="mono ltr" id="invCodeOut" readonly value="${d(s)}"></label>
+    <textarea id="invMsg" readonly style="width:100%;height:190px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px;box-sizing:border-box">${d(Ve(t,a,s))}</textarea>
+    <div class="row"><button class="btn primary" id="invCopy">${f("copy")}${e("admCopyMsg")}</button><button class="btn" id="invDone">${e("cancel")}</button></div>`),n("#invCopy").onclick=async()=>{try{await navigator.clipboard.writeText(n("#invMsg").value),m(e("admMsgCopied"))}catch{n("#invMsg").select(),document.execCommand("copy"),m(e("admMsgCopied"))}},n("#invDone").onclick=()=>{b(),$()}}function ge(t){const a=!!t;A(`<h3>${a?d(e("admEditT",{n:t.name})):e("admNewT")}</h3><form id="admForm" novalidate>
+    <label class="f">${e("admName")}<input id="aName" value="${a?d(t.name):""}" maxlength="100"></label>
+    ${a?"":`<label class="f">${e("admEmail")}<input type="email" id="aEmail" class="ltr" maxlength="200"></label>`}
+    <div><div style="font-weight:600;margin-bottom:6px">${e("admPerms")}</div>${Ze(a?t.permissions||[]:["employees","codes"])}</div>
+    ${a?`<label class="f">${e("admStatus")}<select id="aStatus"><option value="active" ${t.status==="active"?"selected":""}>${e("admActive")}</option><option value="suspended" ${t.status==="suspended"?"selected":""}>${e("admSusp")}</option></select></label>`:""}
     <div class="err" id="aErr"></div>
-    <div class="row"><button class="btn primary" type="submit" id="aSave">${edit?t("admSave"):t("admAdd")}</button><button class="btn" type="button" id="aCancel">${t("cancel")}</button></div></form>`);
-  $("#aCancel").onclick = closeModal;
-  $("#admForm").addEventListener("submit", async ev => {
-    ev.preventDefault();
-    const name = $("#aName").value.trim(), perms = pickedPerms(), err = $("#aErr"); err.textContent = "";
-    if(name.length < 2) return err.textContent = t("eData");
-    if(!perms.length) return err.textContent = t("admNeedPerm");
-    $("#aSave").disabled = true;
-    try{
-      if(edit){ await rpc("admin_update_admin",{p_user_id:a.user_id, p_name:name, p_permissions:perms, p_status:$("#aStatus").value}); closeModal(); toast(t("admSaved")); route(); }
-      else{
-        const email = $("#aEmail").value.trim().toLowerCase();
-        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("#aSave").disabled = false; return err.textContent = t("admBadEmail"); }
-        const r = await rpc("admin_add_admin",{p_email:email, p_name:name, p_permissions:perms});
-        showFirstCode(name, email, r.code, t("admCreated"));
-      }
-    }catch(e){ err.textContent = e.message; $("#aSave").disabled = false; }
-  });
-}
-
-/* ===== Settings ===== */
-async function pageSettings(){
-  view().innerHTML = `<div class="head"><h1>${t("setTitle")}</h1></div>
-  <div class="card"><h2>${t("yourAcc")}</h2><p>${t("signedEmail")} <b class="mono">${esc(session.email)}</b></p></div>
-  <div class="card"><h2>${t("pwTitle")}</h2>
+    <div class="row"><button class="btn primary" type="submit" id="aSave">${e(a?"admSave":"admAdd")}</button><button class="btn" type="button" id="aCancel">${e("cancel")}</button></div></form>`),n("#aCancel").onclick=b,n("#admForm").addEventListener("submit",async s=>{s.preventDefault();const o=n("#aName").value.trim(),i=We(),l=n("#aErr");if(l.textContent="",o.length<2)return l.textContent=e("eData");if(!i.length)return l.textContent=e("admNeedPerm");n("#aSave").disabled=!0;try{if(a)await y("admin_update_admin",{p_user_id:t.user_id,p_name:o,p_permissions:i,p_status:n("#aStatus").value}),b(),m(e("admSaved")),$();else{const p=n("#aEmail").value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p))return n("#aSave").disabled=!1,l.textContent=e("admBadEmail");const r=await y("admin_add_admin",{p_email:p,p_name:o,p_permissions:i});V(o,p,r.code,e("admCreated"))}}catch(p){l.textContent=p.message,n("#aSave").disabled=!1}})}async function Xe(){w().innerHTML=`<div class="head"><h1>${e("setTitle")}</h1></div>
+  <div class="card"><h2>${e("yourAcc")}</h2><p>${e("signedEmail")} <b class="mono">${d(v.email)}</b></p></div>
+  <div class="card"><h2>${e("pwTitle")}</h2>
     <form id="pwForm" novalidate style="display:grid;gap:12px;max-width:380px">
-      <label class="f">${t("pwCurrent")}<input type="password" id="pwCur" class="ltr" autocomplete="current-password"></label>
-      <label class="f"><span>${t("pwNew")} <small>${t("pwNewHint")}</small></span><input type="password" id="pwNew" class="ltr" autocomplete="new-password"></label>
-      <label class="f">${t("pwConfirm")}<input type="password" id="pwNew2" class="ltr" autocomplete="new-password"></label>
+      <label class="f">${e("pwCurrent")}<input type="password" id="pwCur" class="ltr" autocomplete="current-password"></label>
+      <label class="f"><span>${e("pwNew")} <small>${e("pwNewHint")}</small></span><input type="password" id="pwNew" class="ltr" autocomplete="new-password"></label>
+      <label class="f">${e("pwConfirm")}<input type="password" id="pwNew2" class="ltr" autocomplete="new-password"></label>
       <div class="err" id="pwErr"></div>
-      <div><button class="btn primary" id="pwBtn" type="submit">${t("pwBtn")}</button></div>
+      <div><button class="btn primary" id="pwBtn" type="submit">${e("pwBtn")}</button></div>
     </form>
-    <p class="muted" style="font-size:13px;margin:12px 0 0">${esc(t("pwForgot"))}</p>
+    <p class="muted" style="font-size:13px;margin:12px 0 0">${d(e("pwForgot"))}</p>
   </div>
-  ${isOwner()?`<div class="card" id="tgCard"><h2>${t("tgTitle")}</h2><p class="muted" style="font-size:14px">${t("tgIntro")}</p>
-    <div id="tgStatus" class="muted">…</div>
-    <form id="tgForm" novalidate style="display:grid;gap:12px;max-width:420px;margin-top:12px">
-      <label class="f"><span>${t("tgToken")} <small>${t("tgTokenHint")}</small></span><input type="password" id="tgToken" class="ltr" autocomplete="off"></label>
-      <label class="f"><span>${t("tgChat")} <small>${t("tgChatHint")}</small></span><input id="tgChat" class="ltr" autocomplete="off"></label>
-      <div class="err" id="tgErr"></div>
-      <div style="display:flex;gap:8px"><button class="btn primary" id="tgSave" type="submit">${t("tgSave")}</button><button class="btn" id="tgTest" type="button">${t("tgTest")}</button></div>
-    </form></div>`:""}
-  ${can("purge")?`<div class="card"><h2>${t("purgeTitle")}</h2><p>${t("purgeText")}</p>
-    <div class="filters"><label>${t("olderThan")}<select id="pgM"><option value="12">${t("m12")}</option><option value="6">${t("m6")}</option><option value="24">${t("m24")}</option></select></label>
-    <button class="btn danger" id="pgBtn">${t("purgeBtn")}</button></div></div>`:""}
-  <div class="card"><h2>${t("about")}</h2><p class="muted" style="font-size:14px">${t("aboutText")}</p></div>`;
-  if($("#tgCard")){
-    const showTg = async () => { try{
-      const st = await rpc("admin_complaints_status");
-      const row = (k, v) => `<div><span class="k">${k}:</span> ${v}</div>`;
-      const yes = b => b ? `<span class="badge b-ok">${t("tgOk")}</span>` : `<span class="badge b-gray">${t("tgNo")}</span>`;
-      const mon = st.down_since ? `<span class="badge b-bad">${t("tgMonDown",{t:dt(st.down_since)})}</span>` : st.last_ok ? t("tgMonOn",{e:esc(st.leader||"—"), t:dt(st.last_ok)}) : t("tgMonNone");
-      const lm = st.last_message ? `${esc(({new:"🔔 بلاغ جديد",status:"🔄 تغيّر حالة",down:"⚠️ توقف المراقبة",up:"✅ رجوع المراقبة",start:"✅ بداية المراقبة",test:"🧪 تجربة"})[st.last_message.kind]||st.last_message.kind)} · ${dt(st.last_message.at)} · ${st.last_message.error ? '<span class="badge b-bad">'+esc(st.last_message.error)+'</span>' : (st.last_message.sent ? t("tgSent") : t("tgPending"))}` : "—";
-      $("#tgStatus").innerHTML = row(t("tgBot"), yes(st.bot_set)) + row(t("tgChatS"), yes(st.chat_set)) + row(t("tgMon"), mon) + row(t("tgLast"), lm)
-        + (!(st.pg_net && st.pg_cron) ? row(t("tgExt"), `<span class="badge b-bad">${t("tgExtMissing")}</span>`) : "");
-    }catch(e){ $("#tgStatus").textContent = e.message; } };
-    showTg();
-    $("#tgForm").addEventListener("submit", async ev => { ev.preventDefault(); $("#tgErr").textContent = "";
-      try{ await rpc("admin_set_telegram", {p_token: $("#tgToken").value.trim()||null, p_chat_id: $("#tgChat").value.trim()||null}); $("#tgToken").value = ""; toast(t("tgSaved")); showTg(); }
-      catch(e){ $("#tgErr").textContent = e.message; } });
-    $("#tgTest").onclick = async () => { try{ await rpc("admin_test_telegram"); toast(t("tgTestSent")); setTimeout(showTg, 3000); }catch(e){ toast(e.message, true); } };
-  }
-  $("#pwForm").addEventListener("submit", async ev => {
-    ev.preventDefault();
-    const cur = $("#pwCur").value, nw = $("#pwNew").value, nw2 = $("#pwNew2").value, err = $("#pwErr");
-    err.textContent = "";
-    if(!cur || !nw || !nw2) return err.textContent = t("pwErrEmpty");
-    if(nw.length < 8) return err.textContent = t("pwErrShort");
-    if(!/[A-Za-z\u0600-\u06FF]/.test(nw) || !/[0-9\u0660-\u0669]/.test(nw)) return err.textContent = t("pwErrMix");
-    if(nw !== nw2) return err.textContent = t("pwErrMatch");
-    if(nw === cur) return err.textContent = t("pwErrSame");
-    $("#pwBtn").disabled = true;
-    try{
-      // verify the current password first (re-authenticate), then change it
-      try{ await signIn(session.email, cur); }
-      catch(e){ err.textContent = e.status===0 ? e.message : t("pwErrCurrent"); return; }
-      await api("/auth/v1/user", {method:"PUT", body:{password: nw}});
-      $("#pwForm").reset(); toast(t("pwDone"));
-    }catch(e){ err.textContent = e.message; }
-    finally{ const b=$("#pwBtn"); if(b) b.disabled = false; }
-  });
-  if($("#pgBtn")) $("#pgBtn").onclick = async () => {
-    const m = $("#pgM").value;
-    if(!await confirmBox(t("purgeTitle"), t("purgeConfirm",{m}), t("purgeOk"))) return;
-    try{ const n = await rpc("admin_purge_old_logs", {p_months: Number(m)}); toast(t("purged",{n})); }catch(e){ toast(e.message, true); }
-  };
-}
-
-/* ===== Start ===== */
-applyLang();
-loadSession();
-if(session) showApp(); else showLogin();
-
-/* زر إظهار/إخفاء كلمة المرور لكل خانة كلمة مرور */
-function addEyes(){
-  document.querySelectorAll('input[type=password]:not([data-eye]), input[data-eye-shown]:not([data-eye])').forEach(inp => {
-    inp.setAttribute("data-eye","1");
-    const wrap = document.createElement("span"); wrap.className = "pw-wrap";
-    inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
-    const b = document.createElement("button"); b.type = "button"; b.className = "pw-eye"; b.textContent = "👁";
-    b.title = t("pwShow"); b.setAttribute("aria-label", t("pwShow")); b.setAttribute("aria-pressed","false");
-    b.onclick = () => { const show = inp.type === "password"; inp.type = show ? "text" : "password";
-      b.textContent = show ? "🙈" : "👁"; const l = t(show ? "pwHide" : "pwShow"); b.title = l; b.setAttribute("aria-label", l); b.setAttribute("aria-pressed", String(show)); inp.focus(); };
-    wrap.appendChild(b);
-  });
-}
-new MutationObserver(addEyes).observe(document.body, {childList:true, subtree:true}); addEyes();
+  ${h("purge")?`<div class="card"><h2>${e("purgeTitle")}</h2><p>${e("purgeText")}</p>
+    <div class="filters"><label>${e("olderThan")}<select id="pgM"><option value="12">${e("m12")}</option><option value="6">${e("m6")}</option><option value="24">${e("m24")}</option></select></label>
+    <button class="btn danger" id="pgBtn">${e("purgeBtn")}</button></div></div>`:""}
+  <div class="card"><h2>${e("about")}</h2><p class="muted" style="font-size:14px">${e("aboutText")}</p></div>`,n("#pwForm").addEventListener("submit",async t=>{t.preventDefault();const a=n("#pwCur").value,s=n("#pwNew").value,o=n("#pwNew2").value,i=n("#pwErr");if(i.textContent="",!a||!s||!o)return i.textContent=e("pwErrEmpty");if(s.length<8)return i.textContent=e("pwErrShort");if(!/[A-Za-z\u0600-\u06FF]/.test(s)||!/[0-9\u0660-\u0669]/.test(s))return i.textContent=e("pwErrMix");if(s!==o)return i.textContent=e("pwErrMatch");if(s===a)return i.textContent=e("pwErrSame");n("#pwBtn").disabled=!0;try{try{await ie(v.email,a)}catch(l){i.textContent=l.status===0?l.message:e("pwErrCurrent");return}await D("/auth/v1/user",{method:"PUT",body:{password:s}}),n("#pwForm").reset(),m(e("pwDone"))}catch(l){i.textContent=l.message}finally{const l=n("#pwBtn");l&&(l.disabled=!1)}}),n("#pgBtn")&&(n("#pgBtn").onclick=async()=>{const t=n("#pgM").value;if(await L(e("purgeTitle"),e("purgeConfirm",{m:t}),e("purgeOk")))try{const a=await y("admin_purge_old_logs",{p_months:Number(t)});m(e("purged",{n:a}))}catch(a){m(a.message,!0)}})}te(),Ce(),v?G():R();function be(){document.querySelectorAll("input[type=password]:not([data-eye]), input[data-eye-shown]:not([data-eye])").forEach(t=>{t.setAttribute("data-eye","1");const a=document.createElement("span");a.className="pw-wrap",t.parentNode.insertBefore(a,t),a.appendChild(t);const s=document.createElement("button");s.type="button",s.className="pw-eye",s.textContent="👁",s.title=e("pwShow"),s.setAttribute("aria-label",e("pwShow")),s.setAttribute("aria-pressed","false"),s.onclick=()=>{const o=t.type==="password";t.type=o?"text":"password",s.textContent=o?"🙈":"👁";const i=e(o?"pwHide":"pwShow");s.title=i,s.setAttribute("aria-label",i),s.setAttribute("aria-pressed",String(o)),t.focus()},a.appendChild(s)})}new MutationObserver(be).observe(document.body,{childList:!0,subtree:!0}),be()})();
 </script>
 </body>
 </html>
